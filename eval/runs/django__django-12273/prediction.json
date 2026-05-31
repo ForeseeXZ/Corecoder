@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-12273",
+  "model_name_or_path": "corecoder-deepseek-v4-flash",
+  "model_patch": "diff --git a/django/db/models/base.py b/django/db/models/base.py\nindex 844c01e95e..364788a304 100644\n--- a/django/db/models/base.py\n+++ b/django/db/models/base.py\n@@ -806,7 +806,7 @@ class Model(metaclass=ModelBase):\n             # Make sure the link fields are synced between parent and self.\n             if (field and getattr(self, parent._meta.pk.attname) is None and\n                     getattr(self, field.attname) is not None):\n-                setattr(self, parent._meta.pk.attname, getattr(self, field.attname))\n+                setattr(self, field.attname, None)\n             parent_inserted = self._save_parents(cls=parent, using=using, update_fields=update_fields)\n             updated = self._save_table(\n                 cls=parent, using=using, update_fields=update_fields,\n"
+}

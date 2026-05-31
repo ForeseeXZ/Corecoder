@@ -1,0 +1,32 @@
+{
+  "instance_id": "django__django-11951",
+  "repo": "django/django",
+  "base_commit": "312049091288dbba2299de8d07ea3e3311ed7238",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.django_1776_django-11951:latest",
+    "base_commit": "312049091288dbba2299de8d07ea3e3311ed7238",
+    "head_after_reset": "312049091288dbba2299de8d07ea3e3311ed7238",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 14,
+    "files_changed": [
+      "django/db/models/query.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 13.400029292999534,
+    "prompt_tokens": 31774,
+    "completion_tokens": 1734,
+    "total_tokens": 33508,
+    "estimated_cost_cny": 0.035241999999999996,
+    "tool_call_count": 7,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is applied. The change on line 1212-1213 in `_batched_insert` now:\n\n1. Computes `max_batch_size` from `ops.bulk_batch_size()` (capped at 1).\n2. If `batch_size` is provided by the caller, uses `min(batch_size, max_batch_size)` — ensuring the user-specified batch size doesn't exceed what the database backend supports.\n3. If `batch_size` is not provided (None/0), falls back to `max_batch_size`.\n\nThis matches the pattern used in `bulk_update` (line 522-523) and fixes the bug where a user-provided `batch_size` would override the compatible batch size calculation rather than being capped by it."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-8638",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "4b452338f914d4f6b54704222d70ae8a746e3db5",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8638:latest",
+    "base_commit": "4b452338f914d4f6b54704222d70ae8a746e3db5",
+    "head_after_reset": "4b452338f914d4f6b54704222d70ae8a746e3db5",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 31,
+    "files_changed": [
+      "sphinx/domains/python.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 430.7029648309981,
+    "prompt_tokens": 2304954,
+    "completion_tokens": 60635,
+    "total_tokens": 2365589,
+    "estimated_cost_cny": 2.426224,
+    "tool_call_count": 59,
+    "timed_out": false,
+    "error": null,
+    "final_text": "(reached maximum tool-call rounds)"
+  }
+}

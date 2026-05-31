@@ -1,0 +1,192 @@
+[resume] 5 already graded, skipping: ['django__django-11790', 'django__django-11815', 'django__django-11848', 'sphinx-doc__sphinx-7757', 'sphinx-doc__sphinx-8035']
+[driver] 45 instances in 5 batches (size=10, agent_concurrency=2, harness max_workers=4)
+[disk ] before: /dev/vda3        99G  7.4G   87G   8% /
+
+========================================================================
+[batch 1/5] ['django__django-11880', 'django__django-11885', 'django__django-11951', 'django__django-11964', 'django__django-11999', 'django__django-12039', 'django__django-12050', 'django__django-12143', 'django__django-12155', 'django__django-12193']
+========================================================================
+[batch 1] pulling 10 images ...
+   - django__django-11880             pulled 1.11GB
+   - django__django-11885             pulled 1.11GB
+   - django__django-11951             pulled 1.11GB
+   - django__django-11964             pulled 1.11GB
+   - django__django-11999             pulled 1.11GB
+   - django__django-12039             pulled 1.11GB
+   - django__django-12050             pulled 1.11GB
+   - django__django-12143             pulled 1.11GB
+   - django__django-12155             pulled 1.11GB
+   - django__django-12193             pulled 1.11GB
+[batch 1] running agents (concurrency=2) ...
+   · django__django-11880             patch=1f     tok=22853+1381 agent=11s
+   · django__django-11951             patch=1f     tok=31774+1734 agent=13s
+   · django__django-11885             patch=1f     tok=782784+18538 agent=139s
+   · django__django-11964             patch=1f     tok=754015+17775 agent=132s
+   · django__django-12039             patch=1f     tok=115585+5665 agent=37s
+   · django__django-11999             patch=1f     tok=231576+11653 agent=84s
+   · django__django-12050             patch=1f     tok=9932+1003 agent=7s
+   · django__django-12143             patch=1f     tok=17821+980 agent=9s
+   · django__django-12155             patch=1f     tok=37478+3424 agent=26s
+   · django__django-12193             patch=1f     tok=32046+2309 agent=18s
+[batch 1] grading with harness (run_id=corecoder_full_b01) ...
+   = django__django-11880             RESOLVED
+   = django__django-11885             unresolved
+   = django__django-11951             RESOLVED
+   = django__django-11964             RESOLVED
+   = django__django-11999             RESOLVED
+   = django__django-12039             RESOLVED
+   = django__django-12050             RESOLVED
+   = django__django-12143             RESOLVED
+   = django__django-12155             RESOLVED
+   = django__django-12193             RESOLVED
+[batch 1] cleaned 10 instance images
+[disk ] after batch 1: /dev/vda3        99G  8.8G   86G  10% /
+
+========================================================================
+[batch 2/5] ['django__django-12209', 'django__django-12262', 'django__django-12273', 'django__django-12276', 'django__django-12304', 'django__django-12308', 'django__django-12325', 'django__django-12406', 'django__django-12708', 'django__django-12713']
+========================================================================
+[batch 2] pulling 10 images ...
+   - django__django-12209             pulled 1.11GB
+   - django__django-12262             pulled 1.11GB
+   - django__django-12273             pulled 1.11GB
+   - django__django-12276             pulled 1.11GB
+   - django__django-12304             pulled 1.11GB
+   - django__django-12308             pulled 1.11GB
+   - django__django-12325             pulled 1.11GB
+   - django__django-12406             pulled 1.11GB
+   - django__django-12708             pulled 1.11GB
+   - django__django-12713             pulled 1.11GB
+[batch 2] running agents (concurrency=2) ...
+   · django__django-12262             patch=1f     tok=1013185+18552 agent=147s
+   · django__django-12273             patch=1f     tok=248988+8323 agent=66s
+   · django__django-12276             patch=1f     tok=22981+2598 agent=17s
+   · django__django-12304             patch=1f     tok=27107+2168 agent=18s
+   · django__django-12308             patch=1f     tok=100459+4361 agent=37s
+   · django__django-12325             patch=1f     tok=136411+7688 agent=56s
+   · django__django-12209             patch=1f     tok=2492536+59668 agent=408s
+   · django__django-12708             patch=1f     tok=142708+6320 agent=48s
+   · django__django-12713             patch=1f     tok=17435+1219 agent=10s
+   · django__django-12406             patch=1f     tok=771517+16849 agent=125s
+[batch 2] grading with harness (run_id=corecoder_full_b02) ...
+   = django__django-12209             RESOLVED
+   = django__django-12262             RESOLVED
+   = django__django-12273             unresolved
+   = django__django-12276             RESOLVED
+   = django__django-12304             unresolved
+   = django__django-12308             unresolved
+   = django__django-12325             unresolved
+   = django__django-12406             unresolved
+   = django__django-12708             RESOLVED
+   = django__django-12713             RESOLVED
+[batch 2] cleaned 10 instance images
+[disk ] after batch 2: /dev/vda3        99G   11G   84G  11% /
+
+========================================================================
+[batch 3/5] ['django__django-12774', 'django__django-9296', 'sphinx-doc__sphinx-10323', 'sphinx-doc__sphinx-10435', 'sphinx-doc__sphinx-10466', 'sphinx-doc__sphinx-10673', 'sphinx-doc__sphinx-11510', 'sphinx-doc__sphinx-7590', 'sphinx-doc__sphinx-7748', 'sphinx-doc__sphinx-7985']
+========================================================================
+[batch 3] pulling 10 images ...
+   - django__django-12774             pulled 1.11GB
+   - django__django-9296              pulled 1.11GB
+   - sphinx-doc__sphinx-10323         pulled 1.06GB
+   - sphinx-doc__sphinx-10435         pulled 1.06GB
+   - sphinx-doc__sphinx-10466         pulled 1.06GB
+   - sphinx-doc__sphinx-10673         pulled 1.06GB
+   - sphinx-doc__sphinx-11510         pulled 1.14GB
+   - sphinx-doc__sphinx-7590          pulled 1.06GB
+   - sphinx-doc__sphinx-7748          pulled 1.06GB
+   - sphinx-doc__sphinx-7985          pulled 1.06GB
+[batch 3] running agents (concurrency=2) ...
+   · django__django-9296              patch=1f     tok=16554+910 agent=8s
+   · django__django-12774             patch=1f     tok=24950+1588 agent=13s
+   · sphinx-doc__sphinx-10323         patch=1f     tok=94402+4081 agent=31s
+   · sphinx-doc__sphinx-10466         patch=1f     tok=24788+1828 agent=14s
+   · sphinx-doc__sphinx-10435         patch=1f     tok=442875+17233 agent=124s
+   · sphinx-doc__sphinx-10673         patch=2f     tok=1882026+25839 agent=191s
+   · sphinx-doc__sphinx-11510         patch=1f     tok=1196016+22130 agent=172s
+   · sphinx-doc__sphinx-7590          patch=1f     tok=693319+13478 agent=116s
+   · sphinx-doc__sphinx-7748          patch=1f     tok=735390+21585 agent=146s
+   · sphinx-doc__sphinx-7985          patch=1f     tok=1430835+35690 agent=247s
+[batch 3] grading with harness (run_id=corecoder_full_b03) ...
+   = django__django-12774             unresolved
+   = django__django-9296              RESOLVED
+   = sphinx-doc__sphinx-10323         RESOLVED
+   = sphinx-doc__sphinx-10435         unresolved
+   = sphinx-doc__sphinx-10466         RESOLVED
+   = sphinx-doc__sphinx-10673         unresolved
+   = sphinx-doc__sphinx-11510         unresolved
+   = sphinx-doc__sphinx-7590          unresolved
+   = sphinx-doc__sphinx-7748          unresolved
+   = sphinx-doc__sphinx-7985          unresolved
+[batch 3] cleaned 10 instance images
+[disk ] after batch 3: /dev/vda3        99G   11G   83G  12% /
+
+========================================================================
+[batch 4/5] ['sphinx-doc__sphinx-8056', 'sphinx-doc__sphinx-8265', 'sphinx-doc__sphinx-8269', 'sphinx-doc__sphinx-8475', 'sphinx-doc__sphinx-8548', 'sphinx-doc__sphinx-8551', 'sphinx-doc__sphinx-8638', 'sphinx-doc__sphinx-8721', 'sphinx-doc__sphinx-9229', 'sphinx-doc__sphinx-9230']
+========================================================================
+[batch 4] pulling 10 images ...
+   - sphinx-doc__sphinx-8056          pulled 1.06GB
+   - sphinx-doc__sphinx-8265          pulled 1.06GB
+   - sphinx-doc__sphinx-8269          pulled 1.06GB
+   - sphinx-doc__sphinx-8475          pulled 1.05GB
+   - sphinx-doc__sphinx-8548          pulled 1.05GB
+   - sphinx-doc__sphinx-8551          pulled 1.05GB
+   - sphinx-doc__sphinx-8638          pulled 1.06GB
+   - sphinx-doc__sphinx-8721          pulled 1.06GB
+   - sphinx-doc__sphinx-9229          pulled 1.06GB
+   - sphinx-doc__sphinx-9230          pulled 1.06GB
+[batch 4] running agents (concurrency=2) ...
+   · sphinx-doc__sphinx-8265          patch=1f     tok=1070931+20793 agent=162s
+   · sphinx-doc__sphinx-8056          patch=1f     tok=953858+23232 agent=179s
+   · sphinx-doc__sphinx-8269          patch=1f     tok=27437+1633 agent=12s
+   · sphinx-doc__sphinx-8475          patch=1f     tok=61801+2535 agent=20s
+   · sphinx-doc__sphinx-8551          patch=1f     tok=616714+13138 agent=93s
+   · sphinx-doc__sphinx-8548          patch=1f     tok=1392452+19384 agent=151s
+   · sphinx-doc__sphinx-8721          patch=1f     tok=30899+2021 agent=16s
+   · sphinx-doc__sphinx-9229          patch=EMPTY  tok=2259509+37650 agent=269s
+   · sphinx-doc__sphinx-9230          patch=1f     tok=148436+9638 agent=70s
+   · sphinx-doc__sphinx-8638          patch=1f     tok=2304954+60635 agent=431s
+[batch 4] grading with harness (run_id=corecoder_full_b04) ...
+   = sphinx-doc__sphinx-8056          unresolved
+   = sphinx-doc__sphinx-8265          RESOLVED
+   = sphinx-doc__sphinx-8269          unresolved
+   = sphinx-doc__sphinx-8475          unresolved
+   = sphinx-doc__sphinx-8548          unresolved
+   = sphinx-doc__sphinx-8551          RESOLVED
+   = sphinx-doc__sphinx-8638          unresolved
+   = sphinx-doc__sphinx-8721          RESOLVED
+   = sphinx-doc__sphinx-9229          unresolved
+   = sphinx-doc__sphinx-9230          RESOLVED
+[batch 4] cleaned 10 instance images
+[disk ] after batch 4: /dev/vda3        99G   12G   83G  13% /
+
+========================================================================
+[batch 5/5] ['sphinx-doc__sphinx-9281', 'sphinx-doc__sphinx-9320', 'sphinx-doc__sphinx-9367', 'sphinx-doc__sphinx-9461', 'sphinx-doc__sphinx-9698']
+========================================================================
+[batch 5] pulling 5 images ...
+   - sphinx-doc__sphinx-9281          pulled 1.06GB
+   - sphinx-doc__sphinx-9320          pulled 1.06GB
+   - sphinx-doc__sphinx-9367          pulled 1.06GB
+   - sphinx-doc__sphinx-9461          pulled 1.06GB
+   - sphinx-doc__sphinx-9698          pulled 1.06GB
+[batch 5] running agents (concurrency=2) ...
+   · sphinx-doc__sphinx-9320          patch=1f     tok=52955+4866 agent=34s
+   · sphinx-doc__sphinx-9367          patch=1f     tok=24825+1473 agent=11s
+   · sphinx-doc__sphinx-9281          patch=1f     tok=296372+7219 agent=58s
+   · sphinx-doc__sphinx-9698          patch=1f     tok=21212+1313 agent=12s
+   · sphinx-doc__sphinx-9461          patch=3f     tok=1634667+37708 agent=274s
+[batch 5] grading with harness (run_id=corecoder_full_b05) ...
+   = sphinx-doc__sphinx-9281          unresolved
+   = sphinx-doc__sphinx-9320          unresolved
+   = sphinx-doc__sphinx-9367          RESOLVED
+   = sphinx-doc__sphinx-9461          unresolved
+   = sphinx-doc__sphinx-9698          RESOLVED
+[batch 5] cleaned 5 instance images
+[disk ] after batch 5: /dev/vda3        99G   12G   83G  13% /
+
+########################################################################
+DONE  resolved 23/45 = 0.511
+wall: 8999s (150.0 min)   agent total: 4261s
+tokens: 25027176   cost: ¥25.6070
+[disk ] before: /dev/vda3        99G  7.4G   87G   8% /
+[disk ] after : /dev/vda3        99G   12G   83G  13% /
+driver issues: none
+aggregate: /root/CoreCoder/eval/runs/_swebench_aggregate.json

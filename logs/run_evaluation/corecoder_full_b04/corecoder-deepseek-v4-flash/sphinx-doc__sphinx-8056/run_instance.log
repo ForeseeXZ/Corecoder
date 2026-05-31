@@ -1,0 +1,65 @@
+2026-05-31 20:21:36,646 - INFO - Creating container for sphinx-doc__sphinx-8056...
+2026-05-31 20:21:36,718 - INFO - Container for sphinx-doc__sphinx-8056 created: a23be88c7936ad6620e9ea54a812e1c8bc8977a27269ae04bd5000e5f8b58307
+2026-05-31 20:21:36,963 - INFO - Container for sphinx-doc__sphinx-8056 started: a23be88c7936ad6620e9ea54a812e1c8bc8977a27269ae04bd5000e5f8b58307
+2026-05-31 20:21:36,963 - INFO - Intermediate patch for sphinx-doc__sphinx-8056 written to logs/run_evaluation/corecoder_full_b04/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-8056/patch.diff, now applying to container...
+2026-05-31 20:21:37,073 - INFO - >>>>> Applied Patch:
+Checking patch sphinx/ext/napoleon/docstring.py...
+Applied patch sphinx/ext/napoleon/docstring.py cleanly.
+
+2026-05-31 20:21:37,308 - INFO - Git diff before:
+diff --git a/sphinx/ext/napoleon/docstring.py b/sphinx/ext/napoleon/docstring.py
+index b3daa06f1..9150e6d54 100644
+--- a/sphinx/ext/napoleon/docstring.py
++++ b/sphinx/ext/napoleon/docstring.py
+@@ -1109,6 +1109,19 @@ class NumpyDocstring(GoogleDocstring):
+         _desc = self.__class__(_desc, self._config).lines()
+         return _name, _type, _desc
+ 
++    def _consume_fields(self, parse_type: bool = True, prefer_type: bool = False
++                        ) -> List[Tuple[str, str, List[str]]]:
++        fields = super()._consume_fields(parse_type, prefer_type)
++        results = []  # type: List[Tuple[str, str, List[str]]]
++        for _name, _type, _desc in fields:
++            if _type:
++                for name in _name.split(','):
++                    name = name.strip()
++                    results.append((name, _type, _desc))
++            else:
++                results.append((_name, _type, _desc))
++        return results
++
+     def _consume_returns_section(self) -> List[Tuple[str, str, List[str]]]:
+         return self._consume_fields(prefer_type=True)
+2026-05-31 20:21:37,308 - INFO - Eval script for sphinx-doc__sphinx-8056 written to logs/run_evaluation/corecoder_full_b04/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-8056/eval.sh; copying to container...
+2026-05-31 20:21:46,216 - INFO - Test runtime: 8.86 seconds
+2026-05-31 20:21:46,216 - INFO - Test output for sphinx-doc__sphinx-8056 written to logs/run_evaluation/corecoder_full_b04/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-8056/test_output.txt
+2026-05-31 20:21:46,253 - INFO - Git diff after:
+diff --git a/sphinx/ext/napoleon/docstring.py b/sphinx/ext/napoleon/docstring.py
+index b3daa06f1..9150e6d54 100644
+--- a/sphinx/ext/napoleon/docstring.py
++++ b/sphinx/ext/napoleon/docstring.py
+@@ -1109,6 +1109,19 @@ class NumpyDocstring(GoogleDocstring):
+         _desc = self.__class__(_desc, self._config).lines()
+         return _name, _type, _desc
+ 
++    def _consume_fields(self, parse_type: bool = True, prefer_type: bool = False
++                        ) -> List[Tuple[str, str, List[str]]]:
++        fields = super()._consume_fields(parse_type, prefer_type)
++        results = []  # type: List[Tuple[str, str, List[str]]]
++        for _name, _type, _desc in fields:
++            if _type:
++                for name in _name.split(','):
++                    name = name.strip()
++                    results.append((name, _type, _desc))
++            else:
++                results.append((_name, _type, _desc))
++        return results
++
+     def _consume_returns_section(self) -> List[Tuple[str, str, List[str]]]:
+         return self._consume_fields(prefer_type=True)
+2026-05-31 20:21:46,253 - INFO - Grading answer for sphinx-doc__sphinx-8056...
+2026-05-31 20:21:46,254 - INFO - report: {'sphinx-doc__sphinx-8056': {'patch_is_None': False, 'patch_exists': True, 'patch_successfully_applied': True, 'resolved': False, 'tests_status': {'FAIL_TO_PASS': {'success': [], 'failure': ['tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_multiple_parameters']}, 'PASS_TO_PASS': {'success': ['tests/test_ext_napoleon_docstring.py::NamedtupleSubclassTest::test_attributes_docstring', 'tests/test_ext_napoleon_docstring.py::InlineAttributeTest::test_class_data_member', 'tests/test_ext_napoleon_docstring.py::InlineAttributeTest::test_class_data_member_inline', 'tests/test_ext_napoleon_docstring.py::InlineAttributeTest::test_class_data_member_inline_no_type', 'tests/test_ext_napoleon_docstring.py::InlineAttributeTest::test_class_data_member_inline_ref_in_type', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_attributes_with_class_reference', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_code_block_in_returns_section', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_colon_in_return_type', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_custom_generic_sections', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_docstrings', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_keywords_with_types', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_kwargs_in_arguments', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_list_in_parameter_description', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_noindex', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_parameters_with_class_reference', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_raises_types', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_section_header_formatting', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_sphinx_admonitions', 'tests/test_ext_napoleon_docstring.py::GoogleDocstringTest::test_xrefs_in_return_type', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_colon_in_return_type', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_convert_numpy_type_spec', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_docstrings', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_list_in_parameter_description', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_parameter_types', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_parameters_with_class_reference', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_parameters_without_class_reference', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_raises_types', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_recombine_set_tokens', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_recombine_set_tokens_invalid', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_section_header_underline_length', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_see_also_refs', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_sphinx_admonitions', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_token_type', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_tokenize_type_spec', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_underscore_in_attribute', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_underscore_in_attribute_strip_signature_backslash', 'tests/test_ext_napoleon_docstring.py::NumpyDocstringTest::test_xrefs_in_return_type', 'tests/test_ext_napoleon_docstring.py::TestNumpyDocstring::test_escape_args_and_kwargs[x,', 'tests/test_ext_napoleon_docstring.py::TestNumpyDocstring::test_escape_args_and_kwargs[*args,', 'tests/test_ext_napoleon_docstring.py::TestNumpyDocstring::test_escape_args_and_kwargs[*x,'], 'failure': []}, 'FAIL_TO_FAIL': {'success': [], 'failure': []}, 'PASS_TO_FAIL': {'success': [], 'failure': []}}}}
+Result for sphinx-doc__sphinx-8056: resolved: False
+2026-05-31 20:21:46,255 - INFO - Attempting to stop container sweb.eval.sphinx-doc__sphinx-8056.corecoder_full_b04...
+2026-05-31 20:22:01,495 - INFO - Attempting to remove container sweb.eval.sphinx-doc__sphinx-8056.corecoder_full_b04...
+2026-05-31 20:22:01,515 - INFO - Container sweb.eval.sphinx-doc__sphinx-8056.corecoder_full_b04 removed.

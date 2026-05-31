@@ -1,0 +1,32 @@
+{
+  "instance_id": "django__django-11999",
+  "repo": "django/django",
+  "base_commit": "84633905273fc916e3d17883810d9969c03f73c2",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.django_1776_django-11999:latest",
+    "base_commit": "84633905273fc916e3d17883810d9969c03f73c2",
+    "head_after_reset": "84633905273fc916e3d17883810d9969c03f73c2",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 16,
+    "files_changed": [
+      "django/db/models/fields/__init__.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 84.32593761899989,
+    "prompt_tokens": 231576,
+    "completion_tokens": 11653,
+    "total_tokens": 243229,
+    "estimated_cost_cny": 0.254882,
+    "tool_call_count": 23,
+    "timed_out": false,
+    "error": null,
+    "final_text": "All four tests pass. Let me summarize the fix:\n\n## Summary\n\n**Root cause**: In `django/db/models/fields/__init__.py`, the `contribute_to_class()` method unconditionally overwrites any user-defined `get_<field_name>_display()` method via `setattr` whenever a field has `choices`. Since Django 2.2, this has prevented users from overriding the `get_FOO_display()` method on their models.\n\n**Fix**: Added a guard check (line 766) that only sets the auto-generated `get_<field_name>_display()` method if one doesn't already exist on the class. This uses `getattr(cls, 'get_%s_display' % self.name, None)` — the same pattern already used on line 763 to prevent overriding classmethods with field descriptors.\n\n**Changed file**: `django/db/models/fields/__init__.py` (lines 765-768)\n\nThe change is minimal — adding a 3-line `if` guard around the existing `setattr` call. This also correctly handles abstract model inheritance, as verified by tests 3 and 4."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "instance_id": "django__django-12708",
+  "repo": "django/django",
+  "base_commit": "447980e72ac01da1594dd3373a03ba40b7ee6f80",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.django_1776_django-12708:latest",
+    "base_commit": "447980e72ac01da1594dd3373a03ba40b7ee6f80",
+    "head_after_reset": "447980e72ac01da1594dd3373a03ba40b7ee6f80",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 13,
+    "files_changed": [
+      "django/db/backends/base/schema.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 47.98576088199843,
+    "prompt_tokens": 142708,
+    "completion_tokens": 6320,
+    "total_tokens": 149028,
+    "estimated_cost_cny": 0.155348,
+    "tool_call_count": 18,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is correct. Here's what the change does:\n\n**Root cause:** On MySQL and SQLite, when both `unique_together` and `index_together` reference the same fields, the database creates two separate indexes - a unique index (with `index=True`, `unique=True`) and a regular index (with `index=True`, `unique=False`). When `delete_index_together` calls `_delete_composed_index` with `{'index': True}`, it matches BOTH, because both the unique constraint's index and the regular index have `index=True`. This triggers the `ValueError` (\"Found wrong number (2) of constraints\").\n\n**Fix:** Changed the `constraint_kwargs` in `alter_index_together` from `{'index': True}` to `{'index': True, 'unique': False}`. This ensures `_constraint_names()` only matches regular indexes (where `unique=False`) and excludes unique constraints (where `unique=True`), even though both may have `index=True` on certain database backends.\n\nThe `alter_unique_together` path is unaffected since `{'unique': True}` already correctly distinguishes unique constraints (unique=True) from regular indexes (unique=False)."
+  }
+}

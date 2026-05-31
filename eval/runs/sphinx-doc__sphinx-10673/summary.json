@@ -1,0 +1,33 @@
+{
+  "instance_id": "sphinx-doc__sphinx-10673",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "f35d2a6cc726f97d0e859ca7a0e1729f7da8a6c8",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10673:latest",
+    "base_commit": "f35d2a6cc726f97d0e859ca7a0e1729f7da8a6c8",
+    "head_after_reset": "f35d2a6cc726f97d0e859ca7a0e1729f7da8a6c8",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 63,
+    "files_changed": [
+      "sphinx/directives/other.py",
+      "sphinx/environment/adapters/toctree.py"
+    ],
+    "n_files": 2
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 190.59510545999728,
+    "prompt_tokens": 1882026,
+    "completion_tokens": 25839,
+    "total_tokens": 1907865,
+    "estimated_cost_cny": 1.933704,
+    "tool_call_count": 48,
+    "timed_out": false,
+    "error": null,
+    "final_text": "Both modules compile and import fine. The fix is complete.\n\n## Summary of changes\n\n**Root cause**: When users include `genindex`, `modindex`, or `search` in a toctree directive, Sphinx treats them as document names. But these are auto-generated pages (not actual source documents), so they're not in `found_docs` and have no TOC entries in `self.env.tocs`. Sphinx can't find them and emits a \"nonexisting document\" warning.\n\n**Fix** (two files, minimal changes):\n\n1. **`sphinx/directives/other.py`** (TocTree directive parsing):\n   - Added a check for special document names (`genindex`, `py-modindex`, `search`, `modindex`) when a docname is not found in `found_docs`\n   - `modindex` is mapped to `py-modindex` (the actual document name for the module index) for backward compatibility\n   - These entries are added to `toctree['entries']` (for navigation) but NOT to `toctree['includefiles']` (since they're virtual pages, not real source files)\n\n2. **`sphinx/environment/adapters/toctree.py`** (toctree rendering):\n   - Added handling for these special document names in the `_entries_from_toctree` function, creating proper reference nodes with default titles matching the `StandardDomain` labels (\"Index\", \"Module Index\", \"Search Page\")\n   - Also added a missing `continue` in the `KeyError` handler for consistency"
+  }
+}

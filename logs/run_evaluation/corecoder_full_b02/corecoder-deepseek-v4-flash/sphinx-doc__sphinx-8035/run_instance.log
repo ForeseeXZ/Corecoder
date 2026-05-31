@@ -1,0 +1,119 @@
+2026-05-31 17:19:38,528 - INFO - Creating container for sphinx-doc__sphinx-8035...
+2026-05-31 17:19:38,583 - INFO - Container for sphinx-doc__sphinx-8035 created: 46e1e18fda42fbf0afc1ee7012e8071b3c4ac872e214a064526df3bacc49ad43
+2026-05-31 17:19:38,736 - INFO - Container for sphinx-doc__sphinx-8035 started: 46e1e18fda42fbf0afc1ee7012e8071b3c4ac872e214a064526df3bacc49ad43
+2026-05-31 17:19:38,736 - INFO - Intermediate patch for sphinx-doc__sphinx-8035 written to logs/run_evaluation/corecoder_full_b02/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-8035/patch.diff, now applying to container...
+2026-05-31 17:19:38,813 - INFO - >>>>> Applied Patch:
+Checking patch sphinx/ext/autodoc/__init__.py...
+Applied patch sphinx/ext/autodoc/__init__.py cleanly.
+
+2026-05-31 17:19:39,019 - INFO - Git diff before:
+diff --git a/sphinx/ext/autodoc/__init__.py b/sphinx/ext/autodoc/__init__.py
+index 8c3509c3b..c106b7f2b 100644
+--- a/sphinx/ext/autodoc/__init__.py
++++ b/sphinx/ext/autodoc/__init__.py
+@@ -649,15 +649,24 @@ class Documenter:
+             elif (namespace, membername) in attr_docs:
+                 if want_all and isprivate:
+                     # ignore members whose name starts with _ by default
+-                    keep = self.options.private_members
++                    if self.options.private_members is ALL:
++                        keep = True
++                    elif isinstance(self.options.private_members, list):
++                        keep = membername in self.options.private_members
++                    else:
++                        keep = False
+                 else:
+                     # keep documented attributes
+                     keep = True
+                 isattr = True
+             elif want_all and isprivate:
+                 # ignore members whose name starts with _ by default
+-                keep = self.options.private_members and \
+-                    (has_doc or self.options.undoc_members)
++                if self.options.private_members is ALL:
++                    keep = has_doc or self.options.undoc_members
++                elif isinstance(self.options.private_members, list):
++                    keep = membername in self.options.private_members
++                else:
++                    keep = False
+             else:
+                 if self.options.members is ALL and is_filtered_inherited_member(membername):
+                     keep = False
+@@ -859,7 +868,7 @@ class ModuleDocumenter(Documenter):
+         'show-inheritance': bool_option, 'synopsis': identity,
+         'platform': identity, 'deprecated': bool_option,
+         'member-order': member_order_option, 'exclude-members': members_set_option,
+-        'private-members': bool_option, 'special-members': members_option,
++        'private-members': members_option, 'special-members': members_option,
+         'imported-members': bool_option, 'ignore-module-all': bool_option
+     }  # type: Dict[str, Callable]
+ 
+@@ -1279,7 +1288,7 @@ class ClassDocumenter(DocstringSignatureMixin, ModuleLevelDocumenter):  # type:
+         'noindex': bool_option, 'inherited-members': inherited_members_option,
+         'show-inheritance': bool_option, 'member-order': member_order_option,
+         'exclude-members': members_set_option,
+-        'private-members': bool_option, 'special-members': members_option,
++        'private-members': members_option, 'special-members': members_option,
+     }  # type: Dict[str, Callable]
+ 
+     _signature_class = None  # type: Any
+2026-05-31 17:19:39,019 - INFO - Eval script for sphinx-doc__sphinx-8035 written to logs/run_evaluation/corecoder_full_b02/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-8035/eval.sh; copying to container...
+2026-05-31 17:19:44,640 - INFO - Test runtime: 5.59 seconds
+2026-05-31 17:19:44,641 - INFO - Test output for sphinx-doc__sphinx-8035 written to logs/run_evaluation/corecoder_full_b02/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-8035/test_output.txt
+2026-05-31 17:19:44,678 - INFO - Git diff after:
+diff --git a/sphinx/ext/autodoc/__init__.py b/sphinx/ext/autodoc/__init__.py
+index 8c3509c3b..c106b7f2b 100644
+--- a/sphinx/ext/autodoc/__init__.py
++++ b/sphinx/ext/autodoc/__init__.py
+@@ -649,15 +649,24 @@ class Documenter:
+             elif (namespace, membername) in attr_docs:
+                 if want_all and isprivate:
+                     # ignore members whose name starts with _ by default
+-                    keep = self.options.private_members
++                    if self.options.private_members is ALL:
++                        keep = True
++                    elif isinstance(self.options.private_members, list):
++                        keep = membername in self.options.private_members
++                    else:
++                        keep = False
+                 else:
+                     # keep documented attributes
+                     keep = True
+                 isattr = True
+             elif want_all and isprivate:
+                 # ignore members whose name starts with _ by default
+-                keep = self.options.private_members and \
+-                    (has_doc or self.options.undoc_members)
++                if self.options.private_members is ALL:
++                    keep = has_doc or self.options.undoc_members
++                elif isinstance(self.options.private_members, list):
++                    keep = membername in self.options.private_members
++                else:
++                    keep = False
+             else:
+                 if self.options.members is ALL and is_filtered_inherited_member(membername):
+                     keep = False
+@@ -859,7 +868,7 @@ class ModuleDocumenter(Documenter):
+         'show-inheritance': bool_option, 'synopsis': identity,
+         'platform': identity, 'deprecated': bool_option,
+         'member-order': member_order_option, 'exclude-members': members_set_option,
+-        'private-members': bool_option, 'special-members': members_option,
++        'private-members': members_option, 'special-members': members_option,
+         'imported-members': bool_option, 'ignore-module-all': bool_option
+     }  # type: Dict[str, Callable]
+ 
+@@ -1279,7 +1288,7 @@ class ClassDocumenter(DocstringSignatureMixin, ModuleLevelDocumenter):  # type:
+         'noindex': bool_option, 'inherited-members': inherited_members_option,
+         'show-inheritance': bool_option, 'member-order': member_order_option,
+         'exclude-members': members_set_option,
+-        'private-members': bool_option, 'special-members': members_option,
++        'private-members': members_option, 'special-members': members_option,
+     }  # type: Dict[str, Callable]
+ 
+     _signature_class = None  # type: Any
+2026-05-31 17:19:44,678 - INFO - Grading answer for sphinx-doc__sphinx-8035...
+2026-05-31 17:19:44,679 - INFO - report: {'sphinx-doc__sphinx-8035': {'patch_is_None': False, 'patch_exists': True, 'patch_successfully_applied': True, 'resolved': True, 'tests_status': {'FAIL_TO_PASS': {'success': ['tests/test_ext_autodoc_private_members.py::test_private_members'], 'failure': []}, 'PASS_TO_PASS': {'success': ['tests/test_ext_autodoc_private_members.py::test_private_field', 'tests/test_ext_autodoc_private_members.py::test_private_field_and_private_members'], 'failure': []}, 'FAIL_TO_FAIL': {'success': [], 'failure': []}, 'PASS_TO_FAIL': {'success': [], 'failure': []}}}}
+Result for sphinx-doc__sphinx-8035: resolved: True
+2026-05-31 17:19:44,679 - INFO - Attempting to stop container sweb.eval.sphinx-doc__sphinx-8035.corecoder_full_b02...
+2026-05-31 17:19:59,878 - INFO - Attempting to remove container sweb.eval.sphinx-doc__sphinx-8035.corecoder_full_b02...
+2026-05-31 17:19:59,896 - INFO - Container sweb.eval.sphinx-doc__sphinx-8035.corecoder_full_b02 removed.

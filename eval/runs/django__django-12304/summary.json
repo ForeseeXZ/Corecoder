@@ -1,0 +1,32 @@
+{
+  "instance_id": "django__django-12304",
+  "repo": "django/django",
+  "base_commit": "4c1b401e8250f9f520b3c7dc369554477ce8b15a",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.django_1776_django-12304:latest",
+    "base_commit": "4c1b401e8250f9f520b3c7dc369554477ce8b15a",
+    "head_after_reset": "4c1b401e8250f9f520b3c7dc369554477ce8b15a",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 13,
+    "files_changed": [
+      "django/db/models/enums.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 18.039555603001645,
+    "prompt_tokens": 27107,
+    "completion_tokens": 2168,
+    "total_tokens": 29275,
+    "estimated_cost_cny": 0.031443,
+    "tool_call_count": 7,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete. Here's what was done:\n\n**Root cause:** Django's template engine resolves variables by checking if they're callable; if so, it tries to call them with no arguments (line 858 of `django/template/base.py`). Since Python classes (including enum classes like `YearInSchool`) are callable, the template engine attempts `YearInSchool()` which fails because enum constructors require a `value` argument.\n\n**Fix:** Added `do_not_call_in_templates = True` to the `Choices` base class in `django/db/models/enums.py` (line 64). This attribute tells Django's template engine to skip calling the value, so enum classes (and their subclasses `IntegerChoices` and `TextChoices`) can be used directly in templates like:\n\n```django\n{% if student.year_in_school == YearInSchool.FRESHMAN %}\n```\n\nThis follows the same pattern used elsewhere in Django (e.g., `RelatedManager.do_not_call_in_templates`, `GenericRelatedObjectManager.do_not_call_in_templates`)."
+  }
+}

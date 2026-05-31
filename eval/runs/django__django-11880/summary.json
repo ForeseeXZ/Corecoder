@@ -1,0 +1,32 @@
+{
+  "instance_id": "django__django-11880",
+  "repo": "django/django",
+  "base_commit": "06909fe084f87a65459a83bd69d7cdbe4fce9a7c",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.django_1776_django-11880:latest",
+    "base_commit": "06909fe084f87a65459a83bd69d7cdbe4fce9a7c",
+    "head_after_reset": "06909fe084f87a65459a83bd69d7cdbe4fce9a7c",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 12,
+    "files_changed": [
+      "django/forms/fields.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 11.346367193000333,
+    "prompt_tokens": 22853,
+    "completion_tokens": 1381,
+    "total_tokens": 24234,
+    "estimated_cost_cny": 0.025615,
+    "tool_call_count": 5,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete. I added a single line to `__deepcopy__` in `django/forms/fields.py`:\n\n```python\nresult.error_messages = copy.deepcopy(self.error_messages, memo)\n```\n\n**Root cause:** `__deepcopy__` used `copy.copy(self)` (shallow copy), which meant `result.error_messages` was the same dictionary object as the original. Any mutation to the error messages on one field instance would leak to all other copies of that field.\n\n**Fix:** Deep copy `self.error_messages` during `__deepcopy__`, so each deep-copied field gets its own independent `error_messages` dictionary — consistent with how the field's `__init__` already creates a fresh dictionary per instance."
+  }
+}

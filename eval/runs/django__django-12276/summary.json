@@ -1,0 +1,32 @@
+{
+  "instance_id": "django__django-12276",
+  "repo": "django/django",
+  "base_commit": "53d8646f799de7f92ab9defe9dc56c6125448102",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.django_1776_django-12276:latest",
+    "base_commit": "53d8646f799de7f92ab9defe9dc56c6125448102",
+    "head_after_reset": "53d8646f799de7f92ab9defe9dc56c6125448102",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 24,
+    "files_changed": [
+      "django/forms/widgets.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 16.984852961999422,
+    "prompt_tokens": 22981,
+    "completion_tokens": 2598,
+    "total_tokens": 25579,
+    "estimated_cost_cny": 0.028177,
+    "tool_call_count": 7,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is clean and correct. Here's what was done:\n\n1. **Moved** `use_required_attribute()` from `ClearableFileInput` (line 454) **up to** `FileInput` (new line 387-388) — the parent class.\n2. **Removed** the now-redundant override in `ClearableFileInput` (since it inherits from `FileInput`, which now has the identical logic).\n\nThis ensures that **both** `FileInput` and `ClearableFileInput` skip the `required` HTML attribute when initial data (a file already exists on the model instance) is present. Previously, only `ClearableFileInput` benefited from this behavior; plain `FileInput` would always render `required` even when editing an existing file."
+  }
+}

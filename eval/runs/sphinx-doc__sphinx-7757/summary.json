@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-7757",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "212fd67b9f0b4fae6a7c3501fdf1a9a5b2801329",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7757:latest",
+    "base_commit": "212fd67b9f0b4fae6a7c3501fdf1a9a5b2801329",
+    "head_after_reset": "212fd67b9f0b4fae6a7c3501fdf1a9a5b2801329",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 20,
+    "files_changed": [
+      "sphinx/util/inspect.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 48.168674032000126,
+    "prompt_tokens": 220985,
+    "completion_tokens": 6088,
+    "total_tokens": 227073,
+    "estimated_cost_cny": 0.23316099999999998,
+    "tool_call_count": 19,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The downstream `_parse_arglist` at line 174 already checks `if param.default is not param.empty` unconditionally for all parameters, so it will render defaults for positional-only arguments correctly once `signature_from_str` provides them.\n\n**Summary of the fix:**\n\n**File:** `sphinx/util/inspect.py`  \n**Function:** `signature_from_str`\n\n**Root cause:** When parsing positional-only parameters (`posonlyargs`), the code was not extracting their default values from the AST. In Python's AST, `args.defaults` is right-aligned to the combined set of `posonlyargs + args`. The existing code for regular `args` correctly computed defaults using `len(args.args)` alignment, but the `posonlyargs` loop just created `Parameter` objects with `annotation` only, omitting `default`.\n\n**Fix:** Added default value computation for positional-only parameters using the same right-alignment logic. The condition `len(args.posonlyargs) + len(args.args) - i <= len(args.defaults)` determines whether the i-th positional-only parameter has a default, and if so, retrieves it via `args.defaults[-(len(args.posonlyargs) + len(args.args) - i)]`."
+  }
+}

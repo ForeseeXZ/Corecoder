@@ -1,0 +1,55 @@
+2026-05-31 19:23:38,473 - INFO - Creating container for sphinx-doc__sphinx-10466...
+2026-05-31 19:23:38,527 - INFO - Container for sphinx-doc__sphinx-10466 created: 8275a8d07dbacfe2ba17fa429e4e606a9b2154183249f16ed2d8c63d7d74036e
+2026-05-31 19:23:38,637 - INFO - Container for sphinx-doc__sphinx-10466 started: 8275a8d07dbacfe2ba17fa429e4e606a9b2154183249f16ed2d8c63d7d74036e
+2026-05-31 19:23:38,638 - INFO - Intermediate patch for sphinx-doc__sphinx-10466 written to logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-10466/patch.diff, now applying to container...
+2026-05-31 19:23:38,706 - INFO - >>>>> Applied Patch:
+Checking patch sphinx/builders/gettext.py...
+Applied patch sphinx/builders/gettext.py cleanly.
+
+2026-05-31 19:23:38,934 - INFO - Git diff before:
+diff --git a/sphinx/builders/gettext.py b/sphinx/builders/gettext.py
+index e8bc547b7..0bb5c876e 100644
+--- a/sphinx/builders/gettext.py
++++ b/sphinx/builders/gettext.py
+@@ -57,8 +57,13 @@ class Catalog:
+ 
+     def __iter__(self) -> Generator[Message, None, None]:
+         for message in self.messages:
+-            positions = [(source, line) for source, line, uuid in self.metadata[message]]
+-            uuids = [uuid for source, line, uuid in self.metadata[message]]
++            seen = set()
++            positions = []
++            for source, line, _uuid in self.metadata[message]:
++                if (source, line) not in seen:
++                    seen.add((source, line))
++                    positions.append((source, line))
++            uuids = [_uuid for _source, _line, _uuid in self.metadata[message]]
+             yield Message(message, positions, uuids)
+2026-05-31 19:23:38,934 - INFO - Eval script for sphinx-doc__sphinx-10466 written to logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-10466/eval.sh; copying to container...
+2026-05-31 19:23:44,812 - INFO - Test runtime: 5.84 seconds
+2026-05-31 19:23:44,812 - INFO - Test output for sphinx-doc__sphinx-10466 written to logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-10466/test_output.txt
+2026-05-31 19:23:44,848 - INFO - Git diff after:
+diff --git a/sphinx/builders/gettext.py b/sphinx/builders/gettext.py
+index e8bc547b7..0bb5c876e 100644
+--- a/sphinx/builders/gettext.py
++++ b/sphinx/builders/gettext.py
+@@ -57,8 +57,13 @@ class Catalog:
+ 
+     def __iter__(self) -> Generator[Message, None, None]:
+         for message in self.messages:
+-            positions = [(source, line) for source, line, uuid in self.metadata[message]]
+-            uuids = [uuid for source, line, uuid in self.metadata[message]]
++            seen = set()
++            positions = []
++            for source, line, _uuid in self.metadata[message]:
++                if (source, line) not in seen:
++                    seen.add((source, line))
++                    positions.append((source, line))
++            uuids = [_uuid for _source, _line, _uuid in self.metadata[message]]
+             yield Message(message, positions, uuids)
+2026-05-31 19:23:44,848 - INFO - Grading answer for sphinx-doc__sphinx-10466...
+2026-05-31 19:23:44,853 - INFO - report: {'sphinx-doc__sphinx-10466': {'patch_is_None': False, 'patch_exists': True, 'patch_successfully_applied': True, 'resolved': True, 'tests_status': {'FAIL_TO_PASS': {'success': ['tests/test_build_gettext.py::test_Catalog_duplicated_message'], 'failure': []}, 'PASS_TO_PASS': {'success': ['tests/test_build_gettext.py::test_build_gettext', 'tests/test_build_gettext.py::test_gettext_index_entries', 'tests/test_build_gettext.py::test_gettext_disable_index_entries', 'tests/test_build_gettext.py::test_gettext_template', 'tests/test_build_gettext.py::test_gettext_template_msgid_order_in_sphinxpot', 'tests/test_build_gettext.py::test_build_single_pot'], 'failure': []}, 'FAIL_TO_FAIL': {'success': [], 'failure': []}, 'PASS_TO_FAIL': {'success': [], 'failure': []}}}}
+Result for sphinx-doc__sphinx-10466: resolved: True
+2026-05-31 19:23:44,853 - INFO - Attempting to stop container sweb.eval.sphinx-doc__sphinx-10466.corecoder_full_b03...
+2026-05-31 19:24:00,091 - INFO - Attempting to remove container sweb.eval.sphinx-doc__sphinx-10466.corecoder_full_b03...
+2026-05-31 19:24:00,116 - INFO - Container sweb.eval.sphinx-doc__sphinx-10466.corecoder_full_b03 removed.

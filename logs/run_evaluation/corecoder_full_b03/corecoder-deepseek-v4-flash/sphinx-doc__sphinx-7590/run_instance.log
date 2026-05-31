@@ -1,0 +1,2393 @@
+2026-05-31 19:23:59,445 - INFO - Creating container for sphinx-doc__sphinx-7590...
+2026-05-31 19:23:59,481 - INFO - Container for sphinx-doc__sphinx-7590 created: 4074c7f83b9aada349433bad1442a5c069d02dc7919d290bd89a06f9afc20bf8
+2026-05-31 19:23:59,595 - INFO - Container for sphinx-doc__sphinx-7590 started: 4074c7f83b9aada349433bad1442a5c069d02dc7919d290bd89a06f9afc20bf8
+2026-05-31 19:23:59,595 - INFO - Intermediate patch for sphinx-doc__sphinx-7590 written to logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/patch.diff, now applying to container...
+2026-05-31 19:23:59,663 - INFO - >>>>> Applied Patch:
+Checking patch sphinx/domains/cpp.py...
+Applied patch sphinx/domains/cpp.py cleanly.
+
+2026-05-31 19:23:59,864 - INFO - Git diff before:
+diff --git a/sphinx/domains/cpp.py b/sphinx/domains/cpp.py
+index fe52d881d..c00b66f1b 100644
+--- a/sphinx/domains/cpp.py
++++ b/sphinx/domains/cpp.py
+@@ -4664,6 +4664,11 @@ class DefinitionParser(BaseParser):
+             if self.match(regex):
+                 while self.current_char in 'uUlLfF':
+                     self.pos += 1
++                # user-defined literal suffix
++                if self.current_char not in 'uUlLfF' and (
++                        self.current_char.isalpha() or self.current_char == '_'):
++                    while self.current_char.isalnum() or self.current_char == '_':
++                        self.pos += 1
+                 return ASTNumberLiteral(self.definition[pos:self.pos])
+ 
+         string = self._parse_string()
+2026-05-31 19:23:59,864 - INFO - Eval script for sphinx-doc__sphinx-7590 written to logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/eval.sh; copying to container...
+2026-05-31 19:54:00,012 - INFO - Test runtime: 1_800.04 seconds
+2026-05-31 19:54:00,013 - INFO - Test output for sphinx-doc__sphinx-7590 written to logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/test_output.txt
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: <exception str() failed>
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,030 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,031 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,032 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,033 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,034 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,035 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,036 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,037 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,054 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: <exception str() failed>
+
+2026-05-31 19:54:00,054 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,054 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,054 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,054 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,054 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,055 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,056 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,057 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,058 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,059 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,060 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,061 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,062 - INFO - Traceback (most recent call last):
+  File "/root/miniconda3/envs/corecoder/lib/python3.12/site-packages/swebench/harness/run_evaluation.py", line 216, in run_instance
+    raise EvaluationError(
+swebench.harness.utils.EvaluationError: sphinx-doc__sphinx-7590: Test timed out after 1800 seconds.
+Check (logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7590/run_instance.log) for more information.
+
+2026-05-31 19:54:00,062 - INFO - Attempting to stop container sweb.eval.sphinx-doc__sphinx-7590.corecoder_full_b03...
+2026-05-31 19:54:15,292 - INFO - Attempting to remove container sweb.eval.sphinx-doc__sphinx-7590.corecoder_full_b03...
+2026-05-31 19:54:15,310 - INFO - Container sweb.eval.sphinx-doc__sphinx-7590.corecoder_full_b03 removed.

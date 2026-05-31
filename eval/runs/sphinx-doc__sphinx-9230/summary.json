@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-9230",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "567ff22716ac258b9edd2c1711d766b440ac0b11",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9230:latest",
+    "base_commit": "567ff22716ac258b9edd2c1711d766b440ac0b11",
+    "head_after_reset": "567ff22716ac258b9edd2c1711d766b440ac0b11",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 13,
+    "files_changed": [
+      "sphinx/util/docfields.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 69.83725723799944,
+    "prompt_tokens": 148436,
+    "completion_tokens": 9638,
+    "total_tokens": 158074,
+    "estimated_cost_cny": 0.16771200000000003,
+    "tool_call_count": 10,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete. Here's a summary of the change:\n\n**Root cause:** In `sphinx/util/docfields.py` line 301, the code used `fieldarg.split(None, 1)` to separate the type from the parameter name. When a parameter has a complex type containing spaces inside parentheses (like `dict(str, str) opc_meta`), this split on the **first** whitespace incorrectly split the type itself:\n\n- `\"dict(str, str) opc_meta\".split(None, 1)` → `[\"dict(str,\", \"str) opc_meta\"]` ❌\n\n**Fix:** Changed to `fieldarg.rsplit(None, 1)` to split on the **last** whitespace instead. Since Python parameter names are always valid identifiers (no spaces), the last space always separates the type from the name:\n\n- `\"dict(str, str) opc_meta\".rsplit(None, 1)` → `[\"dict(str, str)\", \"opc_meta\"]` ✅\n\nThis is backward-compatible — simple types without spaces (e.g., `\"int x\"`) produce the same result with either `split` or `rsplit`."
+  }
+}

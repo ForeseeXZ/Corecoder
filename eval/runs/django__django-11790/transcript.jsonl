@@ -1,0 +1,537 @@
+{"kind": "tool", "name": "grep", "args": {"pattern": "class AuthenticationForm", "include": "*.py"}}
+{"kind": "tool", "name": "bash", "args": {"command": "cd /root/CoreCoder/eval/runs/django__django-11790/repo && git log --oneline -10"}}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/contrib/auth/forms.py"}}
+{"kind": "tool", "name": "grep", "args": {"pattern": "class CharField", "include": "*.py", "path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/forms"}}
+{"kind": "tool", "name": "bash", "args": {"command": "cd /root/CoreCoder/eval/runs/django__django-11790/repo && git show 5ceaf14686ce626404afb6a5fbd3d8286410bf13 --stat"}}
+{"kind": "tool", "name": "bash", "args": {"command": "cd /root/CoreCoder/eval/runs/django__django-11790/repo && git show 5ceaf14686ce626404afb6a5fbd3d8286410bf13"}}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/forms/fields.py", "offset": 200, "limit": 70}}
+{"kind": "tool", "name": "grep", "args": {"include": "*.py", "pattern": "widget_attrs", "path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/forms"}}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/forms/fields.py", "offset": 90, "limit": 90}}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/forms/boundfield.py", "offset": 40, "limit": 60}}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/forms/boundfield.py", "offset": 218, "limit": 30}}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/forms/fields.py", "offset": 60, "limit": 50}}
+{"kind": "token", "text": "Now"}
+{"kind": "token", "text": " I"}
+{"kind": "token", "text": " understand"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " issue"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " Let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " trace"}
+{"kind": "token", "text": " through"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " problem"}
+{"kind": "token", "text": ":\n\n"}
+{"kind": "token", "text": "1"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Authentication"}
+{"kind": "token", "text": "Form"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " defines"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "username"}
+{"kind": "token", "text": " ="}
+{"kind": "token", "text": " Us"}
+{"kind": "token", "text": "ername"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": "(w"}
+{"kind": "token", "text": "idget"}
+{"kind": "token", "text": "="}
+{"kind": "token", "text": "forms"}
+{"kind": "token", "text": ".Text"}
+{"kind": "token", "text": "Input"}
+{"kind": "token", "text": "("}
+{"kind": "token", "text": "attrs"}
+{"kind": "token", "text": "={'"}
+{"kind": "token", "text": "aut"}
+{"kind": "token", "text": "of"}
+{"kind": "token", "text": "ocus"}
+{"kind": "token", "text": "':"}
+{"kind": "token", "text": " True"}
+{"kind": "token", "text": "}))"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " —"}
+{"kind": "token", "text": " no"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " passed"}
+{"kind": "token", "text": ".\n"}
+{"kind": "token", "text": "2"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " In"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Char"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": ".__"}
+{"kind": "token", "text": "init"}
+{"kind": "token", "text": "__"}
+{"kind": "token", "text": "`,"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "self"}
+{"kind": "token", "text": ".max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": " ="}
+{"kind": "token", "text": " max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " ("}
+{"kind": "token", "text": "set"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "None"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": "),"}
+{"kind": "token", "text": " then"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "super"}
+{"kind": "token", "text": "().__"}
+{"kind": "token", "text": "init"}
+{"kind": "token", "text": "__"}
+{"kind": "token", "text": "()`"}
+{"kind": "token", "text": " calls"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": ".__"}
+{"kind": "token", "text": "init"}
+{"kind": "token", "text": "__"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " which"}
+{"kind": "token", "text": " calls"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "self"}
+{"kind": "token", "text": ".widget"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "attrs"}
+{"kind": "token", "text": "(w"}
+{"kind": "token", "text": "idget"}
+{"kind": "token", "text": ")"}
+{"kind": "token", "text": "`."}
+{"kind": "token", "text": " Since"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "self"}
+{"kind": "token", "text": ".max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "None"}
+{"kind": "token", "text": "`,"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Char"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": ".widget"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "attrs"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " doesn"}
+{"kind": "token", "text": "'t"}
+{"kind": "token", "text": " add"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " widget"}
+{"kind": "token", "text": "'s"}
+{"kind": "token", "text": " att"}
+{"kind": "token", "text": "rs"}
+{"kind": "token", "text": ".\n"}
+{"kind": "token", "text": "3"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " Later"}
+{"kind": "token", "text": " in"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Authentication"}
+{"kind": "token", "text": "Form"}
+{"kind": "token", "text": ".__"}
+{"kind": "token", "text": "init"}
+{"kind": "token", "text": "__"}
+{"kind": "token", "text": "`,"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "self"}
+{"kind": "token", "text": ".f"}
+{"kind": "token", "text": "ields"}
+{"kind": "token", "text": "['"}
+{"kind": "token", "text": "username"}
+{"kind": "token", "text": "']."}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " set"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " actual"}
+{"kind": "token", "text": " value"}
+{"kind": "token", "text": " from"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " model"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " but"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " widget"}
+{"kind": "token", "text": " att"}
+{"kind": "token", "text": "rs"}
+{"kind": "token", "text": " aren"}
+{"kind": "token", "text": "'t"}
+{"kind": "token", "text": " updated"}
+{"kind": "token", "text": ".\n\n"}
+{"kind": "token", "text": "The"}
+{"kind": "token", "text": " fix"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " also"}
+{"kind": "token", "text": " update"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " widget"}
+{"kind": "token", "text": "'s"}
+{"kind": "token", "text": " att"}
+{"kind": "token", "text": "rs"}
+{"kind": "token", "text": " when"}
+{"kind": "token", "text": " setting"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "edit_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/contrib/auth/forms.py", "old_string": "        # Set the max length and label for the \"username\" field.\n        self.username_field = UserModel._meta.get_field(UserModel.USERNAME_FIELD)\n        self.fields['username'].max_length = self.username_field.max_length or 254", "new_string": "        # Set the max length and label for the \"username\" field.\n        self.username_field = UserModel._meta.get_field(UserModel.USERNAME_FIELD)\n        username_max_length = self.username_field.max_length or 254\n        self.fields['username'].max_length = username_max_length\n        self.fields['username'].widget.attrs.setdefault('maxlength', username_max_length)"}}
+{"kind": "token", "text": "Wait"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " I"}
+{"kind": "token", "text": " need"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " convert"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " string"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " matching"}
+{"kind": "token", "text": " how"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Char"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": ".widget"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "attrs"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " does"}
+{"kind": "token", "text": " it"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "edit_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/contrib/auth/forms.py", "old_string": "        username_max_length = self.username_field.max_length or 254\n        self.fields['username'].max_length = username_max_length\n        self.fields['username'].widget.attrs.setdefault('maxlength', username_max_length)", "new_string": "        username_max_length = self.username_field.max_length or 254\n        self.fields['username'].max_length = username_max_length\n        self.fields['username'].widget.attrs['maxlength'] = username_max_length"}}
+{"kind": "token", "text": "Let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " verify"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " fix"}
+{"kind": "token", "text": " looks"}
+{"kind": "token", "text": " correct"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/contrib/auth/forms.py", "offset": 188, "limit": 15}}
+{"kind": "tool", "name": "grep", "args": {"include": "*.py", "pattern": "def build_attrs", "path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/forms/widgets.py"}}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/forms/widgets.py", "offset": 249, "limit": 30}}
+{"kind": "tool", "name": "grep", "args": {"include": "*.py", "pattern": "def get_context", "path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/forms/widgets.py"}}
+{"kind": "token", "text": "Let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " update"}
+{"kind": "token", "text": " it"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " match"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " string"}
+{"kind": "token", "text": " conversion"}
+{"kind": "token", "text": " that"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Char"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": ".widget"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "attrs"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " uses"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "edit_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/contrib/auth/forms.py", "old_string": "        username_max_length = self.username_field.max_length or 254\n        self.fields['username'].max_length = username_max_length\n        self.fields['username'].widget.attrs['maxlength'] = username_max_length", "new_string": "        username_max_length = self.username_field.max_length or 254\n        self.fields['username'].max_length = username_max_length\n        self.fields['username'].widget.attrs['maxlength'] = str(username_max_length)"}}
+{"kind": "token", "text": "Now"}
+{"kind": "token", "text": " let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " verify"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " final"}
+{"kind": "token", "text": " state"}
+{"kind": "token", "text": " of"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " change"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/contrib/auth/forms.py", "offset": 163, "limit": 40}}
+{"kind": "token", "text": "Let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " look"}
+{"kind": "token", "text": " at"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " existing"}
+{"kind": "token", "text": " tests"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " make"}
+{"kind": "token", "text": " sure"}
+{"kind": "token", "text": " our"}
+{"kind": "token", "text": " change"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " compatible"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/tests/auth_tests/test_forms.py", "offset": 283, "limit": 120}}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/tests/auth_tests/test_forms.py", "offset": 402, "limit": 30}}
+{"kind": "token", "text": "Let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " verify"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " test"}
+{"kind": "token", "text": " models"}
+{"kind": "token", "text": " exist"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/tests/auth_tests/models/with_custom_email_field.py"}}
+{"kind": "token", "text": "The"}
+{"kind": "token", "text": " fix"}
+{"kind": "token", "text": " looks"}
+{"kind": "token", "text": " correct"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " Let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " verify"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " final"}
+{"kind": "token", "text": " state"}
+{"kind": "token", "text": " of"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " edit"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-11790/repo/django/contrib/auth/forms.py", "offset": 183, "limit": 20}}
+{"kind": "token", "text": "The"}
+{"kind": "token", "text": " fix"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " complete"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " Here"}
+{"kind": "token", "text": "'s"}
+{"kind": "token", "text": " a"}
+{"kind": "token", "text": " summary"}
+{"kind": "token", "text": " of"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " issue"}
+{"kind": "token", "text": " and"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " change"}
+{"kind": "token", "text": ":\n\n"}
+{"kind": "token", "text": "**"}
+{"kind": "token", "text": "Root"}
+{"kind": "token", "text": " cause"}
+{"kind": "token", "text": ":**"}
+{"kind": "token", "text": " When"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Authentication"}
+{"kind": "token", "text": "Form"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " defined"}
+{"kind": "token", "text": " as"}
+{"kind": "token", "text": " a"}
+{"kind": "token", "text": " class"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Username"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " created"}
+{"kind": "token", "text": " without"}
+{"kind": "token", "text": " a"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " argument"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " During"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": ".__"}
+{"kind": "token", "text": "init"}
+{"kind": "token", "text": "__"}
+{"kind": "token", "text": "`,"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "widget"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "attrs"}
+{"kind": "token", "text": "()`"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " called"}
+{"kind": "token", "text": " which"}
+{"kind": "token", "text": " checks"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "self"}
+{"kind": "token", "text": ".max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " —"}
+{"kind": "token", "text": " since"}
+{"kind": "token", "text": " it"}
+{"kind": "token", "text": "'s"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "None"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " at"}
+{"kind": "token", "text": " that"}
+{"kind": "token", "text": " point"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " no"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " attribute"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " added"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " widget"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " Later"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " in"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Authentication"}
+{"kind": "token", "text": "Form"}
+{"kind": "token", "text": ".__"}
+{"kind": "token", "text": "init"}
+{"kind": "token", "text": "__"}
+{"kind": "token", "text": "`,"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "self"}
+{"kind": "token", "text": ".f"}
+{"kind": "token", "text": "ields"}
+{"kind": "token", "text": "['"}
+{"kind": "token", "text": "username"}
+{"kind": "token", "text": "']."}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " set"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " model"}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": "'s"}
+{"kind": "token", "text": " value"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " but"}
+{"kind": "token", "text": " this"}
+{"kind": "token", "text": " doesn"}
+{"kind": "token", "text": "'t"}
+{"kind": "token", "text": " retro"}
+{"kind": "token", "text": "actively"}
+{"kind": "token", "text": " update"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " widget"}
+{"kind": "token", "text": "'s"}
+{"kind": "token", "text": " HTML"}
+{"kind": "token", "text": " attributes"}
+{"kind": "token", "text": ".\n\n"}
+{"kind": "token", "text": "**"}
+{"kind": "token", "text": "The"}
+{"kind": "token", "text": " fix"}
+{"kind": "token", "text": ":**"}
+{"kind": "token", "text": " After"}
+{"kind": "token", "text": " setting"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "self"}
+{"kind": "token", "text": ".f"}
+{"kind": "token", "text": "ields"}
+{"kind": "token", "text": "['"}
+{"kind": "token", "text": "username"}
+{"kind": "token", "text": "']."}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": "`,"}
+{"kind": "token", "text": " also"}
+{"kind": "token", "text": " update"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " widget"}
+{"kind": "token", "text": "'s"}
+{"kind": "token", "text": " att"}
+{"kind": "token", "text": "rs"}
+{"kind": "token", "text": " dictionary"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " include"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "length"}
+{"kind": "token", "text": "`,"}
+{"kind": "token", "text": " matching"}
+{"kind": "token", "text": " what"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Char"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": ".widget"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "attrs"}
+{"kind": "token", "text": "()`"}
+{"kind": "token", "text": " would"}
+{"kind": "token", "text": " have"}
+{"kind": "token", "text": " done"}
+{"kind": "token", "text": " had"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " been"}
+{"kind": "token", "text": " set"}
+{"kind": "token", "text": " initially"}
+{"kind": "token", "text": ":\n\n"}
+{"kind": "token", "text": "```"}
+{"kind": "token", "text": "python"}
+{"kind": "token", "text": "\n"}
+{"kind": "token", "text": "self"}
+{"kind": "token", "text": ".f"}
+{"kind": "token", "text": "ields"}
+{"kind": "token", "text": "['"}
+{"kind": "token", "text": "username"}
+{"kind": "token", "text": "']."}
+{"kind": "token", "text": "widget"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": "attrs"}
+{"kind": "token", "text": "['"}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "length"}
+{"kind": "token", "text": "']"}
+{"kind": "token", "text": " ="}
+{"kind": "token", "text": " str"}
+{"kind": "token", "text": "(username"}
+{"kind": "token", "text": "_max"}
+{"kind": "token", "text": "_length"}
+{"kind": "token", "text": ")\n"}
+{"kind": "token", "text": "```\n\n"}
+{"kind": "token", "text": "This"}
+{"kind": "token", "text": " ensures"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " rendered"}
+{"kind": "token", "text": " HTML"}
+{"kind": "token", "text": " `<"}
+{"kind": "token", "text": "input"}
+{"kind": "token", "text": ">`"}
+{"kind": "token", "text": " element"}
+{"kind": "token", "text": " includes"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "max"}
+{"kind": "token", "text": "length"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " attribute"}
+{"kind": "token", "text": "."}

@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-8035",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "5e6da19f0e44a0ae83944fb6ce18f18f781e1a6e",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8035:latest",
+    "base_commit": "5e6da19f0e44a0ae83944fb6ce18f18f781e1a6e",
+    "head_after_reset": "5e6da19f0e44a0ae83944fb6ce18f18f781e1a6e",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 50,
+    "files_changed": [
+      "sphinx/ext/autodoc/__init__.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 164.74500920299943,
+    "prompt_tokens": 1008106,
+    "completion_tokens": 20163,
+    "total_tokens": 1028269,
+    "estimated_cost_cny": 1.048432,
+    "tool_call_count": 48,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete. Here's a summary of the three changes made to `/root/CoreCoder/eval/runs/sphinx-doc__sphinx-8035/repo/sphinx/ext/autodoc/__init__.py`:\n\n### 1. ModuleDocumenter.option_spec (line 871)\nChanged `'private-members': bool_option` → `'private-members': members_option`\n\n### 2. ClassDocumenter.option_spec (line 1291)\nChanged `'private-members': bool_option` → `'private-members': members_option`\n\nThis changes the option from a boolean flag to the same handler as `:members:`, which accepts comma-separated member names. `:private-members:` (without arguments) returns the `ALL` sentinel, while `:private-members: _foo, _bar` returns `['_foo', '_bar']`.\n\n### 3. filter_members() logic (lines 649-669)\nUpdated two code paths where `self.options.private_members` was used:\n\n- **For attribute docs** (attr_docs): Now checks if `private_members is ALL` (show all), is a list (show only if member name is in the list), or is unset (show none).\n- **For regular private members**: Same three-way check, with the `ALL` case preserving the existing requirement that members have docstrings (or `:undoc-members:` is set).\n\nThis is a backward-compatible change:\n- `:private-members:` (no value) → `ALL` → shows all private members (same as before)\n- `:private-members: _foo, _bar` → `['_foo', '_bar']` → shows only those specific private members (**new behavior**)\n- Option omitted → `None` → shows no private members (same as before)"
+  }
+}

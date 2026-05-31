@@ -1,0 +1,85 @@
+2026-05-31 19:24:05,492 - INFO - Creating container for sphinx-doc__sphinx-7985...
+2026-05-31 19:24:05,531 - INFO - Container for sphinx-doc__sphinx-7985 created: 15f9fc7fcc8af9618d13024b7d4a8373c4f70e9255723bdbcda02e2249995c9b
+2026-05-31 19:24:05,658 - INFO - Container for sphinx-doc__sphinx-7985 started: 15f9fc7fcc8af9618d13024b7d4a8373c4f70e9255723bdbcda02e2249995c9b
+2026-05-31 19:24:05,658 - INFO - Intermediate patch for sphinx-doc__sphinx-7985 written to logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7985/patch.diff, now applying to container...
+2026-05-31 19:24:05,731 - INFO - >>>>> Applied Patch:
+Checking patch sphinx/builders/linkcheck.py...
+Applied patch sphinx/builders/linkcheck.py cleanly.
+
+2026-05-31 19:24:05,944 - INFO - Git diff before:
+diff --git a/sphinx/builders/linkcheck.py b/sphinx/builders/linkcheck.py
+index dd5317087..2c6dd8ea8 100644
+--- a/sphinx/builders/linkcheck.py
++++ b/sphinx/builders/linkcheck.py
+@@ -25,7 +25,7 @@ from requests.exceptions import HTTPError
+ from sphinx.application import Sphinx
+ from sphinx.builders import Builder
+ from sphinx.locale import __
+-from sphinx.util import encode_uri, requests, logging
++from sphinx.util import docname_join, encode_uri, requests, logging
+ from sphinx.util.console import (  # type: ignore
+     purple, red, darkgreen, darkgray, turquoise
+ )
+@@ -213,6 +213,19 @@ class CheckExternalLinksBuilder(Builder):
+             if len(uri) == 0 or uri.startswith(('#', 'mailto:', 'ftp:')):
+                 return 'unchecked', '', 0
+             elif not uri.startswith(('http:', 'https:')):
++                # check if the link is a local (internal) document reference
++                local_uri = uri.split('#')[0]
++                if local_uri:
++                    # resolve the uri relative to the current document
++                    docname_res = docname_join(docname, local_uri)
++                    if docname_res not in self.env.found_docs:
++                        # check if the file actually exists on the filesystem
++                        try:
++                            _, abs_path = self.env.relfn2path(local_uri, docname)
++                            if not path.exists(abs_path):
++                                return 'broken', 'local document not found', 0
++                        except Exception:
++                            return 'broken', 'local document not found', 0
+                 return 'local', '', 0
+             elif uri in self.good:
+                 return 'working', 'old', 0
+2026-05-31 19:24:05,944 - INFO - Eval script for sphinx-doc__sphinx-7985 written to logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7985/eval.sh; copying to container...
+2026-05-31 19:46:01,999 - INFO - Test runtime: 1_316.02 seconds
+2026-05-31 19:46:01,999 - INFO - Test output for sphinx-doc__sphinx-7985 written to logs/run_evaluation/corecoder_full_b03/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-7985/test_output.txt
+2026-05-31 19:46:02,036 - INFO - Git diff after:
+diff --git a/sphinx/builders/linkcheck.py b/sphinx/builders/linkcheck.py
+index dd5317087..2c6dd8ea8 100644
+--- a/sphinx/builders/linkcheck.py
++++ b/sphinx/builders/linkcheck.py
+@@ -25,7 +25,7 @@ from requests.exceptions import HTTPError
+ from sphinx.application import Sphinx
+ from sphinx.builders import Builder
+ from sphinx.locale import __
+-from sphinx.util import encode_uri, requests, logging
++from sphinx.util import docname_join, encode_uri, requests, logging
+ from sphinx.util.console import (  # type: ignore
+     purple, red, darkgreen, darkgray, turquoise
+ )
+@@ -213,6 +213,19 @@ class CheckExternalLinksBuilder(Builder):
+             if len(uri) == 0 or uri.startswith(('#', 'mailto:', 'ftp:')):
+                 return 'unchecked', '', 0
+             elif not uri.startswith(('http:', 'https:')):
++                # check if the link is a local (internal) document reference
++                local_uri = uri.split('#')[0]
++                if local_uri:
++                    # resolve the uri relative to the current document
++                    docname_res = docname_join(docname, local_uri)
++                    if docname_res not in self.env.found_docs:
++                        # check if the file actually exists on the filesystem
++                        try:
++                            _, abs_path = self.env.relfn2path(local_uri, docname)
++                            if not path.exists(abs_path):
++                                return 'broken', 'local document not found', 0
++                        except Exception:
++                            return 'broken', 'local document not found', 0
+                 return 'local', '', 0
+             elif uri in self.good:
+                 return 'working', 'old', 0
+2026-05-31 19:46:02,037 - INFO - Grading answer for sphinx-doc__sphinx-7985...
+2026-05-31 19:46:02,041 - INFO - report: {'sphinx-doc__sphinx-7985': {'patch_is_None': False, 'patch_exists': True, 'patch_successfully_applied': True, 'resolved': False, 'tests_status': {'FAIL_TO_PASS': {'success': [], 'failure': ['tests/test_build_linkcheck.py::test_defaults', 'tests/test_build_linkcheck.py::test_anchors_ignored']}, 'PASS_TO_PASS': {'success': ['tests/test_build_linkcheck.py::test_auth', 'tests/test_build_linkcheck.py::test_linkcheck_request_headers'], 'failure': ['tests/test_build_linkcheck.py::test_defaults_json']}, 'FAIL_TO_FAIL': {'success': [], 'failure': []}, 'PASS_TO_FAIL': {'success': [], 'failure': []}}}}
+Result for sphinx-doc__sphinx-7985: resolved: False
+2026-05-31 19:46:02,041 - INFO - Attempting to stop container sweb.eval.sphinx-doc__sphinx-7985.corecoder_full_b03...
+2026-05-31 19:46:17,279 - INFO - Attempting to remove container sweb.eval.sphinx-doc__sphinx-7985.corecoder_full_b03...
+2026-05-31 19:46:17,299 - INFO - Container sweb.eval.sphinx-doc__sphinx-7985.corecoder_full_b03 removed.

@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-8721",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "82ef497a8c88f0f6e50d84520e7276bfbf65025d",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8721:latest",
+    "base_commit": "82ef497a8c88f0f6e50d84520e7276bfbf65025d",
+    "head_after_reset": "82ef497a8c88f0f6e50d84520e7276bfbf65025d",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 13,
+    "files_changed": [
+      "sphinx/ext/viewcode.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 16.08627928399801,
+    "prompt_tokens": 30899,
+    "completion_tokens": 2021,
+    "total_tokens": 32920,
+    "estimated_cost_cny": 0.034941,
+    "tool_call_count": 5,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete. Here's a summary of the change:\n\n**Root cause:** `doctree_read` already had a guard checking `app.builder.name.startswith(\"epub\") and not env.config.viewcode_enable_epub` (line 59) to skip adding viewcode links during epub builds. However, `collect_pages` (which actually generates the module code HTML pages) lacked this same check. When running `make html epub`, the `html` builder populates `_viewcode_modules` in the environment, and then the `epub` builder's `collect_pages` would generate those module pages anyway — ignoring the `viewcode_enable_epub` setting.\n\n**Fix:** Added the identical guard to `collect_pages` (lines 185-186), so it returns early for epub builders when `viewcode_enable_epub` is `False`, preventing the generation of module code pages in epub output."
+  }
+}

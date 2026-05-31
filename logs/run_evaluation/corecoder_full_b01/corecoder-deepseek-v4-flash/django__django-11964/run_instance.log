@@ -1,0 +1,63 @@
+2026-05-31 18:26:30,075 - INFO - Creating container for django__django-11964...
+2026-05-31 18:26:30,275 - INFO - Container for django__django-11964 created: 14fbc68cf287352ac297ca701222c1d7120ff392dd07c57a194a4fa7b0dcc031
+2026-05-31 18:26:30,408 - INFO - Container for django__django-11964 started: 14fbc68cf287352ac297ca701222c1d7120ff392dd07c57a194a4fa7b0dcc031
+2026-05-31 18:26:30,409 - INFO - Intermediate patch for django__django-11964 written to logs/run_evaluation/corecoder_full_b01/corecoder-deepseek-v4-flash/django__django-11964/patch.diff, now applying to container...
+2026-05-31 18:26:30,503 - INFO - >>>>> Applied Patch:
+Checking patch django/db/models/enums.py...
+Applied patch django/db/models/enums.py cleanly.
+
+2026-05-31 18:26:31,209 - INFO - Git diff before:
+diff --git a/django/db/models/enums.py b/django/db/models/enums.py
+index bbe362a6ab..7a3ae04c5a 100644
+--- a/django/db/models/enums.py
++++ b/django/db/models/enums.py
+@@ -65,7 +65,9 @@ class Choices(enum.Enum, metaclass=ChoicesMeta):
+ 
+ class IntegerChoices(int, Choices):
+     """Class for creating enumerated integer choices."""
+-    pass
++
++    def __str__(self):
++        return str(self.value)
+ 
+ 
+ class TextChoices(str, Choices):
+@@ -73,3 +75,6 @@ class TextChoices(str, Choices):
+ 
+     def _generate_next_value_(name, start, count, last_values):
+         return name
++
++    def __str__(self):
++        return str(self.value)
+2026-05-31 18:26:31,209 - INFO - Eval script for django__django-11964 written to logs/run_evaluation/corecoder_full_b01/corecoder-deepseek-v4-flash/django__django-11964/eval.sh; copying to container...
+2026-05-31 18:26:36,900 - INFO - Test runtime: 5.65 seconds
+2026-05-31 18:26:36,900 - INFO - Test output for django__django-11964 written to logs/run_evaluation/corecoder_full_b01/corecoder-deepseek-v4-flash/django__django-11964/test_output.txt
+2026-05-31 18:26:36,955 - INFO - Git diff after:
+diff --git a/django/db/models/enums.py b/django/db/models/enums.py
+index bbe362a6ab..7a3ae04c5a 100644
+--- a/django/db/models/enums.py
++++ b/django/db/models/enums.py
+@@ -65,7 +65,9 @@ class Choices(enum.Enum, metaclass=ChoicesMeta):
+ 
+ class IntegerChoices(int, Choices):
+     """Class for creating enumerated integer choices."""
+-    pass
++
++    def __str__(self):
++        return str(self.value)
+ 
+ 
+ class TextChoices(str, Choices):
+@@ -73,3 +75,6 @@ class TextChoices(str, Choices):
+ 
+     def _generate_next_value_(name, start, count, last_values):
+         return name
++
++    def __str__(self):
++        return str(self.value)
+2026-05-31 18:26:36,955 - INFO - Grading answer for django__django-11964...
+2026-05-31 18:26:36,955 - INFO - report: {'django__django-11964': {'patch_is_None': False, 'patch_exists': True, 'patch_successfully_applied': True, 'resolved': True, 'tests_status': {'FAIL_TO_PASS': {'success': ['test_str (model_enums.tests.ChoicesTests)', 'test_textchoices (model_enums.tests.ChoicesTests)'], 'failure': []}, 'PASS_TO_PASS': {'success': ['test_integerchoices (model_enums.tests.ChoicesTests)', 'test_integerchoices_auto_label (model_enums.tests.ChoicesTests)', 'test_integerchoices_containment (model_enums.tests.ChoicesTests)', 'test_integerchoices_empty_label (model_enums.tests.ChoicesTests)', 'test_integerchoices_functional_api (model_enums.tests.ChoicesTests)', 'test_invalid_definition (model_enums.tests.ChoicesTests)', 'test_textchoices_auto_label (model_enums.tests.ChoicesTests)', 'test_textchoices_blank_value (model_enums.tests.ChoicesTests)', 'test_textchoices_containment (model_enums.tests.ChoicesTests)', 'test_textchoices_empty_label (model_enums.tests.ChoicesTests)', 'test_textchoices_functional_api (model_enums.tests.ChoicesTests)', 'test_bool_unsupported (model_enums.tests.CustomChoicesTests)', 'test_labels_valid (model_enums.tests.CustomChoicesTests)', 'test_timezone_unsupported (model_enums.tests.CustomChoicesTests)', 'test_uuid_unsupported (model_enums.tests.CustomChoicesTests)'], 'failure': []}, 'FAIL_TO_FAIL': {'success': [], 'failure': []}, 'PASS_TO_FAIL': {'success': [], 'failure': []}}}}
+Result for django__django-11964: resolved: True
+2026-05-31 18:26:36,956 - INFO - Attempting to stop container sweb.eval.django__django-11964.corecoder_full_b01...
+2026-05-31 18:26:52,286 - INFO - Attempting to remove container sweb.eval.django__django-11964.corecoder_full_b01...
+2026-05-31 18:26:52,313 - INFO - Container sweb.eval.django__django-11964.corecoder_full_b01 removed.

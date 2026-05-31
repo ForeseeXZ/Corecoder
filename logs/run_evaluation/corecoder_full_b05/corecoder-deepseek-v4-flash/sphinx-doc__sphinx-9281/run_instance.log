@@ -1,0 +1,45 @@
+2026-05-31 20:40:40,237 - INFO - Creating container for sphinx-doc__sphinx-9281...
+2026-05-31 20:40:40,313 - INFO - Container for sphinx-doc__sphinx-9281 created: d614a54afc2c5029e5493929c7589d4d6851e86a4efc84f82579728a143aed52
+2026-05-31 20:40:40,540 - INFO - Container for sphinx-doc__sphinx-9281 started: d614a54afc2c5029e5493929c7589d4d6851e86a4efc84f82579728a143aed52
+2026-05-31 20:40:40,540 - INFO - Intermediate patch for sphinx-doc__sphinx-9281 written to logs/run_evaluation/corecoder_full_b05/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-9281/patch.diff, now applying to container...
+2026-05-31 20:40:40,629 - INFO - >>>>> Applied Patch:
+Checking patch sphinx/util/inspect.py...
+Applied patch sphinx/util/inspect.py cleanly.
+
+2026-05-31 20:40:40,859 - INFO - Git diff before:
+diff --git a/sphinx/util/inspect.py b/sphinx/util/inspect.py
+index a415a7074..9e03c6435 100644
+--- a/sphinx/util/inspect.py
++++ b/sphinx/util/inspect.py
+@@ -457,6 +457,8 @@ def object_description(object: Any) -> str:
+         else:
+             return "frozenset({%s})" % ", ".join(object_description(x)
+                                                  for x in sorted_values)
++    if isenumattribute(object):
++        return "{}.{}".format(type(object).__qualname__, object.name)
+     try:
+         s = repr(object)
+     except Exception as exc:
+2026-05-31 20:40:40,859 - INFO - Eval script for sphinx-doc__sphinx-9281 written to logs/run_evaluation/corecoder_full_b05/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-9281/eval.sh; copying to container...
+2026-05-31 20:40:44,929 - INFO - Test runtime: 4.03 seconds
+2026-05-31 20:40:44,929 - INFO - Test output for sphinx-doc__sphinx-9281 written to logs/run_evaluation/corecoder_full_b05/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-9281/test_output.txt
+2026-05-31 20:40:44,966 - INFO - Git diff after:
+diff --git a/sphinx/util/inspect.py b/sphinx/util/inspect.py
+index a415a7074..9e03c6435 100644
+--- a/sphinx/util/inspect.py
++++ b/sphinx/util/inspect.py
+@@ -457,6 +457,8 @@ def object_description(object: Any) -> str:
+         else:
+             return "frozenset({%s})" % ", ".join(object_description(x)
+                                                  for x in sorted_values)
++    if isenumattribute(object):
++        return "{}.{}".format(type(object).__qualname__, object.name)
+     try:
+         s = repr(object)
+     except Exception as exc:
+2026-05-31 20:40:44,966 - INFO - Grading answer for sphinx-doc__sphinx-9281...
+2026-05-31 20:40:44,968 - INFO - report: {'sphinx-doc__sphinx-9281': {'patch_is_None': False, 'patch_exists': True, 'patch_successfully_applied': True, 'resolved': False, 'tests_status': {'FAIL_TO_PASS': {'success': [], 'failure': ['tests/test_util_inspect.py::test_object_description_enum']}, 'PASS_TO_PASS': {'success': ['tests/test_util_inspect.py::test_TypeAliasNamespace', 'tests/test_util_inspect.py::test_signature', 'tests/test_util_inspect.py::test_signature_partial', 'tests/test_util_inspect.py::test_signature_methods', 'tests/test_util_inspect.py::test_signature_partialmethod', 'tests/test_util_inspect.py::test_signature_annotations', 'tests/test_util_inspect.py::test_signature_annotations_py38', 'tests/test_util_inspect.py::test_signature_from_str_basic', 'tests/test_util_inspect.py::test_signature_from_str_default_values', 'tests/test_util_inspect.py::test_signature_from_str_annotations', 'tests/test_util_inspect.py::test_signature_from_str_complex_annotations', 'tests/test_util_inspect.py::test_signature_from_str_kwonly_args', 'tests/test_util_inspect.py::test_signature_from_str_positionaly_only_args', 'tests/test_util_inspect.py::test_signature_from_str_invalid', 'tests/test_util_inspect.py::test_signature_from_ast', 'tests/test_util_inspect.py::test_safe_getattr_with_default', 'tests/test_util_inspect.py::test_safe_getattr_with_exception', 'tests/test_util_inspect.py::test_safe_getattr_with_property_exception', 'tests/test_util_inspect.py::test_safe_getattr_with___dict___override', 'tests/test_util_inspect.py::test_dictionary_sorting', 'tests/test_util_inspect.py::test_set_sorting', 'tests/test_util_inspect.py::test_set_sorting_fallback', 'tests/test_util_inspect.py::test_frozenset_sorting', 'tests/test_util_inspect.py::test_frozenset_sorting_fallback', 'tests/test_util_inspect.py::test_dict_customtype', 'tests/test_util_inspect.py::test_getslots', 'tests/test_util_inspect.py::test_isclassmethod', 'tests/test_util_inspect.py::test_isstaticmethod', 'tests/test_util_inspect.py::test_iscoroutinefunction', 'tests/test_util_inspect.py::test_isfunction', 'tests/test_util_inspect.py::test_isbuiltin', 'tests/test_util_inspect.py::test_isdescriptor', 'tests/test_util_inspect.py::test_isattributedescriptor', 'tests/test_util_inspect.py::test_isproperty', 'tests/test_util_inspect.py::test_isgenericalias', 'tests/test_util_inspect.py::test_unpartial', 'tests/test_util_inspect.py::test_getdoc_inherited_decorated_method', 'tests/test_util_inspect.py::test_is_builtin_class_method'], 'failure': []}, 'FAIL_TO_FAIL': {'success': [], 'failure': []}, 'PASS_TO_FAIL': {'success': [], 'failure': []}}}}
+Result for sphinx-doc__sphinx-9281: resolved: False
+2026-05-31 20:40:44,968 - INFO - Attempting to stop container sweb.eval.sphinx-doc__sphinx-9281.corecoder_full_b05...
+2026-05-31 20:41:00,209 - INFO - Attempting to remove container sweb.eval.sphinx-doc__sphinx-9281.corecoder_full_b05...
+2026-05-31 20:41:00,230 - INFO - Container sweb.eval.sphinx-doc__sphinx-9281.corecoder_full_b05 removed.

@@ -1,0 +1,33 @@
+diff --git a/sphinx/builders/linkcheck.py b/sphinx/builders/linkcheck.py
+index dd5317087..2c6dd8ea8 100644
+--- a/sphinx/builders/linkcheck.py
++++ b/sphinx/builders/linkcheck.py
+@@ -25,7 +25,7 @@ from requests.exceptions import HTTPError
+ from sphinx.application import Sphinx
+ from sphinx.builders import Builder
+ from sphinx.locale import __
+-from sphinx.util import encode_uri, requests, logging
++from sphinx.util import docname_join, encode_uri, requests, logging
+ from sphinx.util.console import (  # type: ignore
+     purple, red, darkgreen, darkgray, turquoise
+ )
+@@ -213,6 +213,19 @@ class CheckExternalLinksBuilder(Builder):
+             if len(uri) == 0 or uri.startswith(('#', 'mailto:', 'ftp:')):
+                 return 'unchecked', '', 0
+             elif not uri.startswith(('http:', 'https:')):
++                # check if the link is a local (internal) document reference
++                local_uri = uri.split('#')[0]
++                if local_uri:
++                    # resolve the uri relative to the current document
++                    docname_res = docname_join(docname, local_uri)
++                    if docname_res not in self.env.found_docs:
++                        # check if the file actually exists on the filesystem
++                        try:
++                            _, abs_path = self.env.relfn2path(local_uri, docname)
++                            if not path.exists(abs_path):
++                                return 'broken', 'local document not found', 0
++                        except Exception:
++                            return 'broken', 'local document not found', 0
+                 return 'local', '', 0
+             elif uri in self.good:
+                 return 'working', 'old', 0

@@ -1,0 +1,5 @@
+{
+  "instance_id": "sphinx-doc__sphinx-9281",
+  "model_name_or_path": "corecoder-deepseek-v4-flash",
+  "model_patch": "diff --git a/sphinx/util/inspect.py b/sphinx/util/inspect.py\nindex a415a7074..9e03c6435 100644\n--- a/sphinx/util/inspect.py\n+++ b/sphinx/util/inspect.py\n@@ -457,6 +457,8 @@ def object_description(object: Any) -> str:\n         else:\n             return \"frozenset({%s})\" % \", \".join(object_description(x)\n                                                  for x in sorted_values)\n+    if isenumattribute(object):\n+        return \"{}.{}\".format(type(object).__qualname__, object.name)\n     try:\n         s = repr(object)\n     except Exception as exc:\n"
+}

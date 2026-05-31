@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-9367",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "6918e69600810a4664e53653d6ff0290c3c4a788",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9367:latest",
+    "base_commit": "6918e69600810a4664e53653d6ff0290c3c4a788",
+    "head_after_reset": "6918e69600810a4664e53653d6ff0290c3c4a788",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 15,
+    "files_changed": [
+      "sphinx/pycode/ast.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 11.490708675999485,
+    "prompt_tokens": 24825,
+    "completion_tokens": 1473,
+    "total_tokens": 26298,
+    "estimated_cost_cny": 0.027771,
+    "tool_call_count": 5,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix works correctly. Here's a summary:\n\n**Root cause:** In `sphinx/pycode/ast.py`, the `visit_Tuple` method always formatted tuples as `(elem1, elem2, ...)` using `\", \".join(...)`. For a single-element tuple like `(1,)`, this produces `(1)`, which is semantically wrong — in Python, `(1)` is just the integer `1`, while `(1,)` is a 1-element tuple. The trailing comma is essential.\n\n**Fix:** Added a special case for 1-element tuples that appends the trailing comma, producing `(1,)` instead of `(1)`."
+  }
+}

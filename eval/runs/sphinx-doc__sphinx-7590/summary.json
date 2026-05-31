@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-7590",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "2e506c5ab457cba743bb47eb5b8c8eb9dd51d23d",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7590:latest",
+    "base_commit": "2e506c5ab457cba743bb47eb5b8c8eb9dd51d23d",
+    "head_after_reset": "2e506c5ab457cba743bb47eb5b8c8eb9dd51d23d",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 16,
+    "files_changed": [
+      "sphinx/domains/cpp.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 115.71932240399838,
+    "prompt_tokens": 693319,
+    "completion_tokens": 13478,
+    "total_tokens": 706797,
+    "estimated_cost_cny": 0.720275,
+    "tool_call_count": 40,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete and minimal. Here's a summary of the change:\n\n**Problem:** C++ User Defined Literals (UDLs) like `6.62607015e-34q_J` and `1q_s` were not supported. The parser would only match the numeric part (`6.62607015e-34`), leaving the UDL suffix (`q_J`) unparsed, which caused a parse failure with \"Expected end of definition.\"\n\n**Fix:** In `sphinx/domains/cpp.py`'s `_parse_literal` method, after matching a numeric literal and consuming standard literal suffixes (`uUlLfF`), the parser now also checks for and consumes any user-defined literal suffix — which is a valid C++ identifier (starting with a letter or underscore, followed by alphanumeric characters or underscores) that appears immediately after the number.\n\nThe change is just 5 lines added at line 4667-4671, and it correctly handles:\n- `6.62607015e-34q_J` → parsed as single float literal with UDL suffix `q_J`\n- `1q_s` → parsed as single integer literal with UDL suffix `q_s`\n- Standard suffixes still work: `123u`, `123ul`, `1.0f`, etc.\n- No impact on non-UDL code since a letter/underscore immediately following a number (without whitespace) is only valid as a UDL suffix in C++"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "instance_id": "django__django-12325",
+  "model_name_or_path": "corecoder-deepseek-v4-flash",
+  "model_patch": "diff --git a/django/db/models/base.py b/django/db/models/base.py\nindex 8ea6c05ef9..38548c386b 100644\n--- a/django/db/models/base.py\n+++ b/django/db/models/base.py\n@@ -204,7 +204,11 @@ class ModelBase(type):\n             for field in base._meta.local_fields:\n                 if isinstance(field, OneToOneField):\n                     related = resolve_relation(new_class, field.remote_field.model)\n-                    parent_links[make_model_tuple(related)] = field\n+                    # Prefer the field with explicit parent_link=True over\n+                    # later non-parent-link fields pointing to the same model.\n+                    key = make_model_tuple(related)\n+                    if field.remote_field.parent_link or key not in parent_links:\n+                        parent_links[key] = field\n \n         # Track fields inherited from base models.\n         inherited_attributes = set()\n"
+}

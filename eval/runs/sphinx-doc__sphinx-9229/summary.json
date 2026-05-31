@@ -1,0 +1,30 @@
+{
+  "instance_id": "sphinx-doc__sphinx-9229",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "876fa81e0a038cda466925b85ccf6c5452e0f685",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9229:latest",
+    "base_commit": "876fa81e0a038cda466925b85ccf6c5452e0f685",
+    "head_after_reset": "876fa81e0a038cda466925b85ccf6c5452e0f685",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": true,
+    "n_lines": 0,
+    "files_changed": [],
+    "n_files": 0
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 269.1017778310015,
+    "prompt_tokens": 2259509,
+    "completion_tokens": 37650,
+    "total_tokens": 2297159,
+    "estimated_cost_cny": 2.334809,
+    "tool_call_count": 55,
+    "timed_out": false,
+    "error": null,
+    "final_text": "(reached maximum tool-call rounds)"
+  }
+}

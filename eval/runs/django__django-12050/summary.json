@@ -1,0 +1,32 @@
+{
+  "instance_id": "django__django-12050",
+  "repo": "django/django",
+  "base_commit": "b93a0e34d9b9b99d41103782b7e7aeabf47517e3",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.django_1776_django-12050:latest",
+    "base_commit": "b93a0e34d9b9b99d41103782b7e7aeabf47517e3",
+    "head_after_reset": "b93a0e34d9b9b99d41103782b7e7aeabf47517e3",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 13,
+    "files_changed": [
+      "django/db/models/sql/query.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 7.405995974000689,
+    "prompt_tokens": 9932,
+    "completion_tokens": 1003,
+    "total_tokens": 10935,
+    "estimated_cost_cny": 0.011938,
+    "tool_call_count": 3,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is a one-line change on line 1076. Instead of always converting to `tuple(resolved_values)`, we now use `type(value)(resolved_values)`, which preserves the original input type:\n\n- If the input is a `list`, the output remains a `list`.\n- If the input is a `tuple`, the output remains a `tuple`.\n\nThis prevents the unwanted coercion that broke exact value queries for field types like `PickledField` that depend on the input type matching."
+  }
+}

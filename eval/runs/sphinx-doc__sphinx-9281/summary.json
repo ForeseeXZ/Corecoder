@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-9281",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "8ec06e9a1bd862cd713b9db748e039ccc7b3e15b",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9281:latest",
+    "base_commit": "8ec06e9a1bd862cd713b9db748e039ccc7b3e15b",
+    "head_after_reset": "8ec06e9a1bd862cd713b9db748e039ccc7b3e15b",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 13,
+    "files_changed": [
+      "sphinx/util/inspect.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 57.57584231600049,
+    "prompt_tokens": 296372,
+    "completion_tokens": 7219,
+    "total_tokens": 303591,
+    "estimated_cost_cny": 0.31081000000000003,
+    "tool_call_count": 11,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete and correct. Let me summarize:\n\n**Root cause**: The `object_description()` function in `sphinx/util/inspect.py` falls through to Python's `repr()` for enum values, which produces `<MyEnum.ValueA: 10>` instead of the clean `MyEnum.ValueA` format.\n\n**Fix**: Added a special case for `enum.Enum` instances before the `repr()` fallback in `object_description()`. It uses the existing `isenumattribute()` helper and formats the enum value as `ClassName.ATTRIBUTE_NAME` using the enum's `__qualname__` and `name` attributes.\n\nThe change is a single 2-line addition at `sphinx/util/inspect.py:460-461`:\n\n```python\nif isenumattribute(object):\n    return \"{}.{}\".format(type(object).__qualname__, object.name)\n```\n\nThis produces the expected clean output `MyEnum.ValueA` instead of the ugly `<MyEnum.ValueA: 10>`."
+  }
+}

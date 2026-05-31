@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-8551",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "57ed10c68057c96491acbd3e62254ccfaf9e3861",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8551:latest",
+    "base_commit": "57ed10c68057c96491acbd3e62254ccfaf9e3861",
+    "head_after_reset": "57ed10c68057c96491acbd3e62254ccfaf9e3861",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 17,
+    "files_changed": [
+      "sphinx/domains/python.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 93.00344398000016,
+    "prompt_tokens": 616714,
+    "completion_tokens": 13138,
+    "total_tokens": 629852,
+    "estimated_cost_cny": 0.64299,
+    "tool_call_count": 28,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete. Here's a summary:\n\n## Root Cause\n\nWhen `:type:` and `:rtype:` info fields create cross-references via `Field.make_xref()` (in `sphinx/util/docfields.py`), the generated `pending_xref` nodes don't include the current module/class context (`py:module`, `py:class`). `Field.make_xref` calls `env.get_domain(domain).process_field_xref(refnode)` as a hook to allow the domain to attach context, but `PythonDomain` didn't override this method, so the hook was a no-op.\n\nIn contrast, explicit roles like `:py:class:\\`A\\`` go through `PyXRefRole.process_link()` which correctly attaches `py:module` and `py:class` from `env.ref_context`.\n\nWithout the module context, `resolve_xref` falls through to fuzzy matching when looking up unqualified names like `A`, finding both `mod.A` and `mod.submod.A`, causing the \"more than one target found\" warning — and incorrectly picking `mod.A` first.\n\n## Fix\n\nAdded `process_field_xref` to `PythonDomain` that copies `self.env.ref_context` to the pending xref node — the same pattern used by the C and C++ domains (both override `process_field_xref` identically). This ensures that `:type:` and `:rtype:` fields properly inherit the current `py:module` and `py:class` scope, just like explicit xref roles do."
+  }
+}

@@ -1,0 +1,71 @@
+2026-05-31 20:21:57,282 - INFO - Creating container for sphinx-doc__sphinx-8548...
+2026-05-31 20:21:57,317 - INFO - Container for sphinx-doc__sphinx-8548 created: 5874383848b63d21f6fa5c6c7375473120de904234370109b51db5aaa22e46a7
+2026-05-31 20:21:57,438 - INFO - Container for sphinx-doc__sphinx-8548 started: 5874383848b63d21f6fa5c6c7375473120de904234370109b51db5aaa22e46a7
+2026-05-31 20:21:57,438 - INFO - Intermediate patch for sphinx-doc__sphinx-8548 written to logs/run_evaluation/corecoder_full_b04/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-8548/patch.diff, now applying to container...
+2026-05-31 20:21:57,506 - INFO - >>>>> Applied Patch:
+Checking patch sphinx/ext/autodoc/importer.py...
+Applied patch sphinx/ext/autodoc/importer.py cleanly.
+
+2026-05-31 20:21:57,717 - INFO - Git diff before:
+diff --git a/sphinx/ext/autodoc/importer.py b/sphinx/ext/autodoc/importer.py
+index d6e73d36a..fad44f512 100644
+--- a/sphinx/ext/autodoc/importer.py
++++ b/sphinx/ext/autodoc/importer.py
+@@ -311,9 +311,19 @@ def get_class_members(subject: Any, objpath: List[str], attrgetter: Callable,
+         # append instance attributes (cf. self.attr1) if analyzer knows
+         namespace = '.'.join(objpath)
+         for (ns, name), docstring in analyzer.attr_docs.items():
+-            if namespace == ns and name not in members:
+-                members[name] = ClassAttribute(subject, name, INSTANCEATTR,
+-                                               '\n'.join(docstring))
++            if name not in members:
++                if namespace == ns:
++                    members[name] = ClassAttribute(subject, name, INSTANCEATTR,
++                                                   '\n'.join(docstring))
++                else:
++                    # Check if the namespace corresponds to one of the base classes
++                    # (for inherited attributes)
++                    for cls in getmro(subject):
++                        if (cls is not subject and
++                                safe_getattr(cls, '__qualname__', None) == ns):
++                            members[name] = ClassAttribute(cls, name, INSTANCEATTR,
++                                                           '\n'.join(docstring))
++                            break
+ 
+     return members
+2026-05-31 20:21:57,718 - INFO - Eval script for sphinx-doc__sphinx-8548 written to logs/run_evaluation/corecoder_full_b04/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-8548/eval.sh; copying to container...
+2026-05-31 20:22:02,237 - INFO - Test runtime: 4.48 seconds
+2026-05-31 20:22:02,237 - INFO - Test output for sphinx-doc__sphinx-8548 written to logs/run_evaluation/corecoder_full_b04/corecoder-deepseek-v4-flash/sphinx-doc__sphinx-8548/test_output.txt
+2026-05-31 20:22:02,275 - INFO - Git diff after:
+diff --git a/sphinx/ext/autodoc/importer.py b/sphinx/ext/autodoc/importer.py
+index d6e73d36a..fad44f512 100644
+--- a/sphinx/ext/autodoc/importer.py
++++ b/sphinx/ext/autodoc/importer.py
+@@ -311,9 +311,19 @@ def get_class_members(subject: Any, objpath: List[str], attrgetter: Callable,
+         # append instance attributes (cf. self.attr1) if analyzer knows
+         namespace = '.'.join(objpath)
+         for (ns, name), docstring in analyzer.attr_docs.items():
+-            if namespace == ns and name not in members:
+-                members[name] = ClassAttribute(subject, name, INSTANCEATTR,
+-                                               '\n'.join(docstring))
++            if name not in members:
++                if namespace == ns:
++                    members[name] = ClassAttribute(subject, name, INSTANCEATTR,
++                                                   '\n'.join(docstring))
++                else:
++                    # Check if the namespace corresponds to one of the base classes
++                    # (for inherited attributes)
++                    for cls in getmro(subject):
++                        if (cls is not subject and
++                                safe_getattr(cls, '__qualname__', None) == ns):
++                            members[name] = ClassAttribute(cls, name, INSTANCEATTR,
++                                                           '\n'.join(docstring))
++                            break
+ 
+     return members
+2026-05-31 20:22:02,275 - INFO - Grading answer for sphinx-doc__sphinx-8548...
+2026-05-31 20:22:02,277 - INFO - report: {'sphinx-doc__sphinx-8548': {'patch_is_None': False, 'patch_exists': True, 'patch_successfully_applied': True, 'resolved': False, 'tests_status': {'FAIL_TO_PASS': {'success': ['tests/test_ext_autodoc_autoclass.py::test_inherited_instance_variable'], 'failure': []}, 'PASS_TO_PASS': {'success': ['tests/test_ext_autodoc_autoclass.py::test_classes', 'tests/test_ext_autodoc_autoclass.py::test_decorators', 'tests/test_ext_autodoc_autoclass.py::test_slots_attribute', 'tests/test_ext_autodoc_autoclass.py::test_show_inheritance_for_subclass_of_generic_type'], 'failure': ['tests/test_ext_autodoc_autoclass.py::test_instance_variable']}, 'FAIL_TO_FAIL': {'success': [], 'failure': []}, 'PASS_TO_FAIL': {'success': [], 'failure': []}}}}
+Result for sphinx-doc__sphinx-8548: resolved: False
+2026-05-31 20:22:02,277 - INFO - Attempting to stop container sweb.eval.sphinx-doc__sphinx-8548.corecoder_full_b04...
+2026-05-31 20:22:17,513 - INFO - Attempting to remove container sweb.eval.sphinx-doc__sphinx-8548.corecoder_full_b04...
+2026-05-31 20:22:17,534 - INFO - Container sweb.eval.sphinx-doc__sphinx-8548.corecoder_full_b04 removed.

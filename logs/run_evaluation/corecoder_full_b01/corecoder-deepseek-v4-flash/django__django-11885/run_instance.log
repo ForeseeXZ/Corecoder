@@ -1,0 +1,79 @@
+2026-05-31 18:26:30,072 - INFO - Creating container for django__django-11885...
+2026-05-31 18:26:30,282 - INFO - Container for django__django-11885 created: b69e490d4f7c77713657953dc908bb50cd833d294ac4adba761c3c6a955009a4
+2026-05-31 18:26:30,483 - INFO - Container for django__django-11885 started: b69e490d4f7c77713657953dc908bb50cd833d294ac4adba761c3c6a955009a4
+2026-05-31 18:26:30,483 - INFO - Intermediate patch for django__django-11885 written to logs/run_evaluation/corecoder_full_b01/corecoder-deepseek-v4-flash/django__django-11885/patch.diff, now applying to container...
+2026-05-31 18:26:30,592 - INFO - >>>>> Applied Patch:
+Checking patch django/db/models/deletion.py...
+Applied patch django/db/models/deletion.py cleanly.
+
+2026-05-31 18:26:31,279 - INFO - Git diff before:
+diff --git a/django/db/models/deletion.py b/django/db/models/deletion.py
+index ae82d26340..f3ccc4d43f 100644
+--- a/django/db/models/deletion.py
++++ b/django/db/models/deletion.py
+@@ -1,4 +1,4 @@
+-from collections import Counter
++from collections import Counter, defaultdict
+ from itertools import chain
+ from operator import attrgetter
+ 
+@@ -310,9 +310,17 @@ class Collector:
+                     )
+ 
+             # fast deletes
++            # Combine querysets with the same model to reduce the number of
++            # DELETE queries.
++            fast_deletes_by_model = defaultdict(list)
+             for qs in self.fast_deletes:
+-                count = qs._raw_delete(using=self.using)
+-                deleted_counter[qs.model._meta.label] += count
++                fast_deletes_by_model[qs.model].append(qs)
++            for model, querysets in fast_deletes_by_model.items():
++                combined_qs = querysets[0]
++                for qs in querysets[1:]:
++                    combined_qs = combined_qs | qs
++                count = combined_qs._raw_delete(using=self.using)
++                deleted_counter[model._meta.label] += count
+ 
+             # update fields
+             for model, instances_for_fieldvalues in self.field_updates.items():
+2026-05-31 18:26:31,279 - INFO - Eval script for django__django-11885 written to logs/run_evaluation/corecoder_full_b01/corecoder-deepseek-v4-flash/django__django-11885/eval.sh; copying to container...
+2026-05-31 18:26:37,852 - INFO - Test runtime: 6.53 seconds
+2026-05-31 18:26:37,852 - INFO - Test output for django__django-11885 written to logs/run_evaluation/corecoder_full_b01/corecoder-deepseek-v4-flash/django__django-11885/test_output.txt
+2026-05-31 18:26:37,898 - INFO - Git diff after:
+diff --git a/django/db/models/deletion.py b/django/db/models/deletion.py
+index ae82d26340..f3ccc4d43f 100644
+--- a/django/db/models/deletion.py
++++ b/django/db/models/deletion.py
+@@ -1,4 +1,4 @@
+-from collections import Counter
++from collections import Counter, defaultdict
+ from itertools import chain
+ from operator import attrgetter
+ 
+@@ -310,9 +310,17 @@ class Collector:
+                     )
+ 
+             # fast deletes
++            # Combine querysets with the same model to reduce the number of
++            # DELETE queries.
++            fast_deletes_by_model = defaultdict(list)
+             for qs in self.fast_deletes:
+-                count = qs._raw_delete(using=self.using)
+-                deleted_counter[qs.model._meta.label] += count
++                fast_deletes_by_model[qs.model].append(qs)
++            for model, querysets in fast_deletes_by_model.items():
++                combined_qs = querysets[0]
++                for qs in querysets[1:]:
++                    combined_qs = combined_qs | qs
++                count = combined_qs._raw_delete(using=self.using)
++                deleted_counter[model._meta.label] += count
+ 
+             # update fields
+             for model, instances_for_fieldvalues in self.field_updates.items():
+2026-05-31 18:26:37,898 - INFO - Grading answer for django__django-11885...
+2026-05-31 18:26:37,902 - INFO - report: {'django__django-11885': {'patch_is_None': False, 'patch_exists': True, 'patch_successfully_applied': True, 'resolved': False, 'tests_status': {'FAIL_TO_PASS': {'success': ['test_fast_delete_combined_relationships (delete.tests.FastDeleteTests)'], 'failure': []}, 'PASS_TO_PASS': {'success': ['test_fast_delete_empty_no_update_can_self_select (delete.tests.FastDeleteTests)', 'test_fast_delete_fk (delete.tests.FastDeleteTests)', 'test_fast_delete_inheritance (delete.tests.FastDeleteTests)', 'test_fast_delete_instance_set_pk_none (delete.tests.FastDeleteTests)', 'test_fast_delete_joined_qs (delete.tests.FastDeleteTests)', 'test_fast_delete_large_batch (delete.tests.FastDeleteTests)', 'test_fast_delete_m2m (delete.tests.FastDeleteTests)', 'test_fast_delete_qs (delete.tests.FastDeleteTests)', 'test_fast_delete_revm2m (delete.tests.FastDeleteTests)', 'test_auto (delete.tests.OnDeleteTests)', 'test_auto_nullable (delete.tests.OnDeleteTests)', 'test_cascade (delete.tests.OnDeleteTests)', 'test_cascade_from_child (delete.tests.OnDeleteTests)', 'test_cascade_from_parent (delete.tests.OnDeleteTests)', 'test_cascade_nullable (delete.tests.OnDeleteTests)', 'test_do_nothing (delete.tests.OnDeleteTests)', 'test_do_nothing_qscount (delete.tests.OnDeleteTests)', 'test_inheritance_cascade_down (delete.tests.OnDeleteTests)', 'test_inheritance_cascade_up (delete.tests.OnDeleteTests)', 'test_non_callable (delete.tests.OnDeleteTests)', 'test_o2o_setnull (delete.tests.OnDeleteTests)', 'test_protect (delete.tests.OnDeleteTests)', 'test_setdefault (delete.tests.OnDeleteTests)', 'test_setdefault_none (delete.tests.OnDeleteTests)', 'test_setnull (delete.tests.OnDeleteTests)', 'test_setnull_from_child (delete.tests.OnDeleteTests)', 'test_setnull_from_parent (delete.tests.OnDeleteTests)', 'test_setvalue (delete.tests.OnDeleteTests)', 'test_bulk (delete.tests.DeletionTests)', 'test_can_defer_constraint_checks (delete.tests.DeletionTests)', 'test_delete_with_keeping_parents (delete.tests.DeletionTests)', 'test_delete_with_keeping_parents_relationships (delete.tests.DeletionTests)', 'test_deletion_order (delete.tests.DeletionTests)', 'test_hidden_related (delete.tests.DeletionTests)', 'test_instance_update (delete.tests.DeletionTests)', 'test_m2m (delete.tests.DeletionTests)', 'test_model_delete_returns_num_rows (delete.tests.DeletionTests)', 'test_only_referenced_fields_selected (delete.tests.DeletionTests)', 'test_proxied_model_duplicate_queries (delete.tests.DeletionTests)', 'test_queryset_delete_returns_num_rows (delete.tests.DeletionTests)', 'test_relational_post_delete_signals_happen_before_parent_object (delete.tests.DeletionTests)'], 'failure': ['test_large_delete (delete.tests.DeletionTests)', 'test_large_delete_related (delete.tests.DeletionTests)']}, 'FAIL_TO_FAIL': {'success': [], 'failure': []}, 'PASS_TO_FAIL': {'success': [], 'failure': []}}}}
+Result for django__django-11885: resolved: False
+2026-05-31 18:26:37,902 - INFO - Attempting to stop container sweb.eval.django__django-11885.corecoder_full_b01...
+2026-05-31 18:26:53,166 - INFO - Attempting to remove container sweb.eval.django__django-11885.corecoder_full_b01...
+2026-05-31 18:26:53,197 - INFO - Container sweb.eval.django__django-11885.corecoder_full_b01 removed.

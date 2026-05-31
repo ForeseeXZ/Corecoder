@@ -1,0 +1,566 @@
+{"kind": "tool", "name": "grep", "args": {"pattern": "parent_link", "include": "*.py", "path": "/root/CoreCoder/eval/runs/django__django-12325/repo/django/db/models"}}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-12325/repo/django/db/models/options.py", "offset": 230, "limit": 50}}
+{"kind": "tool", "name": "grep", "args": {"include": "*.py", "pattern": "self\\.parents", "path": "/root/CoreCoder/eval/runs/django__django-12325/repo/django/db/models/options.py"}}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-12325/repo/django/db/models/base.py", "offset": 185, "limit": 120}}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-12325/repo/django/db/models/base.py", "offset": 130, "limit": 70}}
+{"kind": "token", "text": "Now"}
+{"kind": "token", "text": " let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " look"}
+{"kind": "token", "text": " more"}
+{"kind": "token", "text": " closely"}
+{"kind": "token", "text": " at"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " parent"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "links"}
+{"kind": "token", "text": " collection"}
+{"kind": "token", "text": " code"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "read_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-12325/repo/django/db/models/base.py", "offset": 194, "limit": 20}}
+{"kind": "token", "text": "Now"}
+{"kind": "token", "text": " I"}
+{"kind": "token", "text": " understand"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " root"}
+{"kind": "token", "text": " cause"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " In"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "base"}
+{"kind": "token", "text": ".py"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " at"}
+{"kind": "token", "text": " line"}
+{"kind": "token", "text": " "}
+{"kind": "token", "text": "207"}
+{"kind": "token", "text": ":\n\n"}
+{"kind": "token", "text": "```"}
+{"kind": "token", "text": "python"}
+{"kind": "token", "text": "\n"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "links"}
+{"kind": "token", "text": "["}
+{"kind": "token", "text": "make"}
+{"kind": "token", "text": "_model"}
+{"kind": "token", "text": "_tuple"}
+{"kind": "token", "text": "("}
+{"kind": "token", "text": "related"}
+{"kind": "token", "text": ")]"}
+{"kind": "token", "text": " ="}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": "\n"}
+{"kind": "token", "text": "```\n\n"}
+{"kind": "token", "text": "This"}
+{"kind": "token", "text": " uncondition"}
+{"kind": "token", "text": "ally"}
+{"kind": "token", "text": " overw"}
+{"kind": "token", "text": "rites"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " entry"}
+{"kind": "token", "text": " in"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "links"}
+{"kind": "token", "text": "`."}
+{"kind": "token", "text": " When"}
+{"kind": "token", "text": " multiple"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "One"}
+{"kind": "token", "text": "ToOne"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": "`s"}
+{"kind": "token", "text": " point"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " same"}
+{"kind": "token", "text": " model"}
+{"kind": "token", "text": " ("}
+{"kind": "token", "text": "e"}
+{"kind": "token", "text": ".g"}
+{"kind": "token", "text": ".,"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Document"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": "),"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " last"}
+{"kind": "token", "text": " one"}
+{"kind": "token", "text": " in"}
+{"kind": "token", "text": " iteration"}
+{"kind": "token", "text": " order"}
+{"kind": "token", "text": " wins"}
+{"kind": "token", "text": " —"}
+{"kind": "token", "text": " even"}
+{"kind": "token", "text": " if"}
+{"kind": "token", "text": " it"}
+{"kind": "token", "text": " doesn"}
+{"kind": "token", "text": "'t"}
+{"kind": "token", "text": " have"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_link"}
+{"kind": "token", "text": "=True"}
+{"kind": "token", "text": "`."}
+{"kind": "token", "text": " So"}
+{"kind": "token", "text": " when"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "document"}
+{"kind": "token", "text": "_ptr"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " ("}
+{"kind": "token", "text": "with"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_link"}
+{"kind": "token", "text": "=True"}
+{"kind": "token", "text": "`)"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " defined"}
+{"kind": "token", "text": " before"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "origin"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " ("}
+{"kind": "token", "text": "without"}
+{"kind": "token", "text": " it"}
+{"kind": "token", "text": "),"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "origin"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " overw"}
+{"kind": "token", "text": "rites"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "document"}
+{"kind": "token", "text": "_ptr"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " in"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " dict"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " and"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " wrong"}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " later"}
+{"kind": "token", "text": " used"}
+{"kind": "token", "text": " as"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " PK"}
+{"kind": "token", "text": ".\n\n"}
+{"kind": "token", "text": "The"}
+{"kind": "token", "text": " fix"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " only"}
+{"kind": "token", "text": " overw"}
+{"kind": "token", "text": "rite"}
+{"kind": "token", "text": " if"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " new"}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": " has"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_link"}
+{"kind": "token", "text": "=True"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " or"}
+{"kind": "token", "text": " if"}
+{"kind": "token", "text": " there"}
+{"kind": "token", "text": "'s"}
+{"kind": "token", "text": " no"}
+{"kind": "token", "text": " existing"}
+{"kind": "token", "text": " entry"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "edit_file", "args": {"file_path": "/root/CoreCoder/eval/runs/django__django-12325/repo/django/db/models/base.py", "old_string": "            # Locate OneToOneField instances.\n            for field in base._meta.local_fields:\n                if isinstance(field, OneToOneField):\n                    related = resolve_relation(new_class, field.remote_field.model)\n                    parent_links[make_model_tuple(related)] = field", "new_string": "            # Locate OneToOneField instances.\n            for field in base._meta.local_fields:\n                if isinstance(field, OneToOneField):\n                    related = resolve_relation(new_class, field.remote_field.model)\n                    # Prefer the field with explicit parent_link=True over\n                    # later non-parent-link fields pointing to the same model.\n                    key = make_model_tuple(related)\n                    if field.remote_field.parent_link or key not in parent_links:\n                        parent_links[key] = field"}}
+{"kind": "token", "text": "Let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " verify"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " fix"}
+{"kind": "token", "text": " works"}
+{"kind": "token", "text": " by"}
+{"kind": "token", "text": " creating"}
+{"kind": "token", "text": " a"}
+{"kind": "token", "text": " quick"}
+{"kind": "token", "text": " test"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "bash", "args": {"command": "cd /root/CoreCoder/eval/runs/django__django-12325/repo && python -c \"\nimport django\nimport os\nos.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tests.test_sqlite')\n\n# Minimal Django settings\nimport django.conf\nif not django.conf.settings.configured:\n    django.conf.settings.configure(\n        DATABASES={'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': ':memory:'}},\n        INSTALLED_APPS=['django.contrib.contenttypes', 'django.contrib.auth'],\n    )\ndjango.setup()\n\nfrom django.db import models\n\n# Test 1: parent_link first (the failing case from the issue)\nclass Document(models.Model):\n    class Meta:\n        app_label = 'test'\n    pass\n\nclass Picking(Document):\n    document_ptr = models.OneToOneField(Document, on_delete=models.CASCADE, parent_link=True, related_name='+')\n    origin = models.OneToOneField(Document, related_name='picking', on_delete=models.PROTECT)\n    \n    class Meta:\n        app_label = 'test'\n\nprint('Test PASSED: parent_link first defined before other OneToOneField works correctly')\nprint('pk field:', Picking._meta.pk)\nprint('pk is parent_link:', Picking._meta.pk.remote_field.parent_link)\n\"\n", "timeout": 30}}
+{"kind": "token", "text": "Let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " also"}
+{"kind": "token", "text": " verify"}
+{"kind": "token", "text": " existing"}
+{"kind": "token", "text": " tests"}
+{"kind": "token", "text": " still"}
+{"kind": "token", "text": " pass"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "bash", "args": {"command": "cd /root/CoreCoder/eval/runs/django__django-12325/repo && python -m django test model_inheritance --settings=tests.test_sqlite -v0 2>&1 | tail -5", "timeout": 60}}
+{"kind": "tool", "name": "bash", "args": {"command": "cd /root/CoreCoder/eval/runs/django__django-12325/repo && python tests/runtests.py model_inheritance --verbosity=0 2>&1 | tail -5", "timeout": 60}}
+{"kind": "tool", "name": "bash", "args": {"command": "cd /root/CoreCoder/eval/runs/django__django-12325/repo && python -c \"\nimport os, sys\nos.environ['DJANGO_SETTINGS_MODULE'] = 'test_settings'\n\n# Create a minimal settings module\nimport django.conf\ndjango.conf.settings.configure(\n    DATABASES={'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': ':memory:'}},\n    INSTALLED_APPS=['django.contrib.contenttypes', 'django.contrib.auth'],\n    DEFAULT_AUTO_FIELD='django.db.models.AutoField',\n)\ndjango.setup()\n\nfrom django.db import models\n\n# Test 1: parent_link first (the original failing case)\nclass Document(models.Model):\n    class Meta:\n        app_label = 'test1'\n    pass\n\nclass Picking(Document):\n    document_ptr = models.OneToOneField(Document, on_delete=models.CASCADE, parent_link=True, related_name='+')\n    origin = models.OneToOneField(Document, related_name='picking', on_delete=models.PROTECT)\n    \n    class Meta:\n        app_label = 'test1'\n\nprint('Test 1 PASSED: parent_link before other O2O')\nprint('  pk:', Picking._meta.pk)\nprint('  pk is parent_link:', Picking._meta.pk.remote_field.parent_link)\n\n# Test 2: parent_link last (should still work)\nclass Document2(models.Model):\n    class Meta:\n        app_label = 'test2'\n    pass\n\nclass Picking2(Document2):\n    origin = models.OneToOneField(Document2, related_name='picking2', on_delete=models.PROTECT)\n    document_ptr = models.OneToOneField(Document2, on_delete=models.CASCADE, parent_link=True, related_name='+')\n    \n    class Meta:\n        app_label = 'test2'\n\nprint('Test 2 PASSED: parent_link after other O2O')\nprint('  pk:', Picking2._meta.pk)\nprint('  pk is parent_link:', Picking2._meta.pk.remote_field.parent_link)\n\n# Test 3: No explicit parent_link (auto-created)\nclass Document3(models.Model):\n    class Meta:\n        app_label = 'test3'\n    pass\n\nclass Picking3(Document3):\n    class Meta:\n        app_label = 'test3'\n\nprint('Test 3 PASSED: auto parent link')\nprint('  pk:', Picking3._meta.pk)\n\n# Test 4: Single explicit parent_link\nclass Document4(models.Model):\n    class Meta:\n        app_label = 'test4'\n    pass\n\nclass Picking4(Document4):\n    document_ptr = models.OneToOneField(Document4, on_delete=models.CASCADE, parent_link=True, related_name='+')\n    \n    class Meta:\n        app_label = 'test4'\n\nprint('Test 4 PASSED: single explicit parent link')\nprint('  pk:', Picking4._meta.pk)\nprint('  pk is parent_link:', Picking4._meta.pk.remote_field.parent_link)\n\n# Test 5: Single non-parent OneToOneField (auto parent link should be created)\nclass Document5(models.Model):\n    class Meta:\n        app_label = 'test5'\n    pass\n\nclass Picking5(Document5):\n    origin = models.OneToOneField(Document5, related_name='picking5', on_delete=models.PROTECT)\n    \n    class Meta:\n        app_label = 'test5'\n\nprint('Test 5 PASSED: single non-parent O2O')\nprint('  pk:', Picking5._meta.pk)\nprint('  pk name:', Picking5._meta.pk.name)\n\nprint()\nprint('All tests passed!')\n\"\n", "timeout": 30}}
+{"kind": "token", "text": "Test"}
+{"kind": "token", "text": " "}
+{"kind": "token", "text": "5"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " actually"}
+{"kind": "token", "text": " expected"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " fail"}
+{"kind": "token", "text": " -"}
+{"kind": "token", "text": " it"}
+{"kind": "token", "text": "'s"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " same"}
+{"kind": "token", "text": " behavior"}
+{"kind": "token", "text": " that"}
+{"kind": "token", "text": " existed"}
+{"kind": "token", "text": " before"}
+{"kind": "token", "text": " ("}
+{"kind": "token", "text": "if"}
+{"kind": "token", "text": " there"}
+{"kind": "token", "text": "'s"}
+{"kind": "token", "text": " only"}
+{"kind": "token", "text": " a"}
+{"kind": "token", "text": " non"}
+{"kind": "token", "text": "-parent"}
+{"kind": "token", "text": " One"}
+{"kind": "token", "text": "ToOne"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " parent"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " Django"}
+{"kind": "token", "text": " correctly"}
+{"kind": "token", "text": " asks"}
+{"kind": "token", "text": " you"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " add"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_link"}
+{"kind": "token", "text": "=True"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": ")."}
+{"kind": "token", "text": " Let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " verify"}
+{"kind": "token", "text": " with"}
+{"kind": "token", "text": " a"}
+{"kind": "token", "text": " corrected"}
+{"kind": "token", "text": " test"}
+{"kind": "token", "text": " "}
+{"kind": "token", "text": "5"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "bash", "args": {"command": "cd /root/CoreCoder/eval/runs/django__django-12325/repo && python -c \"\nimport os, sys\nos.environ['DJANGO_SETTINGS_MODULE'] = 'test_settings'\n\nimport django.conf\ndjango.conf.settings.configure(\n    DATABASES={'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': ':memory:'}},\n    INSTALLED_APPS=['django.contrib.contenttypes', 'django.contrib.auth'],\n    DEFAULT_AUTO_FIELD='django.db.models.AutoField',\n)\ndjango.setup()\n\nfrom django.db import models\n\n# Test 1: parent_link first (the original failing case)\nclass Document(models.Model):\n    class Meta:\n        app_label = 'test1'\n    pass\n\nclass Picking(Document):\n    document_ptr = models.OneToOneField(Document, on_delete=models.CASCADE, parent_link=True, related_name='+')\n    origin = models.OneToOneField(Document, related_name='picking', on_delete=models.PROTECT)\n    \n    class Meta:\n        app_label = 'test1'\n\nprint('Test 1 PASSED: parent_link before other O2O')\nprint('  pk:', Picking._meta.pk)\nprint('  pk is parent_link:', Picking._meta.pk.remote_field.parent_link)\n\n# Test 2: parent_link last (should still work)\nclass Document2(models.Model):\n    class Meta:\n        app_label = 'test2'\n    pass\n\nclass Picking2(Document2):\n    origin = models.OneToOneField(Document2, related_name='picking2', on_delete=models.PROTECT)\n    document_ptr = models.OneToOneField(Document2, on_delete=models.CASCADE, parent_link=True, related_name='+')\n    \n    class Meta:\n        app_label = 'test2'\n\nprint('Test 2 PASSED: parent_link after other O2O')\nprint('  pk:', Picking2._meta.pk)\nprint('  pk is parent_link:', Picking2._meta.pk.remote_field.parent_link)\n\n# Test 3: No explicit parent_link (auto-created)\nclass Document3(models.Model):\n    class Meta:\n        app_label = 'test3'\n    pass\n\nclass Picking3(Document3):\n    class Meta:\n        app_label = 'test3'\n\nprint('Test 3 PASSED: auto parent link')\nprint('  pk:', Picking3._meta.pk)\n\n# Test 4: Single explicit parent_link\nclass Document4(models.Model):\n    class Meta:\n        app_label = 'test4'\n    pass\n\nclass Picking4(Document4):\n    document_ptr = models.OneToOneField(Document4, on_delete=models.CASCADE, parent_link=True, related_name='+')\n    \n    class Meta:\n        app_label = 'test4'\n\nprint('Test 4 PASSED: single explicit parent link')\nprint('  pk:', Picking4._meta.pk)\nprint('  pk is parent_link:', Picking4._meta.pk.remote_field.parent_link)\n\nprint()\nprint('All tests passed!')\n\"\n", "timeout": 30}}
+{"kind": "token", "text": "Let"}
+{"kind": "token", "text": " me"}
+{"kind": "token", "text": " also"}
+{"kind": "token", "text": " verify"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " fix"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " correct"}
+{"kind": "token", "text": " by"}
+{"kind": "token", "text": " checking"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " git"}
+{"kind": "token", "text": " diff"}
+{"kind": "token", "text": ":"}
+{"kind": "tool", "name": "bash", "args": {"command": "cd /root/CoreCoder/eval/runs/django__django-12325/repo && git diff"}}
+{"kind": "token", "text": "The"}
+{"kind": "token", "text": " fix"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " clean"}
+{"kind": "token", "text": " and"}
+{"kind": "token", "text": " minimal"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " Here"}
+{"kind": "token", "text": "'s"}
+{"kind": "token", "text": " a"}
+{"kind": "token", "text": " summary"}
+{"kind": "token", "text": " of"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " issue"}
+{"kind": "token", "text": " and"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " fix"}
+{"kind": "token", "text": ":\n\n"}
+{"kind": "token", "text": "**"}
+{"kind": "token", "text": "Root"}
+{"kind": "token", "text": " Cause"}
+{"kind": "token", "text": ":**"}
+{"kind": "token", "text": " In"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "d"}
+{"kind": "token", "text": "jango"}
+{"kind": "token", "text": "/d"}
+{"kind": "token", "text": "b"}
+{"kind": "token", "text": "/models"}
+{"kind": "token", "text": "/base"}
+{"kind": "token", "text": ".py"}
+{"kind": "token", "text": "`,"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "__"}
+{"kind": "token", "text": "new"}
+{"kind": "token", "text": "__"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " method"}
+{"kind": "token", "text": " collects"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "One"}
+{"kind": "token", "text": "ToOne"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " instances"}
+{"kind": "token", "text": " into"}
+{"kind": "token", "text": " a"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "links"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " dict"}
+{"kind": "token", "text": " ("}
+{"kind": "token", "text": "m"}
+{"kind": "token", "text": "apping"}
+{"kind": "token", "text": " parent"}
+{"kind": "token", "text": " model"}
+{"kind": "token", "text": " →"}
+{"kind": "token", "text": " link"}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": ")."}
+{"kind": "token", "text": " The"}
+{"kind": "token", "text": " line"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "links"}
+{"kind": "token", "text": "["}
+{"kind": "token", "text": "make"}
+{"kind": "token", "text": "_model"}
+{"kind": "token", "text": "_tuple"}
+{"kind": "token", "text": "("}
+{"kind": "token", "text": "related"}
+{"kind": "token", "text": ")]"}
+{"kind": "token", "text": " ="}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " uncondition"}
+{"kind": "token", "text": "ally"}
+{"kind": "token", "text": " overw"}
+{"kind": "token", "text": "rites"}
+{"kind": "token", "text": " entries"}
+{"kind": "token", "text": " when"}
+{"kind": "token", "text": " multiple"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "One"}
+{"kind": "token", "text": "ToOne"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": "`s"}
+{"kind": "token", "text": " point"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " same"}
+{"kind": "token", "text": " model"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " This"}
+{"kind": "token", "text": " means"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " **"}
+{"kind": "token", "text": "last"}
+{"kind": "token", "text": "**"}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": " in"}
+{"kind": "token", "text": " iteration"}
+{"kind": "token", "text": " order"}
+{"kind": "token", "text": " wins"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " regardless"}
+{"kind": "token", "text": " of"}
+{"kind": "token", "text": " whether"}
+{"kind": "token", "text": " it"}
+{"kind": "token", "text": " has"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_link"}
+{"kind": "token", "text": "=True"}
+{"kind": "token", "text": "`.\n\n"}
+{"kind": "token", "text": "When"}
+{"kind": "token", "text": " a"}
+{"kind": "token", "text": " user"}
+{"kind": "token", "text": " defines"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " explicit"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_link"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": " (`"}
+{"kind": "token", "text": "document"}
+{"kind": "token", "text": "_ptr"}
+{"kind": "token", "text": "`)"}
+{"kind": "token", "text": " **"}
+{"kind": "token", "text": "before"}
+{"kind": "token", "text": "**"}
+{"kind": "token", "text": " another"}
+{"kind": "token", "text": " non"}
+{"kind": "token", "text": "-parent"}
+{"kind": "token", "text": "-link"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "One"}
+{"kind": "token", "text": "ToOne"}
+{"kind": "token", "text": "Field"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " (`"}
+{"kind": "token", "text": "origin"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": "),"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " non"}
+{"kind": "token", "text": "-parent"}
+{"kind": "token", "text": "-link"}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": " overw"}
+{"kind": "token", "text": "rites"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " correct"}
+{"kind": "token", "text": " one"}
+{"kind": "token", "text": " in"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " dict"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": " Later"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " wrong"}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": " gets"}
+{"kind": "token", "text": " promoted"}
+{"kind": "token", "text": " to"}
+{"kind": "token", "text": " primary"}
+{"kind": "token", "text": " key"}
+{"kind": "token", "text": " and"}
+{"kind": "token", "text": " fails"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_link"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " check"}
+{"kind": "token", "text": " at"}
+{"kind": "token", "text": " line"}
+{"kind": "token", "text": " "}
+{"kind": "token", "text": "254"}
+{"kind": "token", "text": ","}
+{"kind": "token", "text": " raising"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "Impro"}
+{"kind": "token", "text": "per"}
+{"kind": "token", "text": "ly"}
+{"kind": "token", "text": "Configure"}
+{"kind": "token", "text": "d"}
+{"kind": "token", "text": "`.\n\n"}
+{"kind": "token", "text": "**"}
+{"kind": "token", "text": "Fix"}
+{"kind": "token", "text": ":**"}
+{"kind": "token", "text": " When"}
+{"kind": "token", "text": " pop"}
+{"kind": "token", "text": "ulating"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "links"}
+{"kind": "token", "text": "`,"}
+{"kind": "token", "text": " prefer"}
+{"kind": "token", "text": " fields"}
+{"kind": "token", "text": " explicitly"}
+{"kind": "token", "text": " marked"}
+{"kind": "token", "text": " with"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_link"}
+{"kind": "token", "text": "=True"}
+{"kind": "token", "text": "`."}
+{"kind": "token", "text": " The"}
+{"kind": "token", "text": " condition"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "if"}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": "."}
+{"kind": "token", "text": "remote"}
+{"kind": "token", "text": "_field"}
+{"kind": "token", "text": ".parent"}
+{"kind": "token", "text": "_link"}
+{"kind": "token", "text": " or"}
+{"kind": "token", "text": " key"}
+{"kind": "token", "text": " not"}
+{"kind": "token", "text": " in"}
+{"kind": "token", "text": " parent"}
+{"kind": "token", "text": "_"}
+{"kind": "token", "text": "links"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " ensures"}
+{"kind": "token", "text": ":\n"}
+{"kind": "token", "text": "-"}
+{"kind": "token", "text": " A"}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": " with"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_link"}
+{"kind": "token", "text": "=True"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " **"}
+{"kind": "token", "text": "always"}
+{"kind": "token", "text": "**"}
+{"kind": "token", "text": " takes"}
+{"kind": "token", "text": " precedence"}
+{"kind": "token", "text": " ("}
+{"kind": "token", "text": "over"}
+{"kind": "token", "text": "w"}
+{"kind": "token", "text": "rites"}
+{"kind": "token", "text": " any"}
+{"kind": "token", "text": " existing"}
+{"kind": "token", "text": " entry"}
+{"kind": "token", "text": ").\n"}
+{"kind": "token", "text": "-"}
+{"kind": "token", "text": " A"}
+{"kind": "token", "text": " field"}
+{"kind": "token", "text": " without"}
+{"kind": "token", "text": " `"}
+{"kind": "token", "text": "parent"}
+{"kind": "token", "text": "_link"}
+{"kind": "token", "text": "=True"}
+{"kind": "token", "text": "`"}
+{"kind": "token", "text": " is"}
+{"kind": "token", "text": " only"}
+{"kind": "token", "text": " stored"}
+{"kind": "token", "text": " if"}
+{"kind": "token", "text": " no"}
+{"kind": "token", "text": " entry"}
+{"kind": "token", "text": " for"}
+{"kind": "token", "text": " that"}
+{"kind": "token", "text": " model"}
+{"kind": "token", "text": " exists"}
+{"kind": "token", "text": " yet"}
+{"kind": "token", "text": " ("}
+{"kind": "token", "text": "pres"}
+{"kind": "token", "text": "erving"}
+{"kind": "token", "text": " the"}
+{"kind": "token", "text": " first"}
+{"kind": "token", "text": "-one"}
+{"kind": "token", "text": "-found"}
+{"kind": "token", "text": " behavior"}
+{"kind": "token", "text": " for"}
+{"kind": "token", "text": " non"}
+{"kind": "token", "text": "-parent"}
+{"kind": "token", "text": "-link"}
+{"kind": "token", "text": " fields"}
+{"kind": "token", "text": ")."}

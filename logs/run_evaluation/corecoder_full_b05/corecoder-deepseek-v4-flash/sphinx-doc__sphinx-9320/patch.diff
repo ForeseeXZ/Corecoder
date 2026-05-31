@@ -1,0 +1,15 @@
+diff --git a/sphinx/cmd/quickstart.py b/sphinx/cmd/quickstart.py
+index a40a21073..6768cf8c7 100644
+--- a/sphinx/cmd/quickstart.py
++++ b/sphinx/cmd/quickstart.py
+@@ -146,8 +146,8 @@ def do_prompt(text: str, default: str = None, validator: Callable[[str], Any] =
+         else:
+             prompt = colorize(COLOR_QUESTION, prompt, input_mode=False)
+         x = term_input(prompt).strip()
+-        if default and not x:
+-            x = default
++        if default is not None and not x:
++            return default
+         try:
+             x = validator(x)
+         except ValidationError as err:

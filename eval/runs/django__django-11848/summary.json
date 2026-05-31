@@ -1,0 +1,32 @@
+{
+  "instance_id": "django__django-11848",
+  "repo": "django/django",
+  "base_commit": "f0adf3b9b7a19cdee05368ff0c0c2d087f011180",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.django_1776_django-11848:latest",
+    "base_commit": "f0adf3b9b7a19cdee05368ff0c0c2d087f011180",
+    "head_after_reset": "f0adf3b9b7a19cdee05368ff0c0c2d087f011180",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 19,
+    "files_changed": [
+      "django/utils/http.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 28.93645775299956,
+    "prompt_tokens": 43466,
+    "completion_tokens": 3894,
+    "total_tokens": 47360,
+    "estimated_cost_cny": 0.051253999999999994,
+    "tool_call_count": 8,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete and correct. Here's a summary of what was changed:\n\n**File**: `django/utils/http.py` (lines 178-182)\n\n**Problem**: The two-digit year interpretation in `parse_http_date()` used a hard-coded threshold (years < 70 → 2000s, years ≥ 70 → 1900s). This doesn't conform to RFC 7231, which states:\n\n> Recipients of a timestamp value in rfc850-date format, which uses a two-digit year, MUST interpret a timestamp that appears to be more than 50 years in the future as representing the most recent year in the past that had the same last two digits.\n\n**Fix**: Instead of the hard-coded 70-year boundary, the code now:\n1. Gets the current year with `datetime.datetime.now().year`\n2. Places the two-digit year in the 2000s (e.g., year `70` → `2070`, year `24` → `2024`)\n3. If the resulting year is more than 50 years in the future, subtracts 100 to use the 1900s century instead (e.g., year `99` in 2026 → `2099` is 73 years ahead → use `1999`)\n\nThis dynamic threshold adjusts automatically as the current year changes, which is the correct behavior per the RFC."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-11510",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "6cb783c0024a873722952a67ebb9f41771c8eb6d",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-11510:latest",
+    "base_commit": "6cb783c0024a873722952a67ebb9f41771c8eb6d",
+    "head_after_reset": "6cb783c0024a873722952a67ebb9f41771c8eb6d",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 84,
+    "files_changed": [
+      "sphinx/directives/other.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 171.81261552100113,
+    "prompt_tokens": 1196016,
+    "completion_tokens": 22130,
+    "total_tokens": 1218146,
+    "estimated_cost_cny": 1.240276,
+    "tool_call_count": 44,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete. Here's a summary of the change:\n\n## Problem\n\nWhen a file is included via `.. include::` directive, the `source-read` event was not being applied to the included file's content. The event was fired for the included file when it was processed as a separate document, but that doctree was never used - the `Include` directive had already read the file content directly from disk and included the unmodified version into the parent document's parse tree.\n\n## Fix\n\nModified `sphinx/directives/other.py`:\n\n1. **Added `from docutils import io`** import (needed for `io.FileInput` and `io.error_string`)\n\n2. **Overrode `read_file()`** in the Sphinx `Include` class to:\n   - Determine the docname for the included file via `self.env.path2doc(path)`\n   - If it's a known document, read the file content, emit the `source-read` event with the docname and content, and apply the standard clipping logic on the (potentially modified) content\n   - If it's not a known document (e.g., system includes like `<file>`), fall back to the parent's `read_file()`\n\nThis ensures that extensions using the `source-read` event can modify the content of files included via `.. include::`, and those modifications are reflected in the final output."
+  }
+}

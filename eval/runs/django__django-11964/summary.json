@@ -1,0 +1,32 @@
+{
+  "instance_id": "django__django-11964",
+  "repo": "django/django",
+  "base_commit": "fc2b1cc926e34041953738e58fa6ad3053059b22",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.django_1776_django-11964:latest",
+    "base_commit": "fc2b1cc926e34041953738e58fa6ad3053059b22",
+    "head_after_reset": "fc2b1cc926e34041953738e58fa6ad3053059b22",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 22,
+    "files_changed": [
+      "django/db/models/enums.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 132.36252161399898,
+    "prompt_tokens": 754015,
+    "completion_tokens": 17775,
+    "total_tokens": 771790,
+    "estimated_cost_cny": 0.789565,
+    "tool_call_count": 50,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete. Here's a summary:\n\n**Root cause**: `EnumMeta` (the metaclass for Python enums) places `Enum.__str__` directly onto the class during creation, overriding `str.__str__` for `TextChoices` and `int.__str__` for `IntegerChoices`. This means `str(MyChoice.FIRST_CHOICE)` returns `'MyChoice.FIRST_CHOICE'` (the enum name) instead of `'first'` (the primitive value).\n\n**Fix**: Added explicit `__str__` methods to both `IntegerChoices` and `TextChoices` that return `str(self.value)`. By defining `__str__` in the class body, the `EnumMeta` metaclass respects it and doesn't override it with `Enum.__str__`. This ensures `str()` returns the primitive value (e.g., `'first'` for TextChoices, `'1'` for IntegerChoices), consistent with behavior after retrieval from the database."
+  }
+}

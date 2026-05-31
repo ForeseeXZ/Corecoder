@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-10466",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "cab2d93076d0cca7c53fac885f927dde3e2a5fec",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10466:latest",
+    "base_commit": "cab2d93076d0cca7c53fac885f927dde3e2a5fec",
+    "head_after_reset": "cab2d93076d0cca7c53fac885f927dde3e2a5fec",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 20,
+    "files_changed": [
+      "sphinx/builders/gettext.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 13.623373629998241,
+    "prompt_tokens": 24788,
+    "completion_tokens": 1828,
+    "total_tokens": 26616,
+    "estimated_cost_cny": 0.028444,
+    "tool_call_count": 3,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is complete. Here's the root cause summary:\n\n**Root cause:** In `Catalog.add()`, each call appends `(origin.source, origin.line, origin.uid)` to `self.metadata[msg]`. Since `MsgOrigin.__init__` generates a new UUID on every call, the same `(source, line)` pair can be added multiple times with different UUIDs. When `Catalog.__iter__()` extracts `(source, line)` positions (dropping the UUID), duplicates appear.\n\n**Fix:** Deduplicate `(source, line)` pairs in `Catalog.__iter__()` while preserving insertion order, using a `set()` to track seen pairs. This ensures each location appears only once in the output while keeping all UUIDs."
+  }
+}

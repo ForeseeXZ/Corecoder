@@ -1,0 +1,32 @@
+{
+  "instance_id": "sphinx-doc__sphinx-10323",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "31eba1a76dd485dc633cae48227b46879eda5df4",
+  "with_hints": false,
+  "prep": {
+    "image": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10323:latest",
+    "base_commit": "31eba1a76dd485dc633cae48227b46879eda5df4",
+    "head_after_reset": "31eba1a76dd485dc633cae48227b46879eda5df4",
+    "head_matches_base": true
+  },
+  "patch": {
+    "empty": false,
+    "n_lines": 16,
+    "files_changed": [
+      "sphinx/directives/code.py"
+    ],
+    "n_files": 1
+  },
+  "agent": {
+    "model": "deepseek-v4-flash",
+    "elapsed_s": 31.190206315997784,
+    "prompt_tokens": 94402,
+    "completion_tokens": 4081,
+    "total_tokens": 98483,
+    "estimated_cost_cny": 0.102564,
+    "tool_call_count": 4,
+    "timed_out": false,
+    "error": null,
+    "final_text": "The fix is correct. Now the filter pipeline applies dedent *before* prepend/append, so:\n\n1. The file content is read and filtered (pyobject, start, end, lines)\n2. **Dedent is applied** — removing common leading whitespace from the actual file content\n3. **Prepend text is added** — preserving the user's original whitespace\n4. **Append text is added** — preserving the user's original whitespace\n\nThis means users can now supply `:prepend:` or `:append:` text with proper indentation that matches the dedented code, and it won't be stripped by dedent.\n\nFor the example in the bug report, the user would write:\n\n```rst\n.. literalinclude:: pom.xml\n   :language: xml\n   :prepend:       </plugin>\n   :start-at: <groupId>com.github.ekryd.sortpom</groupId>\n   :end-at: </plugin>\n```\n\nAnd the prepended `      </plugin>\\n` would now keep its leading whitespace intact, producing the expected output:\n\n```xml\n      </plugin>\n        <groupId>com.github.ekryd.sortpom</groupId>\n        <artifactId>sortpom-maven-plugin</artifactId>\n        <version>2.15.0</version>\n        <configuration>\n          <verifyFailOn>strict</verifyFailOn>\n        </configuration>\n      </plugin>\n```"
+  }
+}
