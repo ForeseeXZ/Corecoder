@@ -1,0 +1,110 @@
+{
+  "purpose": "Fixed dev subset for fast iteration on the Reviewer increment (Planner-Executor-Reviewer). Baseline = deepseek-v4-flash, 接法B.",
+  "baseline_overall": "resolved 26/50=0.52; this subset baseline = 8 unresolved-or-resolved core tasks below",
+  "composition": "5 confident-wrong(②) fails + 3 resolved(regression) + 1 sphinx hard(③); +1 optional stress",
+  "note_cost": "core 9 single-pass ~1.95M tok, dominated by sphinx-8548(1.41M). The cheap 8 (~540k) suit frequent loops; run the hard ③ less often.",
+  "core": [
+    {
+      "instance_id": "django__django-12304",
+      "role": "fail-②",
+      "reason": "便宜快错典范:18s/7工具找到根因(模板引擎把enum当可调用),改一处自信宣布完成、实则错;Reviewer若复核'真满足issue吗'最该救这类",
+      "repo": "django",
+      "resolved": false,
+      "baseline_tok": 29275,
+      "baseline_tools": 7,
+      "baseline_time_s": 18
+    },
+    {
+      "instance_id": "django__django-12774",
+      "role": "fail-②",
+      "reason": "最便宜的django自信改错(27k/7工具),快循环成本低、信号干净",
+      "repo": "django",
+      "resolved": false,
+      "baseline_tok": 26538,
+      "baseline_tools": 7,
+      "baseline_time_s": 13
+    },
+    {
+      "instance_id": "django__django-11790",
+      "role": "fail-②",
+      "reason": "已知根因:patch把maxlength写成str(254)→类型不匹配测试失败;Reviewer查'类型/取值是否符合预期'即可发现,是Reviewer的理想正样本",
+      "repo": "django",
+      "resolved": false,
+      "baseline_tok": 311972,
+      "baseline_tools": 24,
+      "baseline_time_s": 53
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8269",
+      "role": "fail-②",
+      "reason": "最便宜的sphinx自信改错(29k/5工具/12s),让子集含sphinx的②但不拖慢循环",
+      "repo": "sphinx",
+      "resolved": false,
+      "baseline_tok": 29070,
+      "baseline_tools": 5,
+      "baseline_time_s": 12
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8475",
+      "role": "fail-②",
+      "reason": "sphinx中等成本②(64k/10工具/20s),补充sphinx侧的逻辑失败样本",
+      "repo": "sphinx",
+      "resolved": false,
+      "baseline_tok": 64336,
+      "baseline_tools": 10,
+      "baseline_time_s": 20
+    },
+    {
+      "instance_id": "django__django-12050",
+      "role": "pass-regression",
+      "reason": "最便宜的已解出题(11k/3工具/7s),回归哨兵:Reviewer改动不能把它弄挂",
+      "repo": "django",
+      "resolved": true,
+      "baseline_tok": 10935,
+      "baseline_tools": 3,
+      "baseline_time_s": 7
+    },
+    {
+      "instance_id": "django__django-12713",
+      "role": "pass-regression",
+      "reason": "便宜已解出(19k/5工具),第二个django回归哨兵",
+      "repo": "django",
+      "resolved": true,
+      "baseline_tok": 18654,
+      "baseline_tools": 5,
+      "baseline_time_s": 10
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-9698",
+      "role": "pass-regression",
+      "reason": "最便宜的sphinx已解出(22k/12s),确保Reviewer不破坏sphinx侧已对的题",
+      "repo": "sphinx",
+      "resolved": true,
+      "baseline_tok": 22525,
+      "baseline_tools": 6,
+      "baseline_time_s": 12
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8548",
+      "role": "hard-③",
+      "reason": "sphinx不收敛代表(撞50轮上限,1.41M token):看Reviewer/Planner能否约束thrash边界;成本高,建议低频跑",
+      "repo": "sphinx",
+      "resolved": false,
+      "baseline_tok": 1411836,
+      "baseline_tools": 56,
+      "baseline_time_s": 151
+    }
+  ],
+  "optional_stress": [
+    {
+      "instance_id": "sphinx-doc__sphinx-9229",
+      "role": "hard-③-stress",
+      "reason": "极端:空patch、2.3M token撞上限;可选压力题,默认不入快循环(太贵)",
+      "repo": "sphinx",
+      "resolved": false,
+      "baseline_tok": 2297159,
+      "baseline_tools": 55,
+      "baseline_time_s": 269
+    }
+  ]
+}
