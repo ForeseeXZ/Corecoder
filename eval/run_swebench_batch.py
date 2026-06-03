@@ -52,6 +52,28 @@ REPORTS_DIR = RUNS_DIR / "_reports"
 
 RUN_ID_PREFIX = "corecoder_full"
 
+# dev subset (fast Reviewer-iteration ruler) — written to its own result namespace
+# so it never collides with the full-50 results and can be resumed independently.
+DEV_SUBSET_PATH = EVAL_ROOT / "dev_subset.json"
+SUBSET_RESULTS_PATH = RUNS_DIR / "_subset_results.jsonl"
+SUBSET_AGGREGATE_PATH = RUNS_DIR / "_subset_aggregate.json"
+SUBSET_RUN_ID_PREFIX = "corecoder_subset"
+
+# subset WITH the Reviewer loop on — kept in its own `_rev` namespace so the
+# Reviewer numbers never overwrite the baseline subset (compare side by side).
+SUBSET_REV_RESULTS_PATH = RUNS_DIR / "_subset_rev_results.jsonl"
+SUBSET_REV_AGGREGATE_PATH = RUNS_DIR / "_subset_rev_aggregate.json"
+SUBSET_REV_RUN_ID_PREFIX = "corecoder_subset_rev"
+
+
+def load_subset_ids(include_optional: bool = False) -> list[str]:
+    """Core 9 ids from dev_subset.json (optional_stress excluded by default)."""
+    spec = json.loads(DEV_SUBSET_PATH.read_text())
+    ids = [e["instance_id"] for e in spec.get("core", [])]
+    if include_optional:
+        ids += [e["instance_id"] for e in spec.get("optional_stress", [])]
+    return ids
+
 
 # ----------------------------- small helpers -----------------------------
 
@@ -96,11 +118,11 @@ def pull_image(image: str, retries: int = 3) -> bool:
     return False
 
 
-def load_completed() -> dict:
+def load_completed(results_path: Path) -> dict:
     """instance_id -> result record, for instances already graded (resumeable)."""
     done = {}
-    if RESULTS_PATH.exists():
-        for line in RESULTS_PATH.read_text().splitlines():
+    if results_path.exists():
+        for line in results_path.read_text().splitlines():
             line = line.strip()
             if not line:
                 continue
@@ -113,15 +135,16 @@ def load_completed() -> dict:
     return done
 
 
-def append_result(rec: dict):
-    RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with RESULTS_PATH.open("a") as f:
+def append_result(rec: dict, results_path: Path):
+    results_path.parent.mkdir(parents=True, exist_ok=True)
+    with results_path.open("a") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
 # ----------------------------- agent phase -----------------------------
 
-def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool) -> dict:
+def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool,
+                         reviewer: bool = False, review_cfg: dict | None = None) -> dict:
     """Run the agent for ONE instance via run_swebench.py in a child process.
 
     Returns a small dict read back from eval/runs/<id>/{summary,prediction}.json.
@@ -136,6 +159,12 @@ def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool) -
     ]
     if with_hints:
         cmd.append("--with-hints")
+    if reviewer:
+        cfg = review_cfg or {}
+        cmd.append("--reviewer")
+        cmd += ["--review-max-rounds", str(cfg.get("max_rounds", 2))]
+        cmd += ["--reviewer-token-budget", str(cfg.get("token_budget", 1_500_000))]
+        cmd += ["--verify-timeout", str(cfg.get("verify_timeout", 120))]
 
     # hard wall on the subprocess slightly above the agent's own SIGALRM budget
     proc_timeout = timeout_s + 180
@@ -161,8 +190,9 @@ def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool) -
         s = json.loads(summary_path.read_text())
         agent = s.get("agent", {})
         patch_info = s.get("patch", {})
+        review = s.get("review")
     else:
-        agent, patch_info = {}, {}
+        agent, patch_info, review = {}, {}, None
 
     return {
         "instance_id": instance_id,
@@ -175,6 +205,7 @@ def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool) -
         "agent_elapsed_s": agent.get("elapsed_s", 0.0),
         "agent_error": agent.get("error"),
         "subproc_error": subproc_err,
+        "review": review,
     }
 
 
@@ -222,10 +253,13 @@ def clean_batch_images(images: list[str]):
 # ----------------------------- driver -----------------------------
 
 def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
-               timeout_s: float, max_workers: int, with_hints: bool, force: bool):
+               timeout_s: float, max_workers: int, with_hints: bool, force: bool,
+               results_path: Path = RESULTS_PATH, aggregate_path: Path = AGGREGATE_PATH,
+               run_id_prefix: str = RUN_ID_PREFIX,
+               reviewer: bool = False, review_cfg: dict | None = None):
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
 
-    completed = {} if force else load_completed()
+    completed = {} if force else load_completed(results_path)
     if completed:
         skip = [t for t in targets if t in completed]
         print(f"[resume] {len(skip)} already graded, skipping: {skip}")
@@ -248,7 +282,7 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
              "agent_time": 0.0, "driver_issues": []}
 
     for bi, batch in enumerate(batches, 1):
-        run_id = f"{RUN_ID_PREFIX}_b{bi:02d}"
+        run_id = f"{run_id_prefix}_b{bi:02d}"
         images = {iid: rs.instance_image_tag(iid) for iid in batch}
         print(f"\n{'='*72}\n[batch {bi}/{len(batches)}] {batch}\n{'='*72}")
 
@@ -275,7 +309,8 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
             # threads here only WAIT on subprocesses (the real isolation is the
             # child process), so this is safe.
             fut2id = {
-                pool.submit(run_agent_subprocess, iid, timeout_s, with_hints): iid
+                pool.submit(run_agent_subprocess, iid, timeout_s, with_hints,
+                            reviewer, review_cfg): iid
                 for iid in runnable
             }
             for fut in concurrent.futures.as_completed(fut2id):
@@ -332,10 +367,11 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
                 "agent_elapsed_s": r.get("agent_elapsed_s", 0.0),
                 "agent_error": r.get("agent_error"),
                 "subproc_error": r.get("subproc_error"),
+                "review": r.get("review"),
             }
             if resolved is None:
                 grand["driver_issues"].append(f"{iid}: no harness verdict")
-            append_result(rec)
+            append_result(rec, results_path)
             if rec["resolved"]:
                 grand["resolved"] += 1
             else:
@@ -344,10 +380,17 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
             grand["cost"] += rec["cost_cny"]
             grand["agent_time"] += rec["agent_elapsed_s"]
             verdict = "RESOLVED" if rec["resolved"] else "unresolved"
-            print(f"   = {iid:<32} {verdict}", flush=True)
+            rv = rec.get("review")
+            rv_note = ""
+            if rv and rv.get("enabled"):
+                rounds = rv.get("rounds", [])
+                sigs = ",".join(str(rd.get("signal")) for rd in rounds) or "-"
+                rv_note = (f"  [review {len(rounds)}rd {sigs}"
+                           f" -> {rv.get('final_decision')}, {rv.get('tokens_spent',0)}tok]")
+            print(f"   = {iid:<32} {verdict}{rv_note}", flush=True)
 
         # --- 5. clean batch images ---
-        clean_batch_images(list(images.values()))
+        # clean_batch_images(list(images.values()))
         print(f"[batch {bi}] cleaned {len(images)} instance images")
         print(f"[disk ] after batch {bi}: {df_root()}")
 
@@ -369,7 +412,7 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
         "df_before": df_start,
         "df_after": df_end,
     }
-    AGGREGATE_PATH.write_text(json.dumps(aggregate, indent=2, ensure_ascii=False))
+    aggregate_path.write_text(json.dumps(aggregate, indent=2, ensure_ascii=False))
 
     print(f"\n{'#'*72}")
     print(f"DONE  resolved {grand['resolved']}/{total} = "
@@ -385,7 +428,7 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
             print(f"  ! {x}")
     else:
         print("driver issues: none")
-    print(f"aggregate: {AGGREGATE_PATH}")
+    print(f"aggregate: {aggregate_path}")
 
 
 def main(argv=None):
@@ -393,6 +436,11 @@ def main(argv=None):
     p.add_argument("-i", "--instance_ids", nargs="+", default=None,
                    help="explicit instance ids (overrides --all)")
     p.add_argument("--all", action="store_true", help="run all 50 instances")
+    p.add_argument("--subset", action="store_true",
+                   help="run the dev subset (core 9 from eval/dev_subset.json) into a "
+                        "separate result namespace (_subset_results.jsonl)")
+    p.add_argument("--include-optional", action="store_true",
+                   help="with --subset, also run optional_stress tasks")
     p.add_argument("--batch-size", type=int, default=8)
     p.add_argument("--agent-concurrency", type=int, default=2)
     p.add_argument("--timeout", type=float, default=900.0,
@@ -400,23 +448,61 @@ def main(argv=None):
     p.add_argument("--max-workers", type=int, default=4, help="harness workers")
     p.add_argument("--with-hints", action="store_true")
     p.add_argument("--force", action="store_true", help="ignore resume state")
+    # --- Reviewer self-check loop (forwarded to each run_swebench.py subprocess) ---
+    p.add_argument("--reviewer", action="store_true",
+                   default=os.environ.get("CORECODER_REVIEWER", "") not in ("", "0"),
+                   help="enable the Planner-Executor-Reviewer self-check loop per "
+                        "instance (also via env CORECODER_REVIEWER=1). With --subset, "
+                        "results go to the separate _subset_rev namespace.")
+    p.add_argument("--review-max-rounds", type=int, default=2,
+                   help="max review->revise iterations per instance (default 2)")
+    p.add_argument("--reviewer-token-budget", type=int, default=1_500_000,
+                   help="token ceiling for the whole review stage (default 1.5M; "
+                        "high enough for a revise round to actually finish)")
+    p.add_argument("--verify-timeout", type=int, default=120,
+                   help="per-run timeout for the reviewer's verify.sh (default 120s)")
     args = p.parse_args(argv)
+
+    review_cfg = {
+        "max_rounds": args.review_max_rounds,
+        "token_budget": args.reviewer_token_budget,
+        "verify_timeout": args.verify_timeout,
+    }
 
     ds = rs.load_data()
     all_ids = [row["instance_id"] for row in ds]
-    if args.instance_ids:
+
+    # subset runs go to their own result namespace (won't be skipped by full-50 resume)
+    results_path, aggregate_path, run_id_prefix = (
+        RESULTS_PATH, AGGREGATE_PATH, RUN_ID_PREFIX)
+    if args.subset:
+        targets = load_subset_ids(include_optional=args.include_optional)
+        if args.reviewer:
+            results_path, aggregate_path, run_id_prefix = (
+                SUBSET_REV_RESULTS_PATH, SUBSET_REV_AGGREGATE_PATH,
+                SUBSET_REV_RUN_ID_PREFIX)
+        else:
+            results_path, aggregate_path, run_id_prefix = (
+                SUBSET_RESULTS_PATH, SUBSET_AGGREGATE_PATH, SUBSET_RUN_ID_PREFIX)
+        print(f"[subset] {len(targets)} tasks from {DEV_SUBSET_PATH.name} "
+              f"(optional={'on' if args.include_optional else 'off'}, "
+              f"reviewer={'on' if args.reviewer else 'off'})")
+    elif args.instance_ids:
         targets = args.instance_ids
     elif args.all:
         targets = all_ids
     else:
-        p.error("specify --all or -i <ids...>")
+        p.error("specify --subset, --all, or -i <ids...>")
 
     unknown = [t for t in targets if t not in set(all_ids)]
     if unknown:
         p.error(f"unknown instance ids: {unknown}")
 
     run_driver(targets, ds, args.batch_size, args.agent_concurrency,
-               args.timeout, args.max_workers, args.with_hints, args.force)
+               args.timeout, args.max_workers, args.with_hints, args.force,
+               results_path=results_path, aggregate_path=aggregate_path,
+               run_id_prefix=run_id_prefix,
+               reviewer=args.reviewer, review_cfg=review_cfg)
 
 
 if __name__ == "__main__":

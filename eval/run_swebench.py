@@ -187,7 +187,9 @@ def extract_model_patch(repo_dir: Path, base_commit: str) -> str:
 
 
 def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
-              agent_timeout_s: float) -> dict:
+              agent_timeout_s: float, *, reviewer: bool = False,
+              review_cfg: dict | None = None, repo: str | None = None,
+              problem_statement: str | None = None) -> dict:
     config = Config.from_env()
     if not config.api_key:
         raise RuntimeError("No API key. Check .env at repo root.")
@@ -203,12 +205,18 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
     )
 
     transcript: list = []
+    phase = {"name": "executor"}  # tags transcript entries executor vs reviewer
 
     def on_token(tok: str):
-        transcript.append({"kind": "token", "text": tok})
+        transcript.append({"kind": "token", "text": tok, "phase": phase["name"]})
 
     def on_tool(name: str, kwargs: dict):
-        transcript.append({"kind": "tool", "name": name, "args": kwargs})
+        transcript.append({"kind": "tool", "name": name, "args": kwargs,
+                           "phase": phase["name"]})
+
+    def review_log(msg: str):
+        transcript.append({"kind": "log", "text": msg, "phase": phase["name"]})
+        print(msg, flush=True)
 
     bash_tool._cwd = None
     cwd_before = os.getcwd()
@@ -224,18 +232,42 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
     final_text = ""
     error = None
     timed_out = False
+    review_meta = None
     try:
         final_text = agent.chat(agent_prompt, on_token=on_token, on_tool=on_tool)
+        # --- Reviewer self-check loop (only when enabled; baseline path untouched) ---
+        if reviewer:
+            from corecoder.review import run_review_loop
+            cfg = review_cfg or {}
+            phase["name"] = "reviewer"
+            review_meta = run_review_loop(
+                agent=agent, llm=llm, repo_dir=repo_dir, repo=repo or "",
+                problem_statement=problem_statement or "",
+                max_rounds=cfg.get("max_rounds", 2),
+                token_budget=cfg.get("token_budget", 400_000),
+                verify_timeout=cfg.get("verify_timeout", 120),
+                on_token=on_token, on_tool=on_tool, log=review_log,
+            )
     except AgentTimeoutError:
         timed_out = True
         error = f"agent timed out after {agent_timeout_s}s"
-        final_text = "(timed out)"
+        final_text = final_text or "(timed out)"
     except Exception as e:
         error = f"{type(e).__name__}: {e}"
-        final_text = f"(agent error: {error})"
+        final_text = final_text or f"(agent error: {error})"
     finally:
         signal.alarm(0)
         signal.signal(signal.SIGALRM, prev_handler)
+        # belt-and-suspenders: never let a verification scratch dir leak into the
+        # extracted patch, even if the review loop was interrupted mid-flight.
+        try:
+            import shutil as _sh
+            from corecoder.review import SCRATCH as _SCRATCH
+            _scratch = Path(repo_dir) / _SCRATCH
+            if _scratch.exists():
+                _sh.rmtree(_scratch, ignore_errors=True)
+        except Exception:
+            pass
         os.chdir(cwd_before)
         bash_tool._cwd = None
 
@@ -255,10 +287,12 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
         "model": config.model,
         "timed_out": timed_out,
         "error": error,
+        "review": review_meta,
     }
 
 
-def run_one(instance: dict, agent_timeout_s: float, with_hints: bool) -> dict:
+def run_one(instance: dict, agent_timeout_s: float, with_hints: bool,
+            reviewer: bool = False, review_cfg: dict | None = None) -> dict:
     """Prepare repo, run agent, extract patch, write trace + prediction record."""
     instance_id = instance["instance_id"]
     base_commit = instance["base_commit"]
@@ -278,7 +312,11 @@ def run_one(instance: dict, agent_timeout_s: float, with_hints: bool) -> dict:
 
     prep = prepare_repo(instance, repo)
 
-    agent_result = run_agent(repo, agent_prompt, transcript_path, agent_timeout_s)
+    agent_result = run_agent(
+        repo, agent_prompt, transcript_path, agent_timeout_s,
+        reviewer=reviewer, review_cfg=review_cfg,
+        repo=instance["repo"], problem_statement=instance["problem_statement"],
+    )
 
     model_patch = extract_model_patch(repo, base_commit)
     (base / "patch.diff").write_text(model_patch)
@@ -322,6 +360,7 @@ def run_one(instance: dict, agent_timeout_s: float, with_hints: bool) -> dict:
             "error": agent_result.get("error"),
             "final_text": agent_result["final_text"],
         },
+        "review": agent_result.get("review"),
     }
     (base / "summary.json").write_text(
         json.dumps(summary, indent=2, ensure_ascii=False)
@@ -350,6 +389,16 @@ def _print_verbose(summary: dict, prediction: dict, agent_result: dict, base: Pa
         if len(brief) > 160:
             brief = brief[:160] + "..."
         print(f"  > {entry['name']}({brief})")
+    rv = s.get("review")
+    if rv:
+        print(f"\n--- reviewer: {len(rv.get('rounds', []))} round(s), "
+              f"final={rv.get('final_decision')}, "
+              f"tokens={rv.get('tokens_spent')}"
+              f"{', BUDGET-STOP' if rv.get('budget_stop') else ''} ---")
+        for r in rv.get("rounds", []):
+            print(f"  r{r['round']}: script={r['signal']} "
+                  f"(after={r['after_code']},before={r['before_code']}) "
+                  f"verdict={r['verdict']} -> {r['decision']}")
     print(f"\n--- model_patch ({s['patch']['n_files']} files, "
           f"{s['patch']['n_lines']} lines) ---")
     print(prediction["model_patch"] or "(EMPTY PATCH)")
@@ -376,7 +425,25 @@ def main(argv: list[str] | None = None):
                              "(off by default for credibility)")
     parser.add_argument("--out", type=Path, default=EVAL_ROOT / "predictions.jsonl",
                         help="consolidated predictions.jsonl path")
+    # --- Reviewer self-check loop (off by default; baseline path is unchanged) ---
+    parser.add_argument("--reviewer", action="store_true",
+                        default=os.environ.get("CORECODER_REVIEWER", "") not in ("", "0"),
+                        help="enable the Planner-Executor-Reviewer self-check loop "
+                             "(also via env CORECODER_REVIEWER=1)")
+    parser.add_argument("--review-max-rounds", type=int, default=2,
+                        help="max review->revise iterations (default 2)")
+    parser.add_argument("--reviewer-token-budget", type=int, default=1_500_000,
+                        help="token ceiling for the whole review stage (default 1.5M; "
+                             "must be high enough for a revise round to actually finish)")
+    parser.add_argument("--verify-timeout", type=int, default=120,
+                        help="per-run timeout for the reviewer's verify.sh (default 120s)")
     args = parser.parse_args(argv)
+
+    review_cfg = {
+        "max_rounds": args.review_max_rounds,
+        "token_budget": args.reviewer_token_budget,
+        "verify_timeout": args.verify_timeout,
+    }
 
     ds = load_data()
     if args.instance_ids is None:
@@ -386,13 +453,18 @@ def main(argv: list[str] | None = None):
     print(f"[swebench] dataset={DATASET} split={SPLIT} ({len(ds)} instances)")
     print(f"[swebench] running {len(targets)}: {targets}")
     print(f"[swebench] model={DEFAULT_EVAL_MODEL} max_tokens={SWE_MAX_TOKENS} "
-          f"timeout={args.timeout}s with_hints={args.with_hints}")
+          f"timeout={args.timeout}s with_hints={args.with_hints} "
+          f"reviewer={args.reviewer}"
+          + (f" (max_rounds={args.review_max_rounds}, "
+             f"budget={args.reviewer_token_budget}, "
+             f"verify_timeout={args.verify_timeout}s)" if args.reviewer else ""))
 
     predictions: list[dict] = []
     for instance_id in targets:
         instance = get_instance(ds, instance_id)
         summary, prediction, agent_result = run_one(
-            instance, agent_timeout_s=args.timeout, with_hints=args.with_hints)
+            instance, agent_timeout_s=args.timeout, with_hints=args.with_hints,
+            reviewer=args.reviewer, review_cfg=review_cfg)
         base = RUNS_DIR / instance_id
         _print_verbose(summary, prediction, agent_result, base)
         predictions.append(prediction)
