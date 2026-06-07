@@ -25,13 +25,52 @@ class Agent:
         tools: list[Tool] | None = None,
         max_context_tokens: int = 128_000,
         max_rounds: int = 50,
+        compress: bool = False,
+        compress_cfg: dict | None = None,
+        mcp: bool = False,
+        mcp_cfg: dict | None = None,
     ):
         self.llm = llm
         self.tools = tools if tools is not None else ALL_TOOLS
         self.messages: list[dict] = []
-        self.context = ContextManager(max_tokens=max_context_tokens)
+
+        # MCP: default OFF -> the in-process tools above are used unchanged
+        # (baseline). With mcp=True, start a standalone MCP server, DYNAMICALLY
+        # DISCOVER its tools, and swap the matching builtins (read_file/grep) for
+        # their MCP-backed twins. Done BEFORE system_prompt() so the agent's
+        # system message reflects the discovered tool surface. On any startup
+        # failure setup_mcp returns the builtins unchanged (full fallback).
+        self._mcp_bridge = None
+        self.mcp_stats = None
+        if mcp:
+            from .mcp_bridge import setup_mcp
+            cfg = mcp_cfg or {}
+            self.tools, self._mcp_bridge, self.mcp_stats = setup_mcp(
+                self.tools,
+                repo_dir=cfg.get("cwd"),
+                call_timeout=cfg.get("call_timeout", 60.0),
+                startup_timeout=cfg.get("startup_timeout", 30.0),
+            )
+
+        # Context manager: default OFF -> the basic always-on ContextManager
+        # (the measured baseline path, unchanged). With compress=True, swap in the
+        # instrumented multi-layer CompressionManager (same maybe_compress surface
+        # + a .stats dict the runner folds into the summary). Mirrors how the
+        # Planner/Reviewer features are bolted on without disturbing baseline.
+        if compress:
+            from .compress import CompressionManager
+            self.context = CompressionManager(
+                max_tokens=max_context_tokens, **(compress_cfg or {})
+            )
+        else:
+            self.context = ContextManager(max_tokens=max_context_tokens)
         self.max_rounds = max_rounds
         self._system = system_prompt(self.tools)
+
+        # fast name->tool dispatch (covers MCP tools, which are NOT in the global
+        # ALL_TOOLS registry get_tool() searches). Identical objects to before
+        # when mcp is off, so the baseline dispatch path is behavior-preserving.
+        self._tool_by_name = {t.name: t for t in self.tools}
 
         # wire up sub-agent capability
         for t in self.tools:
@@ -92,7 +131,7 @@ class Agent:
 
     def _exec_tool(self, tc) -> str:
         """Execute a single tool call, returning the result string."""
-        tool = get_tool(tc.name)
+        tool = self._tool_by_name.get(tc.name) or get_tool(tc.name)
         if tool is None:
             return f"Error: unknown tool '{tc.name}'"
         try:
@@ -120,3 +159,13 @@ class Agent:
     def reset(self):
         """Clear conversation history."""
         self.messages.clear()
+
+    def close(self):
+        """Release external resources. Shuts down the MCP server subprocess (if
+        any) so no zombie process is left behind. Safe to call multiple times and
+        a no-op when MCP is off. The runner calls this in its finally block."""
+        if self._mcp_bridge is not None:
+            try:
+                self._mcp_bridge.close()
+            finally:
+                self._mcp_bridge = None

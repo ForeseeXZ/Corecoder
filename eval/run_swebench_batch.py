@@ -65,6 +65,17 @@ SUBSET_REV_RESULTS_PATH = RUNS_DIR / "_subset_rev_results.jsonl"
 SUBSET_REV_AGGREGATE_PATH = RUNS_DIR / "_subset_rev_aggregate.json"
 SUBSET_REV_RUN_ID_PREFIX = "corecoder_subset_rev"
 
+# subset WITH the Planner on (and optionally +Reviewer) — own namespaces so the
+# four ablation arms (baseline / +reviewer / +planner / +planner+reviewer) never
+# overwrite each other and can each be resumed independently.
+SUBSET_PLAN_RESULTS_PATH = RUNS_DIR / "_subset_plan_results.jsonl"
+SUBSET_PLAN_AGGREGATE_PATH = RUNS_DIR / "_subset_plan_aggregate.json"
+SUBSET_PLAN_RUN_ID_PREFIX = "corecoder_subset_plan"
+
+SUBSET_PLAN_REV_RESULTS_PATH = RUNS_DIR / "_subset_plan_rev_results.jsonl"
+SUBSET_PLAN_REV_AGGREGATE_PATH = RUNS_DIR / "_subset_plan_rev_aggregate.json"
+SUBSET_PLAN_REV_RUN_ID_PREFIX = "corecoder_subset_plan_rev"
+
 
 def load_subset_ids(include_optional: bool = False) -> list[str]:
     """Core 9 ids from dev_subset.json (optional_stress excluded by default)."""
@@ -144,7 +155,10 @@ def append_result(rec: dict, results_path: Path):
 # ----------------------------- agent phase -----------------------------
 
 def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool,
-                         reviewer: bool = False, review_cfg: dict | None = None) -> dict:
+                         reviewer: bool = False, review_cfg: dict | None = None,
+                         planner: bool = False, plan_cfg: dict | None = None,
+                         compress: bool = False, compress_cfg: dict | None = None,
+                         mcp: bool = False, mcp_cfg: dict | None = None) -> dict:
     """Run the agent for ONE instance via run_swebench.py in a child process.
 
     Returns a small dict read back from eval/runs/<id>/{summary,prediction}.json.
@@ -159,12 +173,36 @@ def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool,
     ]
     if with_hints:
         cmd.append("--with-hints")
+    if planner:
+        pcfg = plan_cfg or {}
+        cmd.append("--planner")
+        cmd += ["--planner-model", str(pcfg.get("model", "deepseek-v4-pro"))]
+        cmd += ["--planner-max-rounds", str(pcfg.get("max_rounds", 20))]
+        cmd += ["--planner-token-budget", str(pcfg.get("token_budget", 600_000))]
     if reviewer:
         cfg = review_cfg or {}
         cmd.append("--reviewer")
         cmd += ["--review-max-rounds", str(cfg.get("max_rounds", 2))]
         cmd += ["--reviewer-token-budget", str(cfg.get("token_budget", 1_500_000))]
         cmd += ["--verify-timeout", str(cfg.get("verify_timeout", 120))]
+    if compress:
+        ccfg = compress_cfg or {}
+        cmd.append("--compress")
+        if "snip_at" in ccfg:
+            cmd += ["--compress-snip-at", str(ccfg["snip_at"])]
+        if "summarize_at" in ccfg:
+            cmd += ["--compress-summarize-at", str(ccfg["summarize_at"])]
+        if "collapse_at" in ccfg:
+            cmd += ["--compress-collapse-at", str(ccfg["collapse_at"])]
+        if "keep_recent" in ccfg:
+            cmd += ["--compress-keep-recent", str(ccfg["keep_recent"])]
+    if mcp:
+        mcfg = mcp_cfg or {}
+        cmd.append("--mcp")
+        if "startup_timeout" in mcfg:
+            cmd += ["--mcp-startup-timeout", str(mcfg["startup_timeout"])]
+        if "call_timeout" in mcfg:
+            cmd += ["--mcp-call-timeout", str(mcfg["call_timeout"])]
 
     # hard wall on the subprocess slightly above the agent's own SIGALRM budget
     proc_timeout = timeout_s + 180
@@ -191,8 +229,17 @@ def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool,
         agent = s.get("agent", {})
         patch_info = s.get("patch", {})
         review = s.get("review")
+        plan = s.get("plan")
+        compress_meta = s.get("compress")
+        mcp_meta = s.get("mcp")
     else:
-        agent, patch_info, review = {}, {}, None
+        agent, patch_info, review, plan, compress_meta, mcp_meta = (
+            {}, {}, None, None, None, None)
+
+    # planner runs on a separate (pro) model, so its tokens/cost are tracked
+    # separately in the summary's plan block — fold them into the headline totals.
+    plan_tok = (plan or {}).get("tokens_spent", 0) or 0
+    plan_cost = (plan or {}).get("cost_cny") or 0.0
 
     return {
         "instance_id": instance_id,
@@ -201,11 +248,15 @@ def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool,
         "n_files": patch_info.get("n_files"),
         "prompt_tokens": agent.get("prompt_tokens", 0),
         "completion_tokens": agent.get("completion_tokens", 0),
-        "cost_cny": agent.get("estimated_cost_cny") or 0.0,
+        "plan_tokens": plan_tok,
+        "cost_cny": (agent.get("estimated_cost_cny") or 0.0) + plan_cost,
         "agent_elapsed_s": agent.get("elapsed_s", 0.0),
         "agent_error": agent.get("error"),
         "subproc_error": subproc_err,
         "review": review,
+        "plan": plan,
+        "compress": compress_meta,
+        "mcp": mcp_meta,
     }
 
 
@@ -256,7 +307,10 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
                timeout_s: float, max_workers: int, with_hints: bool, force: bool,
                results_path: Path = RESULTS_PATH, aggregate_path: Path = AGGREGATE_PATH,
                run_id_prefix: str = RUN_ID_PREFIX,
-               reviewer: bool = False, review_cfg: dict | None = None):
+               reviewer: bool = False, review_cfg: dict | None = None,
+               planner: bool = False, plan_cfg: dict | None = None,
+               compress: bool = False, compress_cfg: dict | None = None,
+               mcp: bool = False, mcp_cfg: dict | None = None):
     RUNS_DIR.mkdir(parents=True, exist_ok=True)
 
     completed = {} if force else load_completed(results_path)
@@ -310,7 +364,8 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
             # child process), so this is safe.
             fut2id = {
                 pool.submit(run_agent_subprocess, iid, timeout_s, with_hints,
-                            reviewer, review_cfg): iid
+                            reviewer, review_cfg, planner, plan_cfg,
+                            compress, compress_cfg, mcp, mcp_cfg): iid
                 for iid in runnable
             }
             for fut in concurrent.futures.as_completed(fut2id):
@@ -364,10 +419,14 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
                 "prompt_tokens": r.get("prompt_tokens", 0),
                 "completion_tokens": r.get("completion_tokens", 0),
                 "cost_cny": r.get("cost_cny", 0.0),
+                "plan_tokens": r.get("plan_tokens", 0),
                 "agent_elapsed_s": r.get("agent_elapsed_s", 0.0),
                 "agent_error": r.get("agent_error"),
                 "subproc_error": r.get("subproc_error"),
                 "review": r.get("review"),
+                "plan": r.get("plan"),
+                "compress": r.get("compress"),
+                "mcp": r.get("mcp"),
             }
             if resolved is None:
                 grand["driver_issues"].append(f"{iid}: no harness verdict")
@@ -376,10 +435,18 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
                 grand["resolved"] += 1
             else:
                 grand["unresolved"] += 1
-            grand["tokens"] += rec["prompt_tokens"] + rec["completion_tokens"]
+            grand["tokens"] += (rec["prompt_tokens"] + rec["completion_tokens"]
+                                + rec.get("plan_tokens", 0))
             grand["cost"] += rec["cost_cny"]
             grand["agent_time"] += rec["agent_elapsed_s"]
             verdict = "RESOLVED" if rec["resolved"] else "unresolved"
+            pl = rec.get("plan")
+            pl_note = ""
+            if pl and pl.get("enabled"):
+                pl_note = (f"  [plan {pl.get('n_planned_files')}f"
+                           f" json={'ok' if pl.get('json_parse_ok') else 'fb:'+str(pl.get('json_fallback'))}"
+                           f"{'/ERR' if pl.get('error') else ''},"
+                           f" {pl.get('tokens_spent',0)}tok]")
             rv = rec.get("review")
             rv_note = ""
             if rv and rv.get("enabled"):
@@ -387,7 +454,24 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
                 sigs = ",".join(str(rd.get("signal")) for rd in rounds) or "-"
                 rv_note = (f"  [review {len(rounds)}rd {sigs}"
                            f" -> {rv.get('final_decision')}, {rv.get('tokens_spent',0)}tok]")
-            print(f"   = {iid:<32} {verdict}{rv_note}", flush=True)
+            cm = rec.get("compress")
+            cm_note = ""
+            if cm and cm.get("enabled"):
+                lc = cm.get("layer_counts", {})
+                cm_note = (f"  [compress L1/2/3="
+                           f"{lc.get('1_tool_snip',0)}/{lc.get('2_summarize',0)}/"
+                           f"{lc.get('3_archive',0)}, -{cm.get('total_reclaimed_tokens',0)}tok,"
+                           f" peak {cm.get('peak_tokens',0)}]")
+            mc = rec.get("mcp")
+            mc_note = ""
+            if mc and mc.get("enabled"):
+                if mc.get("server_started"):
+                    mc_note = (f"  [mcp {mc.get('tool_calls',0)}call/"
+                               f"{mc.get('fallback_calls',0)}fb]")
+                else:
+                    mc_note = "  [mcp FAILED->builtin]"
+            print(f"   = {iid:<32} {verdict}{pl_note}{rv_note}{cm_note}{mc_note}",
+                  flush=True)
 
         # --- 5. clean batch images ---
         # clean_batch_images(list(images.values()))
@@ -461,6 +545,46 @@ def main(argv=None):
                         "high enough for a revise round to actually finish)")
     p.add_argument("--verify-timeout", type=int, default=120,
                    help="per-run timeout for the reviewer's verify.sh (default 120s)")
+    # --- Planner phase (forwarded to each run_swebench.py subprocess) ---
+    p.add_argument("--planner", action="store_true",
+                   default=os.environ.get("CORECODER_PLANNER", "") not in ("", "0"),
+                   help="enable the strong-model Planner pass before the Executor per "
+                        "instance (also via env CORECODER_PLANNER=1). With --subset, "
+                        "results go to the _subset_plan (or _subset_plan_rev) namespace.")
+    p.add_argument("--planner-model", type=str, default="deepseek-v4-pro",
+                   help="model for the Planner pass (default deepseek-v4-pro; the "
+                        "Executor stays on deepseek-v4-flash)")
+    p.add_argument("--planner-max-rounds", type=int, default=20,
+                   help="hard cap on Planner tool-call rounds (default 20)")
+    p.add_argument("--planner-token-budget", type=int, default=600_000,
+                   help="advisory Planner token budget, logged when exceeded "
+                        "(hard bound is --planner-max-rounds; default 600k)")
+    # --- Multi-layer context compression (forwarded to each subprocess) ---
+    p.add_argument("--compress", action="store_true",
+                   default=os.environ.get("CORECODER_COMPRESS", "") not in ("", "0"),
+                   help="enable the instrumented multi-layer context compression per "
+                        "instance (also via env CORECODER_COMPRESS=1). With --subset, "
+                        "results go to a `_comp`-suffixed namespace. Off -> the basic "
+                        "always-on ContextManager (baseline) is used unchanged.")
+    p.add_argument("--compress-snip-at", type=float, default=None,
+                   help="Layer-1 (tool-output trim) trip ratio (default 0.55)")
+    p.add_argument("--compress-summarize-at", type=float, default=None,
+                   help="Layer-2 (LLM summary) trip ratio (default 0.72)")
+    p.add_argument("--compress-collapse-at", type=float, default=None,
+                   help="Layer-3 (structured archive) trip ratio (default 0.88)")
+    p.add_argument("--compress-keep-recent", type=int, default=None,
+                   help="turns kept verbatim by Layer-2 summary (default 8)")
+    # --- MCP tool server (forwarded to each subprocess) ---
+    p.add_argument("--mcp", action="store_true",
+                   default=os.environ.get("CORECODER_MCP", "") not in ("", "0"),
+                   help="serve read_file/grep from a standalone MCP server per instance "
+                        "and have the agent discover+call them over MCP (also via env "
+                        "CORECODER_MCP=1). With --subset, results go to a `_mcp`-suffixed "
+                        "namespace. Off -> in-process tools (baseline) are used unchanged.")
+    p.add_argument("--mcp-startup-timeout", type=float, default=None,
+                   help="seconds to wait for the MCP server handshake (default 30)")
+    p.add_argument("--mcp-call-timeout", type=float, default=None,
+                   help="per-call MCP tool timeout before builtin fallback (default 60)")
     args = p.parse_args(argv)
 
     review_cfg = {
@@ -468,6 +592,26 @@ def main(argv=None):
         "token_budget": args.reviewer_token_budget,
         "verify_timeout": args.verify_timeout,
     }
+    plan_cfg = {
+        "model": args.planner_model,
+        "max_rounds": args.planner_max_rounds,
+        "token_budget": args.planner_token_budget,
+    }
+    compress_cfg = {}
+    if args.compress_snip_at is not None:
+        compress_cfg["snip_at"] = args.compress_snip_at
+    if args.compress_summarize_at is not None:
+        compress_cfg["summarize_at"] = args.compress_summarize_at
+    if args.compress_collapse_at is not None:
+        compress_cfg["collapse_at"] = args.compress_collapse_at
+    if args.compress_keep_recent is not None:
+        compress_cfg["keep_recent"] = args.compress_keep_recent
+
+    mcp_cfg = {}
+    if args.mcp_startup_timeout is not None:
+        mcp_cfg["startup_timeout"] = args.mcp_startup_timeout
+    if args.mcp_call_timeout is not None:
+        mcp_cfg["call_timeout"] = args.mcp_call_timeout
 
     ds = rs.load_data()
     all_ids = [row["instance_id"] for row in ds]
@@ -477,22 +621,58 @@ def main(argv=None):
         RESULTS_PATH, AGGREGATE_PATH, RUN_ID_PREFIX)
     if args.subset:
         targets = load_subset_ids(include_optional=args.include_optional)
+        # Ablation namespaces are COMPOSED from the active flags so any combo of
+        # planner / reviewer / compress lands in its own resumable file and never
+        # overwrites another arm. Fixed order (plan, rev, comp) keeps the existing
+        # names byte-identical for back-compat: ""/_rev/_plan/_plan_rev, with
+        # _comp / _plan_comp / _rev_comp / _plan_rev_comp added on top.
+        suffix = ""
+        if args.planner:
+            suffix += "_plan"
+            # Distinguish the Planner MODEL so a pro arm and a flash arm don't
+            # collide (e.g. when comparing JSON-plan adherence). The default
+            # (pro) keeps the bare _plan name for back-compat; any other model
+            # appends a short tag, e.g. deepseek-v4-flash -> _plan_flashplanner.
+            if args.planner_model != "deepseek-v4-pro":
+                model_tag = args.planner_model.split("-")[-1] or "altplanner"
+                suffix += f"_{model_tag}planner"
         if args.reviewer:
-            results_path, aggregate_path, run_id_prefix = (
-                SUBSET_REV_RESULTS_PATH, SUBSET_REV_AGGREGATE_PATH,
-                SUBSET_REV_RUN_ID_PREFIX)
-        else:
-            results_path, aggregate_path, run_id_prefix = (
-                SUBSET_RESULTS_PATH, SUBSET_AGGREGATE_PATH, SUBSET_RUN_ID_PREFIX)
+            suffix += "_rev"
+        if args.compress:
+            suffix += "_comp"
+        if args.mcp:
+            suffix += "_mcp"
+        results_path = RUNS_DIR / f"_subset{suffix}_results.jsonl"
+        aggregate_path = RUNS_DIR / f"_subset{suffix}_aggregate.json"
+        run_id_prefix = f"corecoder_subset{suffix}"
         print(f"[subset] {len(targets)} tasks from {DEV_SUBSET_PATH.name} "
               f"(optional={'on' if args.include_optional else 'off'}, "
-              f"reviewer={'on' if args.reviewer else 'off'})")
+              f"planner={(args.planner_model if args.planner else 'off')}, "
+              f"reviewer={'on' if args.reviewer else 'off'}, "
+              f"compress={'on' if args.compress else 'off'}, "
+              f"mcp={'on' if args.mcp else 'off'}) -> "
+              f"namespace _subset{suffix}")
     elif args.instance_ids:
         targets = args.instance_ids
     elif args.all:
         targets = all_ids
     else:
         p.error("specify --subset, --all, or -i <ids...>")
+
+    # Full / single-instance runs (NOT --subset): tag the namespace by the
+    # EXECUTOR model (CORECODER_MODEL, surfaced via rs.DEFAULT_EVAL_MODEL) so a
+    # full pro run lands in its OWN files and never overwrites the baseline
+    # flash full-50 results. Default flash keeps the bare _swebench names for
+    # back-compat; any other model appends a short tag, e.g. pro -> _swebench_pro.
+    if not args.subset:
+        exec_model = rs.DEFAULT_EVAL_MODEL
+        etag = "" if exec_model == "deepseek-v4-flash" else "_" + exec_model.split("-")[-1]
+        if etag:
+            results_path = RUNS_DIR / f"_swebench{etag}_results.jsonl"
+            aggregate_path = RUNS_DIR / f"_swebench{etag}_aggregate.json"
+            run_id_prefix = f"corecoder_full{etag}"
+        print(f"[full] executor model={exec_model} -> namespace "
+              f"{results_path.name} (run_id prefix {run_id_prefix})")
 
     unknown = [t for t in targets if t not in set(all_ids)]
     if unknown:
@@ -502,7 +682,10 @@ def main(argv=None):
                args.timeout, args.max_workers, args.with_hints, args.force,
                results_path=results_path, aggregate_path=aggregate_path,
                run_id_prefix=run_id_prefix,
-               reviewer=args.reviewer, review_cfg=review_cfg)
+               reviewer=args.reviewer, review_cfg=review_cfg,
+               planner=args.planner, plan_cfg=plan_cfg,
+               compress=args.compress, compress_cfg=compress_cfg,
+               mcp=args.mcp, mcp_cfg=mcp_cfg)
 
 
 if __name__ == "__main__":

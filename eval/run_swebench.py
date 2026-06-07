@@ -60,6 +60,9 @@ DEFAULT_AGENT_TIMEOUT_S = 900.0     # per-task agent wall-time hard limit
 SWE_MAX_TOKENS = 16384              # SWE-bench patches need long output
 DEFAULT_EVAL_MODEL = os.environ.get("CORECODER_MODEL", "deepseek-v4-flash")
 MODEL_NAME_OR_PATH = f"corecoder-{DEFAULT_EVAL_MODEL}"
+# Planner uses a STRONG model (planning needs reasoning); Executor stays on the
+# fast model above. Override with CORECODER_PLANNER_MODEL / --planner-model.
+DEFAULT_PLANNER_MODEL = os.environ.get("CORECODER_PLANNER_MODEL", "deepseek-v4-pro")
 
 # files we ask the agent to leave alone (the grader injects its own tests)
 NAMESPACE_REPLACE = ("__", "_1776_")  # SWE-bench Docker Hub naming convention
@@ -189,7 +192,10 @@ def extract_model_patch(repo_dir: Path, base_commit: str) -> str:
 def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
               agent_timeout_s: float, *, reviewer: bool = False,
               review_cfg: dict | None = None, repo: str | None = None,
-              problem_statement: str | None = None) -> dict:
+              problem_statement: str | None = None,
+              planner: bool = False, plan_cfg: dict | None = None,
+              compress: bool = False, compress_cfg: dict | None = None,
+              mcp: bool = False, mcp_cfg: dict | None = None) -> dict:
     config = Config.from_env()
     if not config.api_key:
         raise RuntimeError("No API key. Check .env at repo root.")
@@ -223,7 +229,15 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
     os.chdir(repo_dir)
     # Instantiate Agent AFTER chdir — system_prompt() bakes cwd into the system
     # message at construction time (so the agent "sees" the repo as its workdir).
-    agent = Agent(llm=llm, max_context_tokens=config.max_context_tokens)
+    # compress=False -> baseline ContextManager path is byte-identical to before.
+    # mcp=False -> in-process tools, baseline path unchanged. When on, the MCP
+    # server subprocess inherits THIS cwd (the repo checkout) so its read/grep
+    # resolve paths exactly like the in-process tools.
+    _mcp_cfg = dict(mcp_cfg or {})
+    _mcp_cfg.setdefault("cwd", str(repo_dir))
+    agent = Agent(llm=llm, max_context_tokens=config.max_context_tokens,
+                  compress=compress, compress_cfg=compress_cfg,
+                  mcp=mcp, mcp_cfg=_mcp_cfg)
 
     prev_handler = signal.signal(signal.SIGALRM, _alarm_handler)
     signal.alarm(int(agent_timeout_s))
@@ -233,8 +247,31 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
     error = None
     timed_out = False
     review_meta = None
+    plan_meta = None
     try:
-        final_text = agent.chat(agent_prompt, on_token=on_token, on_tool=on_tool)
+        exec_prompt = agent_prompt
+        # --- Planner phase (only when enabled; runs BEFORE the Executor) ---
+        # A strong-model, read-only planning pass produces a structured repair
+        # plan that is appended to the Executor's prompt. Baseline path untouched.
+        if planner:
+            from corecoder.plan import run_plan_phase
+            pcfg = plan_cfg or {}
+            phase["name"] = "planner"
+            plan_block, plan_meta = run_plan_phase(
+                config=config, repo_dir=repo_dir, repo=repo or "",
+                problem_statement=problem_statement or "",
+                model=pcfg.get("model", DEFAULT_PLANNER_MODEL),
+                max_rounds=pcfg.get("max_rounds", 20),
+                token_budget=pcfg.get("token_budget", 600_000),
+                max_tokens=SWE_MAX_TOKENS,
+                max_context_tokens=config.max_context_tokens,
+                on_token=on_token, on_tool=on_tool, log=review_log,
+            )
+            phase["name"] = "executor"
+            if plan_block:
+                exec_prompt = agent_prompt + plan_block
+
+        final_text = agent.chat(exec_prompt, on_token=on_token, on_tool=on_tool)
         # --- Reviewer self-check loop (only when enabled; baseline path untouched) ---
         if reviewer:
             from corecoder.review import run_review_loop
@@ -268,10 +305,23 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
                 _sh.rmtree(_scratch, ignore_errors=True)
         except Exception:
             pass
+        # shut down the MCP server subprocess (if any) so no zombie is left —
+        # no-op when mcp is off.
+        try:
+            agent.close()
+        except Exception:
+            pass
         os.chdir(cwd_before)
         bash_tool._cwd = None
 
     elapsed = time.monotonic() - t0
+
+    # compression metadata (only present when --compress; the CompressionManager
+    # carries a .stats dict, the baseline ContextManager does not).
+    compress_meta = getattr(agent.context, "stats", None) if compress else None
+    # MCP metadata: the bridge's stats dict (server up? discovered tools? how many
+    # calls went over MCP vs fell back to builtin). None when mcp is off.
+    mcp_meta = getattr(agent, "mcp_stats", None) if mcp else None
 
     with transcript_path.open("w") as f:
         for entry in transcript:
@@ -288,11 +338,17 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
         "timed_out": timed_out,
         "error": error,
         "review": review_meta,
+        "plan": plan_meta,
+        "compress": compress_meta,
+        "mcp": mcp_meta,
     }
 
 
 def run_one(instance: dict, agent_timeout_s: float, with_hints: bool,
-            reviewer: bool = False, review_cfg: dict | None = None) -> dict:
+            reviewer: bool = False, review_cfg: dict | None = None,
+            planner: bool = False, plan_cfg: dict | None = None,
+            compress: bool = False, compress_cfg: dict | None = None,
+            mcp: bool = False, mcp_cfg: dict | None = None) -> dict:
     """Prepare repo, run agent, extract patch, write trace + prediction record."""
     instance_id = instance["instance_id"]
     base_commit = instance["base_commit"]
@@ -316,6 +372,9 @@ def run_one(instance: dict, agent_timeout_s: float, with_hints: bool,
         repo, agent_prompt, transcript_path, agent_timeout_s,
         reviewer=reviewer, review_cfg=review_cfg,
         repo=instance["repo"], problem_statement=instance["problem_statement"],
+        planner=planner, plan_cfg=plan_cfg,
+        compress=compress, compress_cfg=compress_cfg,
+        mcp=mcp, mcp_cfg=mcp_cfg,
     )
 
     model_patch = extract_model_patch(repo, base_commit)
@@ -360,8 +419,17 @@ def run_one(instance: dict, agent_timeout_s: float, with_hints: bool,
             "error": agent_result.get("error"),
             "final_text": agent_result["final_text"],
         },
+        "plan": agent_result.get("plan"),
         "review": agent_result.get("review"),
+        "compress": agent_result.get("compress"),
+        "mcp": agent_result.get("mcp"),
     }
+    # convenience: total cost across BOTH models (executor flash + planner pro),
+    # since the "agent" block above is executor-only.
+    _plan = agent_result.get("plan") or {}
+    _exec_cost = agent_result.get("estimated_cost") or 0.0
+    _plan_cost = _plan.get("cost_cny") or 0.0
+    summary["total_cost_cny"] = _exec_cost + _plan_cost
     (base / "summary.json").write_text(
         json.dumps(summary, indent=2, ensure_ascii=False)
     )
@@ -389,6 +457,47 @@ def _print_verbose(summary: dict, prediction: dict, agent_result: dict, base: Pa
         if len(brief) > 160:
             brief = brief[:160] + "..."
         print(f"  > {entry['name']}({brief})")
+    pl = s.get("plan")
+    if pl and pl.get("enabled"):
+        print(f"\n--- planner ({pl.get('model')}): "
+              f"{pl.get('n_planned_files')} file(s) planned, "
+              f"json_ok={pl.get('json_parse_ok')}"
+              f"{'' if pl.get('json_parse_ok') else '/fallback='+str(pl.get('json_fallback'))}, "
+              f"{pl.get('tool_calls')} tool calls, "
+              f"{pl.get('tokens_spent')} tok"
+              f"{', BUDGET-OVER' if pl.get('budget_stop') else ''}"
+              f"{', ERROR='+str(pl.get('error')) if pl.get('error') else ''} ---")
+        print(f"  planned files: {pl.get('planned_files')}")
+        if pl.get("plan_text"):
+            print(f"  plan:\n{pl['plan_text']}")
+    cm = s.get("compress")
+    if cm and cm.get("enabled"):
+        lc = cm.get("layer_counts", {})
+        print(f"\n--- compress: layers fired "
+              f"L1={lc.get('1_tool_snip', 0)} "
+              f"L2={lc.get('2_summarize', 0)} "
+              f"L3={lc.get('3_archive', 0)}  |  "
+              f"reclaimed={cm.get('total_reclaimed_tokens', 0)} tok, "
+              f"overhead={cm.get('overhead_tokens', 0)} tok "
+              f"({cm.get('overhead_llm_calls', 0)} calls)  |  "
+              f"peak={cm.get('peak_tokens', 0)} final={cm.get('final_tokens', 0)} "
+              f"(cap {cm.get('max_tokens', 0)}) ---")
+        for ev in cm.get("events", []):
+            print(f"  · {ev['layer']}: {ev['tokens_before']}->{ev['tokens_after']} "
+                  f"(-{ev['reclaimed']}) @ratio {ev['ratio_before']}, "
+                  f"msgs {ev['n_messages_before']}->{ev['n_messages_after']}")
+    mc = s.get("mcp")
+    if mc and mc.get("enabled"):
+        if mc.get("server_started"):
+            print(f"\n--- mcp: server up in {mc.get('startup_s')}s, "
+                  f"discovered {mc.get('discovered_tools')}, "
+                  f"replaced builtins {mc.get('replaced_builtins')}  |  "
+                  f"calls via MCP={mc.get('tool_calls', 0)}, "
+                  f"fallback={mc.get('fallback_calls', 0)} "
+                  f"(fallback_triggered={mc.get('fallback')}) ---")
+        else:
+            print(f"\n--- mcp: server FAILED to start "
+                  f"({mc.get('error')}) -> ran on builtin tools (fallback) ---")
     rv = s.get("review")
     if rv:
         print(f"\n--- reviewer: {len(rv.get('rounds', []))} round(s), "
@@ -437,6 +546,49 @@ def main(argv: list[str] | None = None):
                              "must be high enough for a revise round to actually finish)")
     parser.add_argument("--verify-timeout", type=int, default=120,
                         help="per-run timeout for the reviewer's verify.sh (default 120s)")
+    # --- Planner phase (off by default; baseline path is unchanged) ---
+    parser.add_argument("--planner", action="store_true",
+                        default=os.environ.get("CORECODER_PLANNER", "") not in ("", "0"),
+                        help="enable the strong-model Planner pass before the Executor "
+                             "(also via env CORECODER_PLANNER=1)")
+    parser.add_argument("--planner-model", type=str, default=DEFAULT_PLANNER_MODEL,
+                        help=f"model for the Planner pass (default {DEFAULT_PLANNER_MODEL}; "
+                             f"the Executor stays on {DEFAULT_EVAL_MODEL})")
+    parser.add_argument("--planner-max-rounds", type=int, default=20,
+                        help="hard cap on Planner tool-call rounds (bounds exploration; "
+                             "default 20)")
+    parser.add_argument("--planner-token-budget", type=int, default=600_000,
+                        help="advisory token budget for the Planner pass, logged when "
+                             "exceeded (hard bound is --planner-max-rounds; default 600k)")
+    # --- Multi-layer context compression (off by default; baseline path unchanged) ---
+    parser.add_argument("--compress", action="store_true",
+                        default=os.environ.get("CORECODER_COMPRESS", "") not in ("", "0"),
+                        help="enable the instrumented multi-layer context compression "
+                             "(also via env CORECODER_COMPRESS=1). Off -> the basic "
+                             "always-on ContextManager (baseline) is used unchanged.")
+    parser.add_argument("--compress-snip-at", type=float, default=None,
+                        help="Layer-1 (tool-output trim) trip ratio of max_context "
+                             "(default 0.55)")
+    parser.add_argument("--compress-summarize-at", type=float, default=None,
+                        help="Layer-2 (LLM summary) trip ratio (default 0.72)")
+    parser.add_argument("--compress-collapse-at", type=float, default=None,
+                        help="Layer-3 (structured archive) trip ratio (default 0.88)")
+    parser.add_argument("--compress-keep-recent", type=int, default=None,
+                        help="turns kept verbatim by Layer-2 summary (default 8)")
+    # --- MCP: tools served by a standalone MCP server (off by default; baseline
+    # path is unchanged — agent uses its in-process tools). ---
+    parser.add_argument("--mcp", action="store_true",
+                        default=os.environ.get("CORECODER_MCP", "") not in ("", "0"),
+                        help="decouple read_file/grep into a standalone MCP server and "
+                             "have the agent discover+call them over MCP (stdio). Also "
+                             "via env CORECODER_MCP=1. Falls back to builtin tools if the "
+                             "server can't start or a call fails.")
+    parser.add_argument("--mcp-startup-timeout", type=float, default=None,
+                        help="seconds to wait for the MCP server handshake before "
+                             "falling back to builtins (default 30)")
+    parser.add_argument("--mcp-call-timeout", type=float, default=None,
+                        help="per-call timeout for an MCP tool before falling back to "
+                             "the builtin (default 60)")
     args = parser.parse_args(argv)
 
     review_cfg = {
@@ -444,6 +596,28 @@ def main(argv: list[str] | None = None):
         "token_budget": args.reviewer_token_budget,
         "verify_timeout": args.verify_timeout,
     }
+    plan_cfg = {
+        "model": args.planner_model,
+        "max_rounds": args.planner_max_rounds,
+        "token_budget": args.planner_token_budget,
+    }
+    # only carry keys the user explicitly set; the CompressionManager supplies
+    # sensible defaults for the rest (keeps the cfg small + tunable later).
+    compress_cfg = {}
+    if args.compress_snip_at is not None:
+        compress_cfg["snip_at"] = args.compress_snip_at
+    if args.compress_summarize_at is not None:
+        compress_cfg["summarize_at"] = args.compress_summarize_at
+    if args.compress_collapse_at is not None:
+        compress_cfg["collapse_at"] = args.compress_collapse_at
+    if args.compress_keep_recent is not None:
+        compress_cfg["keep_recent"] = args.compress_keep_recent
+
+    mcp_cfg = {}
+    if args.mcp_startup_timeout is not None:
+        mcp_cfg["startup_timeout"] = args.mcp_startup_timeout
+    if args.mcp_call_timeout is not None:
+        mcp_cfg["call_timeout"] = args.mcp_call_timeout
 
     ds = load_data()
     if args.instance_ids is None:
@@ -454,17 +628,27 @@ def main(argv: list[str] | None = None):
     print(f"[swebench] running {len(targets)}: {targets}")
     print(f"[swebench] model={DEFAULT_EVAL_MODEL} max_tokens={SWE_MAX_TOKENS} "
           f"timeout={args.timeout}s with_hints={args.with_hints} "
-          f"reviewer={args.reviewer}"
+          f"planner={args.planner}"
+          + (f" ({args.planner_model}, max_rounds={args.planner_max_rounds}, "
+             f"budget={args.planner_token_budget})" if args.planner else "")
+          + f" reviewer={args.reviewer}"
           + (f" (max_rounds={args.review_max_rounds}, "
              f"budget={args.reviewer_token_budget}, "
-             f"verify_timeout={args.verify_timeout}s)" if args.reviewer else ""))
+             f"verify_timeout={args.verify_timeout}s)" if args.reviewer else "")
+          + f" compress={args.compress}"
+          + (f" (cfg={compress_cfg or 'defaults'})" if args.compress else "")
+          + f" mcp={args.mcp}"
+          + (f" (cfg={mcp_cfg or 'defaults'})" if args.mcp else ""))
 
     predictions: list[dict] = []
     for instance_id in targets:
         instance = get_instance(ds, instance_id)
         summary, prediction, agent_result = run_one(
             instance, agent_timeout_s=args.timeout, with_hints=args.with_hints,
-            reviewer=args.reviewer, review_cfg=review_cfg)
+            reviewer=args.reviewer, review_cfg=review_cfg,
+            planner=args.planner, plan_cfg=plan_cfg,
+            compress=args.compress, compress_cfg=compress_cfg,
+            mcp=args.mcp, mcp_cfg=mcp_cfg)
         base = RUNS_DIR / instance_id
         _print_verbose(summary, prediction, agent_result, base)
         predictions.append(prediction)
