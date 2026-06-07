@@ -19,5 +19,12 @@ dist/
 
 # SWE-bench per-instance repo checkouts (huge, regenerable from instance images)
 eval/runs/*/repo/
+# per-instance agent transcripts (verbose, regenerable; only the small
+# aggregate/report/results json under eval/runs/ are kept as experiment evidence)
+eval/runs/*/transcript.jsonl
+# official harness run logs (large, regenerable)
+logs/
+# tee'd batch run logs
+eval/runs/*.log
 # corrupted git object db kept as a backup after repo corruption incident
 .git.corrupt/

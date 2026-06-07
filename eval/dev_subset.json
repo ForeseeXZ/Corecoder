@@ -1,8 +1,9 @@
 {
-  "purpose": "Fixed dev subset for fast iteration on the Reviewer increment (Planner-Executor-Reviewer). Baseline = deepseek-v4-flash, 接法B.",
-  "baseline_overall": "resolved 26/50=0.52; this subset baseline = 8 unresolved-or-resolved core tasks below",
-  "composition": "5 confident-wrong(②) fails + 3 resolved(regression) + 1 sphinx hard(③); +1 optional stress",
-  "note_cost": "core 9 single-pass ~1.95M tok, dominated by sphinx-8548(1.41M). The cheap 8 (~540k) suit frequent loops; run the hard ③ less often.",
+  "purpose": "Fixed dev subset for fast iteration on the Planner-Executor-Reviewer increments. Baseline = deepseek-v4-flash, 接法B.",
+  "baseline_overall": "resolved 26/50=0.52; this subset baseline below covers the dominant failure modes for both increments",
+  "composition": "5 confident-wrong(②) fails + 1 missed-second-file(②+①, Planner target) + 3 resolved(regression) + 1 sphinx hard(③) = 10 core; +2 optional stress (1 sphinx empty-thrash, 1 missed-file cross-data-flow)",
+  "note_cost": "core 10 single-pass ~2.1M tok, dominated by sphinx-8548(1.41M). The cheap 9 (~680k) suit frequent loops; run the hard ③ less often.",
+  "note_planner": "django-12325 added 2026-06-03 as the clean missed-file (②+①) representative so the subset can measure the Planner's value on multi-site fixes. Rationale: gold edits BOTH django/db/models/base.py (add `field.remote_field.parent_link` guard) AND django/db/models/options.py (remove the ImproperlyConfigured raise); the bug cannot be fixed by either edit alone. Baseline agent edited only base.py and stopped — the textbook 'fixed the main site, missed the coordinated second site' miss the Planner is meant to prevent. Chosen over the other 4 partials because it is the cheapest (144k tok, 13 tools) and smallest gold (35 lines) clean 1/2-file miss; the sphinx partials (10673=1.91M, 7590=707k & misses 2/3) are too expensive/hard for the fast loop, and django-11885 (801k, 213-line gold) is far costlier. django-12406 (the second-cheapest, a cross-file producer/consumer miss) is parked in optional_stress.",
   "core": [
     {
       "instance_id": "django__django-12304",
@@ -55,6 +56,18 @@
       "baseline_time_s": 20
     },
     {
+      "instance_id": "django__django-12325",
+      "role": "fail-②+①-missed-file",
+      "reason": "Planner 的干净正样本(漏改多文件):MTI 多个 OneToOne 时 pk 选错。gold 必须同时改两处——base.py 给 OneToOneField 循环加 `field.remote_field.parent_link` 守卫 + options.py 删掉 ImproperlyConfigured 抛出;缺任一处都修不好。baseline agent 只改了 base.py 就收工(漏 options.py),正是'修了主点、漏了配套第二点'。在5个 partial 里最便宜最干净(144k/13工具,gold仅35行,1/2文件漏改),适合快循环测 Planner 治漏改的价值。",
+      "repo": "django",
+      "resolved": false,
+      "baseline_tok": 144000,
+      "baseline_tools": 13,
+      "baseline_time_s": 56,
+      "gold_files": ["django/db/models/base.py", "django/db/models/options.py"],
+      "baseline_missed_files": ["django/db/models/options.py"]
+    },
+    {
       "instance_id": "django__django-12050",
       "role": "pass-regression",
       "reason": "最便宜的已解出题(11k/3工具/7s),回归哨兵:Reviewer改动不能把它弄挂",
@@ -105,6 +118,18 @@
       "baseline_tok": 2297159,
       "baseline_tools": 55,
       "baseline_time_s": 269
+    },
+    {
+      "instance_id": "django__django-12406",
+      "role": "fail-②+①-missed-file-stress",
+      "reason": "第二个漏改代表(跨文件 producer/consumer 型),成本较高故入可选压力题、低频跑。RadioSelect 外键不应给 blank=False 的字段显示空选项。gold 改两处且耦合更松:related.py 的 formfield() 把 `blank=self.blank` 传下去(producer),forms/models.py 的 ModelChoiceField 接收 blank 并据此抑制 empty_label(consumer)。baseline 只改了 forms/models.py、漏 related.py。比 12325 贵(788k/31工具,baseline 偏 thrashy),用来压测 Planner 能否追踪跨文件数据流、而非只定位单点。",
+      "repo": "django",
+      "resolved": false,
+      "baseline_tok": 788000,
+      "baseline_tools": 31,
+      "baseline_time_s": 125,
+      "gold_files": ["django/db/models/fields/related.py", "django/forms/models.py"],
+      "baseline_missed_files": ["django/db/models/fields/related.py"]
     }
   ]
 }

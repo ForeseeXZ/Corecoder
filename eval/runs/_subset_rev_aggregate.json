@@ -1,0 +1,15 @@
+{
+  "dataset": "MariusHobbhahn/swe-bench-verified-mini",
+  "model": "corecoder-deepseek-v4-flash",
+  "n_graded": 9,
+  "resolved": 5,
+  "unresolved": 4,
+  "pass_rate": 0.5555555555555556,
+  "total_tokens": 8552312,
+  "total_cost_cny": 8.806917,
+  "total_agent_time_s": 2114.0936242849566,
+  "wall_time_s": 1877.8575817399542,
+  "driver_issues": [],
+  "df_before": "/dev/vda3        99G   24G   71G  25% /",
+  "df_after": "/dev/vda3        99G   24G   71G  25% /"
+}
