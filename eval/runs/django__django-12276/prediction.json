@@ -1,5 +1,0 @@
-{
-  "instance_id": "django__django-12276",
-  "model_name_or_path": "corecoder-deepseek-v4-flash",
-  "model_patch": "diff --git a/django/forms/widgets.py b/django/forms/widgets.py\nindex 338d54d72f..3ad8833f1c 100644\n--- a/django/forms/widgets.py\n+++ b/django/forms/widgets.py\n@@ -384,6 +384,9 @@ class FileInput(Input):\n         \"File widgets take data from FILES, not POST\"\n         return files.get(name)\n \n+    def use_required_attribute(self, initial):\n+        return super().use_required_attribute(initial) and not initial\n+\n     def value_omitted_from_data(self, data, files, name):\n         return name not in files\n \n@@ -451,9 +454,6 @@ class ClearableFileInput(FileInput):\n             return False\n         return upload\n \n-    def use_required_attribute(self, initial):\n-        return super().use_required_attribute(initial) and not initial\n-\n     def value_omitted_from_data(self, data, files, name):\n         return (\n             super().value_omitted_from_data(data, files, name) and\n"
-}
