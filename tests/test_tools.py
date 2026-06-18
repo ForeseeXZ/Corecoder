@@ -31,6 +31,15 @@ def test_bash_basic():
     assert "hello" in bash.execute(command="echo hello")
 
 
+def test_bash_decodes_utf8_output():
+    bash = get_tool("bash")
+    command = (
+        f'"{sys.executable}" -c '
+        '"import sys; sys.stdout.buffer.write(\'中文输出\'.encode(\'utf-8\'))"'
+    )
+    assert "中文输出" in bash.execute(command=command)
+
+
 def test_bash_exit_code():
     bash = get_tool("bash")
     r = bash.execute(command="exit 42")

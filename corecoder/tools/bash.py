@@ -8,6 +8,7 @@ Claude Code's BashTool is 1,143 lines. This is the distilled version:
 """
 
 import os
+import locale
 import re
 import subprocess
 from .base import Tool
@@ -65,7 +66,6 @@ class BashTool(Tool):
                 command,
                 shell=True,
                 capture_output=True,
-                text=True,
                 timeout=timeout,
                 cwd=cwd,
             )
@@ -73,9 +73,9 @@ class BashTool(Tool):
             # track cd commands so next command runs in the right place
             if proc.returncode == 0:
                 _update_cwd(command, cwd)
-            out = proc.stdout
+            out = _decode_output(proc.stdout)
             if proc.stderr:
-                out += f"\n[stderr]\n{proc.stderr}"
+                out += f"\n[stderr]\n{_decode_output(proc.stderr)}"
             if proc.returncode != 0:
                 out += f"\n[exit code: {proc.returncode}]"
             # keep head + tail to preserve the most useful info
@@ -98,6 +98,27 @@ def _check_dangerous(cmd: str) -> str | None:
         if re.search(pattern, cmd):
             return reason
     return None
+
+
+def _decode_output(data: bytes | str | None) -> str:
+    """Decode command output without trusting the platform default."""
+    if not data:
+        return ""
+    if isinstance(data, str):
+        return data
+
+    encodings = ["utf-8", locale.getpreferredencoding(False), "gbk"]
+    seen = set()
+    for encoding in encodings:
+        if not encoding or encoding in seen:
+            continue
+        seen.add(encoding)
+        try:
+            return data.decode(encoding)
+        except (LookupError, UnicodeDecodeError):
+            pass
+
+    return data.decode("utf-8", errors="replace")
 
 
 def _update_cwd(command: str, current_cwd: str):

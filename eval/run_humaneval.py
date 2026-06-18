@@ -41,10 +41,10 @@ from corecoder.llm import LLM
 from corecoder.tools import bash as bash_tool
 
 EVAL_ROOT = REPO_ROOT / "eval"
-RUNS_DIR = EVAL_ROOT / "runs"
+RUNS_DIR = Path(os.environ.get("CORECODER_RUNS_DIR", EVAL_ROOT / "runs_mimo"))
 DEFAULT_EXEC_TIMEOUT_S = 10.0       # judge subprocess hard limit
 DEFAULT_AGENT_TIMEOUT_S = 300.0     # per-task agent wall-time hard limit
-DEFAULT_EVAL_MODEL = os.environ.get("CORECODER_MODEL", "deepseek-v4-flash")
+DEFAULT_EVAL_MODEL = os.environ.get("CORECODER_MODEL", "mimo-v2.5")
 
 
 class AgentTimeoutError(Exception):

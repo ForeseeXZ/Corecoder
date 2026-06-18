@@ -27,7 +27,7 @@ def _load_dotenv():
 
 @dataclass
 class Config:
-    model: str = "gpt-4o"
+    model: str = "mimo-v2.5"
     api_key: str = ""
     base_url: str | None = None
     max_tokens: int = 4096
@@ -43,13 +43,18 @@ class Config:
         api_key = (
             os.getenv("CORECODER_API_KEY")
             or os.getenv("OPENAI_API_KEY")
+            or os.getenv("MIMO_API_KEY")
             or os.getenv("DEEPSEEK_API_KEY")
             or ""
         )
         return cls(
-            model=os.getenv("CORECODER_MODEL", "gpt-4o"),
+            model=os.getenv("CORECODER_MODEL", "mimo-v2.5"),
             api_key=api_key,
-            base_url=os.getenv("OPENAI_BASE_URL") or os.getenv("CORECODER_BASE_URL"),
+            base_url=(
+                os.getenv("OPENAI_BASE_URL")
+                or os.getenv("CORECODER_BASE_URL")
+                or os.getenv("MIMO_BASE_URL")
+            ),
             max_tokens=int(os.getenv("CORECODER_MAX_TOKENS", "4096")),
             temperature=float(os.getenv("CORECODER_TEMPERATURE", "0")),
             max_context_tokens=int(os.getenv("CORECODER_MAX_CONTEXT", "128000")),

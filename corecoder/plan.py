@@ -12,7 +12,7 @@ Why this exists (data-backed, see eval/BASELINE_ANALYSIS.md):
 
 Mechanism:
   Before the Executor touches anything, a PLANNER sub-agent (clean context,
-  STRONG model — deepseek-v4-pro) does a BOUNDED read-only investigation of the
+  STRONG model — mimo-v2.5-pro by default) does a BOUNDED read-only investigation of the
   repo and emits a structured repair plan: the full set of files/sites that must
   change, numbered steps, and a completeness check. That plan is then handed to
   the Executor (the fast model) as its guide. Two intended effects:
@@ -21,8 +21,8 @@ Mechanism:
     2. Convergence — the Executor starts from a structured target instead of
        open-ended exploration (bounds the sphinx thrash).
 
-Division of labour: PLANNER = deepseek-v4-pro (planning needs strong reasoning),
-EXECUTOR = deepseek-v4-flash (fast implementation). The two run on SEPARATE LLM
+Division of labour: PLANNER = mimo-v2.5-pro (planning needs strong reasoning),
+EXECUTOR = mimo-v2.5 (fast implementation). The two run on SEPARATE LLM
 objects so their token/cost accounting (priced differently) stays clean.
 
 Exploration budget: the Planner is given READ-ONLY tools (read/grep/glob) — it
@@ -46,7 +46,7 @@ from .agent import Agent
 from .llm import LLM
 from .tools import ReadFileTool, GlobTool, GrepTool
 
-DEFAULT_PLANNER_MODEL = "deepseek-v4-pro"
+DEFAULT_PLANNER_MODEL = "mimo-v2.5-pro"
 
 
 def _planner_tools() -> list:
@@ -278,7 +278,7 @@ def run_plan_phase(
 ) -> tuple[str, dict]:
     """Run the bounded Planner pass and return (plan_block_for_executor, meta).
 
-    Creates its OWN strong-model LLM (deepseek-v4-pro) so planner tokens/cost are
+    Creates its OWN strong-model LLM (mimo-v2.5-pro by default) so planner tokens/cost are
     accounted separately from the flash Executor. The caller is expected to be
     chdir'd into `repo_dir` already (so the read-only tools see the checkout),
     mirroring how the Reviewer loop is invoked.

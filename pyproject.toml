@@ -40,6 +40,11 @@ packages = ["corecoder"]
 [project.optional-dependencies]
 litellm = ["litellm>=1.60.0,<2.0.0"]
 dev = ["pytest>=7.0"]
+eval = [
+    "datasets>=2.14",
+    "swebench",
+    "mcp>=1.0",
+]
 
 [project.scripts]
 corecoder = "corecoder.cli:main"

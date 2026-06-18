@@ -25,7 +25,7 @@ def _parse_args():
         prog="corecoder",
         description="Minimal AI coding agent. Works with any OpenAI-compatible LLM.",
     )
-    p.add_argument("-m", "--model", help="Model name (default: $CORECODER_MODEL or gpt-4o)")
+    p.add_argument("-m", "--model", help="Model name (default: $CORECODER_MODEL or mimo-v2.5)")
     p.add_argument("--base-url", help="API base URL (default: $OPENAI_BASE_URL)")
     p.add_argument("--api-key", help="API key (default: $OPENAI_API_KEY)")
     p.add_argument("-p", "--prompt", help="One-shot prompt (non-interactive mode)")
@@ -49,8 +49,11 @@ def main():
     if not config.api_key:
         console.print("[red bold]No API key found.[/]")
         console.print(
-            "Set one of: OPENAI_API_KEY, DEEPSEEK_API_KEY, or CORECODER_API_KEY\n"
+            "Set one of: OPENAI_API_KEY, MIMO_API_KEY, DEEPSEEK_API_KEY, or CORECODER_API_KEY\n"
             "\nExamples:\n"
+            "  # MiMo\n"
+            "  export OPENAI_API_KEY=... OPENAI_BASE_URL=https://your-mimo-compatible-endpoint/v1 CORECODER_MODEL=mimo-v2.5\n"
+            "\n"
             "  # OpenAI\n"
             "  export OPENAI_API_KEY=sk-...\n"
             "\n"
@@ -71,6 +74,9 @@ def main():
         max_tokens=config.max_tokens,
     )
     agent = Agent(llm=llm, max_context_tokens=config.max_context_tokens)
+    # create a agent with no tools registered by default;
+    # users can add tools by creating a subclass and overriding the tools() method,
+    # or by using the MCP tool registration API to add tools at runtime
 
     # resume saved session
     if args.resume:

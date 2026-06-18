@@ -16,7 +16,7 @@ Features:
   - per-instance failure isolation (one bad task never stops the batch/run)
   - one progress line per task
   - resume: instances already graded (in _results.jsonl) are skipped
-  - everything lands under eval/runs/
+  - everything lands under eval/runs_mimo/ by default
 
 Usage:
   python eval/run_swebench_batch.py --all                 # all 50
@@ -45,7 +45,7 @@ sys.path.insert(0, str(REPO_ROOT / "eval"))
 import run_swebench as rs
 
 EVAL_ROOT = REPO_ROOT / "eval"
-RUNS_DIR = EVAL_ROOT / "runs"
+RUNS_DIR = Path(os.environ.get("CORECODER_RUNS_DIR", EVAL_ROOT / "runs_mimo"))
 RESULTS_PATH = RUNS_DIR / "_swebench_results.jsonl"
 AGGREGATE_PATH = RUNS_DIR / "_swebench_aggregate.json"
 REPORTS_DIR = RUNS_DIR / "_reports"
@@ -152,6 +152,24 @@ def append_result(rec: dict, results_path: Path):
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
+def ablation_suffix(args) -> str:
+    suffix = ""
+    if args.planner:
+        suffix += "_plan"
+        # The default strong planner keeps the bare _plan name; any other
+        # model appends a short tag, e.g. mimo-v2.5 -> _plan_v2.5planner.
+        if args.planner_model != rs.DEFAULT_PLANNER_MODEL:
+            model_tag = args.planner_model.split("-")[-1] or "altplanner"
+            suffix += f"_{model_tag}planner"
+    if args.reviewer:
+        suffix += "_rev"
+    if args.compress:
+        suffix += "_comp"
+    if args.mcp:
+        suffix += "_mcp"
+    return suffix
+
+
 # ----------------------------- agent phase -----------------------------
 
 def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool,
@@ -161,7 +179,7 @@ def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool,
                          mcp: bool = False, mcp_cfg: dict | None = None) -> dict:
     """Run the agent for ONE instance via run_swebench.py in a child process.
 
-    Returns a small dict read back from eval/runs/<id>/{summary,prediction}.json.
+    Returns a small dict read back from RUNS_DIR/<id>/{summary,prediction}.json.
     Never raises — any failure becomes a record with patch_empty=True.
     """
     base = RUNS_DIR / instance_id
@@ -176,7 +194,7 @@ def run_agent_subprocess(instance_id: str, timeout_s: float, with_hints: bool,
     if planner:
         pcfg = plan_cfg or {}
         cmd.append("--planner")
-        cmd += ["--planner-model", str(pcfg.get("model", "deepseek-v4-pro"))]
+        cmd += ["--planner-model", str(pcfg.get("model", rs.DEFAULT_PLANNER_MODEL))]
         cmd += ["--planner-max-rounds", str(pcfg.get("max_rounds", 20))]
         cmd += ["--planner-token-budget", str(pcfg.get("token_budget", 600_000))]
     if reviewer:
@@ -551,9 +569,9 @@ def main(argv=None):
                    help="enable the strong-model Planner pass before the Executor per "
                         "instance (also via env CORECODER_PLANNER=1). With --subset, "
                         "results go to the _subset_plan (or _subset_plan_rev) namespace.")
-    p.add_argument("--planner-model", type=str, default="deepseek-v4-pro",
-                   help="model for the Planner pass (default deepseek-v4-pro; the "
-                        "Executor stays on deepseek-v4-flash)")
+    p.add_argument("--planner-model", type=str, default=rs.DEFAULT_PLANNER_MODEL,
+                   help=f"model for the Planner pass (default {rs.DEFAULT_PLANNER_MODEL}; "
+                        f"the Executor stays on {rs.DEFAULT_EVAL_MODEL})")
     p.add_argument("--planner-max-rounds", type=int, default=20,
                    help="hard cap on Planner tool-call rounds (default 20)")
     p.add_argument("--planner-token-budget", type=int, default=600_000,
@@ -626,22 +644,7 @@ def main(argv=None):
         # overwrites another arm. Fixed order (plan, rev, comp) keeps the existing
         # names byte-identical for back-compat: ""/_rev/_plan/_plan_rev, with
         # _comp / _plan_comp / _rev_comp / _plan_rev_comp added on top.
-        suffix = ""
-        if args.planner:
-            suffix += "_plan"
-            # Distinguish the Planner MODEL so a pro arm and a flash arm don't
-            # collide (e.g. when comparing JSON-plan adherence). The default
-            # (pro) keeps the bare _plan name for back-compat; any other model
-            # appends a short tag, e.g. deepseek-v4-flash -> _plan_flashplanner.
-            if args.planner_model != "deepseek-v4-pro":
-                model_tag = args.planner_model.split("-")[-1] or "altplanner"
-                suffix += f"_{model_tag}planner"
-        if args.reviewer:
-            suffix += "_rev"
-        if args.compress:
-            suffix += "_comp"
-        if args.mcp:
-            suffix += "_mcp"
+        suffix = ablation_suffix(args)
         results_path = RUNS_DIR / f"_subset{suffix}_results.jsonl"
         aggregate_path = RUNS_DIR / f"_subset{suffix}_aggregate.json"
         run_id_prefix = f"corecoder_subset{suffix}"
@@ -660,17 +663,21 @@ def main(argv=None):
         p.error("specify --subset, --all, or -i <ids...>")
 
     # Full / single-instance runs (NOT --subset): tag the namespace by the
-    # EXECUTOR model (CORECODER_MODEL, surfaced via rs.DEFAULT_EVAL_MODEL) so a
-    # full pro run lands in its OWN files and never overwrites the baseline
-    # flash full-50 results. Default flash keeps the bare _swebench names for
-    # back-compat; any other model appends a short tag, e.g. pro -> _swebench_pro.
+    # EXECUTOR model and active ablation flags so full-50 arms never overwrite
+    # each other. Defaults keep the bare _swebench names; examples:
+    #   _swebench_results.jsonl
+    #   _swebench_pro_results.jsonl
+    #   _swebench_plan_rev_results.jsonl
+    #   _swebench_pro_plan_rev_results.jsonl
     if not args.subset:
         exec_model = rs.DEFAULT_EVAL_MODEL
-        etag = "" if exec_model == "deepseek-v4-flash" else "_" + exec_model.split("-")[-1]
-        if etag:
-            results_path = RUNS_DIR / f"_swebench{etag}_results.jsonl"
-            aggregate_path = RUNS_DIR / f"_swebench{etag}_aggregate.json"
-            run_id_prefix = f"corecoder_full{etag}"
+        default_exec = os.environ.get("CORECODER_DEFAULT_EXECUTOR_MODEL", "mimo-v2.5")
+        model_suffix = "" if exec_model == default_exec else "_" + exec_model.split("-")[-1]
+        suffix = model_suffix + ablation_suffix(args)
+        if suffix:
+            results_path = RUNS_DIR / f"_swebench{suffix}_results.jsonl"
+            aggregate_path = RUNS_DIR / f"_swebench{suffix}_aggregate.json"
+            run_id_prefix = f"corecoder_full{suffix}"
         print(f"[full] executor model={exec_model} -> namespace "
               f"{results_path.name} (run_id prefix {run_id_prefix})")
 

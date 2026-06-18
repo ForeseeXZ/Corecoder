@@ -10,6 +10,7 @@ single unified interface. Set CORECODER_PROVIDER=litellm.
 """
 
 import json
+import os
 import time
 from dataclasses import dataclass, field
 
@@ -49,12 +50,25 @@ class LLMResponse:
         return msg
 
 
-# pricing per million tokens in RMB (CNY): (input, output)
-# source: api-docs.deepseek.com
+# Pricing per million tokens in RMB (CNY): (input, output).
+# Extend or override with CORECODER_PRICING_CNY_PER_M, for example:
+# {"mimo-v2.5":[1,2],"mimo-v2.5-pro":[3,6]}
 _PRICING = {
     "deepseek-v4-flash": (1, 2),
     "deepseek-v4-pro": (3, 6),
 }
+
+
+def _pricing_for(model: str) -> tuple[float, float] | None:
+    raw = os.getenv("CORECODER_PRICING_CNY_PER_M", "").strip()
+    if raw:
+        try:
+            table = json.loads(raw)
+            if model in table and len(table[model]) == 2:
+                return float(table[model][0]), float(table[model][1])
+        except Exception:
+            pass
+    return _PRICING.get(model)
 
 
 class LLM:
@@ -74,7 +88,7 @@ class LLM:
     @property
     def estimated_cost(self) -> float | None:
         """Rough cost estimate in RMB (CNY). Returns None if model not in pricing table."""
-        pricing = _PRICING.get(self.model)
+        pricing = _pricing_for(self.model)
         if not pricing:
             return None
         input_rate, output_rate = pricing

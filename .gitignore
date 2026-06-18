@@ -7,33 +7,44 @@ build/
 .eggs/
 *.egg
 .env
+.env.*
+!.env.example
+.netrc
+.pypirc
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
 .venv/
 venv/
 .mypy_cache/
 .ruff_cache/
 .corecoder_history
 .DS_Store
+_tmp.txt
 dist/
 .pytest_cache/
 .tmp/
 
 # SWE-bench per-instance repo checkouts (huge, regenerable from instance images)
-eval/runs/*/repo/
+eval/runs*/*/repo/
 # per-instance run artifacts (verbose/regenerable from the instance images;
-# only the small aggregate/report/results json directly under eval/runs/ and
-# eval/runs/_reports/ are kept as the project's experiment evidence)
-eval/runs/*/transcript.jsonl
-eval/runs/*/summary.json
-eval/runs/*/patch.diff
-eval/runs/*/prediction.json
-eval/runs/*/_single_prediction.jsonl
+# only the small aggregate/report/results json directly under eval/runs*/ and
+# eval/runs*/_reports/ are kept as the project's experiment evidence)
+eval/runs*/*/transcript.jsonl
+eval/runs*/*/summary.json
+eval/runs*/*/patch.diff
+eval/runs*/*/prediction.json
+eval/runs*/*/_single_prediction.jsonl
 # consolidated prediction intermediates (regenerable; harness verdicts are kept
 # in the _results.jsonl / _aggregate.json / _reports instead)
 eval/predictions.jsonl
-eval/runs/_batch_*_predictions.jsonl
+eval/runs*/_batch_*_predictions.jsonl
 # official harness run logs (large, regenerable)
 logs/
 # tee'd batch run logs
-eval/runs/*.log
+eval/runs*/*.log
 # corrupted git object db kept as a backup after repo corruption incident
 .git.corrupt/

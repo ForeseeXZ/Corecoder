@@ -52,17 +52,17 @@ from corecoder.llm import LLM
 from corecoder.tools import bash as bash_tool
 
 EVAL_ROOT = REPO_ROOT / "eval"
-RUNS_DIR = EVAL_ROOT / "runs"
+RUNS_DIR = Path(os.environ.get("CORECODER_RUNS_DIR", EVAL_ROOT / "runs_mimo"))
 
 DATASET = "MariusHobbhahn/swe-bench-verified-mini"
 SPLIT = "test"
 DEFAULT_AGENT_TIMEOUT_S = 900.0     # per-task agent wall-time hard limit
 SWE_MAX_TOKENS = 16384              # SWE-bench patches need long output
-DEFAULT_EVAL_MODEL = os.environ.get("CORECODER_MODEL", "deepseek-v4-flash")
+DEFAULT_EVAL_MODEL = os.environ.get("CORECODER_MODEL", "mimo-v2.5")
 MODEL_NAME_OR_PATH = f"corecoder-{DEFAULT_EVAL_MODEL}"
 # Planner uses a STRONG model (planning needs reasoning); Executor stays on the
 # fast model above. Override with CORECODER_PLANNER_MODEL / --planner-model.
-DEFAULT_PLANNER_MODEL = os.environ.get("CORECODER_PLANNER_MODEL", "deepseek-v4-pro")
+DEFAULT_PLANNER_MODEL = os.environ.get("CORECODER_PLANNER_MODEL", "mimo-v2.5-pro")
 
 # files we ask the agent to leave alone (the grader injects its own tests)
 NAMESPACE_REPLACE = ("__", "_1776_")  # SWE-bench Docker Hub naming convention
