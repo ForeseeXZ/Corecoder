@@ -115,18 +115,73 @@ def image_size(image: str) -> str:
         return "?"
 
 
-def pull_image(image: str, retries: int = 3) -> bool:
+def pull_image(image: str, retries: int = 3) -> tuple[bool, str]:
     if image_present(image):
-        return True
+        return True, ""
+    last_err = ""
     for attempt in range(1, retries + 1):
         proc = subprocess.run(["docker", "pull", image],
                               capture_output=True, text=True)
         if proc.returncode == 0:
-            return True
+            return True, ""
+        last_err = proc.stderr.strip()
         print(f"      pull attempt {attempt}/{retries} failed: "
-              f"{proc.stderr.strip().splitlines()[-1:] or ['?']}", flush=True)
+              f"{last_err.splitlines()[-1:] or ['?']}", flush=True)
         time.sleep(2 * attempt)
+    return False, last_err
+
+
+def _docker_not_found(error: str) -> bool:
+    text = error.lower()
+    return any(s in text for s in (
+        "not found",
+        "manifest unknown",
+        "repository does not exist",
+    ))
+
+
+def build_instance_image(instance: dict, image: str) -> bool:
+    """Build a missing SWE-bench instance image locally.
+
+    Docker Hub does not always have every prebuilt `swebench/sweb.eval...`
+    image. The official harness can still materialize the same image from the
+    dataset metadata, which lets the rest of this driver keep using one tag.
+    """
+    namespace = image.split("/", 1)[0] if "/" in image else None
+    try:
+        import docker
+        from swebench.harness.docker_build import build_instance_images
+
+        client = docker.from_env()
+        print("      remote image missing; building locally with swebench harness ...",
+              flush=True)
+        build_instance_images(
+            client,
+            [instance],
+            force_rebuild=False,
+            max_workers=1,
+            namespace=namespace,
+            tag="latest",
+        )
+    except Exception as e:
+        print(f"      local build failed: {type(e).__name__}: {e}", flush=True)
+        return False
+    if image_present(image):
+        return True
+    print(f"      local build finished but expected tag is missing: {image}",
+          flush=True)
     return False
+
+
+def ensure_image(instance: dict, image: str) -> tuple[bool, str]:
+    if image_present(image):
+        return True, "cached"
+    ok, err = pull_image(image)
+    if ok:
+        return True, "pulled"
+    if _docker_not_found(err) and build_instance_image(instance, image):
+        return True, "built"
+    return False, "FAILED"
 
 
 def load_completed(results_path: Path) -> dict:
@@ -363,10 +418,9 @@ def run_driver(targets: list[str], ds, batch_size: int, agent_concurrency: int,
         image_ok = {}
         for iid in batch:
             img = images[iid]
-            had = image_present(img)
-            ok = pull_image(img)
+            ok, source = ensure_image(id2inst[iid], img)
             image_ok[iid] = ok
-            tag = "cached" if had else ("pulled " + image_size(img) if ok else "FAILED")
+            tag = source if not ok else f"{source} {image_size(img)}"
             print(f"   - {iid:<32} {tag}", flush=True)
 
         # --- 2. agent phase (subprocess per instance, concurrency-limited) ---
