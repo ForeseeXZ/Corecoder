@@ -1,0 +1,17 @@
+{
+  "n_graded": 50,
+  "resolved": 30,
+  "unresolved": 20,
+  "pass_rate": 0.6,
+  "patch_empty": 1,
+  "agent_error": 0,
+  "subproc_error": 0,
+  "total_tokens": 22946161,
+  "total_cost_cny": 0,
+  "total_agent_time_s": 9634.062704066964,
+  "base": "eval/runs_mimo_pro/_swebench_pro_results.jsonl",
+  "retries": [
+    "eval/runs_mimo_pro_retry_empty/_swebench_pro_results.jsonl",
+    "eval/runs_mimo_pro_retry/_swebench_pro_results.jsonl"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "n_graded": 50,
+  "resolved": 27,
+  "unresolved": 23,
+  "pass_rate": 0.54,
+  "patch_empty": 1,
+  "agent_error": 0,
+  "subproc_error": 0,
+  "total_tokens": 23796132,
+  "total_cost_cny": 0,
+  "total_agent_time_s": 7552.040320213977,
+  "base": "eval/runs_mimo/_swebench_results.jsonl",
+  "retries": [
+    "eval/runs_mimo_retry_empty_cached/_swebench_results.jsonl",
+    "eval/runs_mimo_retry_empty_missing/_swebench_results.jsonl",
+    "eval/runs_mimo_retry_empty/_swebench_results.jsonl",
+    "eval/runs_mimo_retry/_swebench_results.jsonl"
+  ]
+}
