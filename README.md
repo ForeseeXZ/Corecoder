@@ -1,6 +1,6 @@
-# CoreCoder · 多 Agent 编码助手与 SWE-bench 消融实验框架
+# CodePilot · 多 Agent 编码助手与 SWE-bench 消融实验框架
 
-CoreCoder 是一个教学级 AI 编码 Agent 项目，在原始单 Agent 循环上扩展了
+CodePilot 是一个教学级 AI 编码 Agent 项目，在原始单 Agent 循环上扩展了
 Planner / Executor / Reviewer 多 Agent 编排，并配套了一套可开关、可续跑、可归档的
 HumanEval 与 SWE-bench Verified Mini 评测流水线。
 
@@ -12,7 +12,7 @@ HumanEval 与 SWE-bench Verified Mini 评测流水线。
 
 这个仓库包含两层东西：
 
-- **编码 Agent 本体**：`corecoder/` 下的最小 Claude Code 风格实现。核心是 `Agent.chat()` 循环：模型生成工具调用，工具执行后结果回填，再继续调用模型，直到模型输出最终文本。
+- **编码 Agent 本体**：`corecoder/` 下的最小 Claude Code 风格实现。CodePilot 当前保留 `corecoder` 作为 Python 包名和 CLI 名称；核心是 `Agent.chat()` 循环：模型生成工具调用，工具执行后结果回填，再继续调用模型，直到模型输出最终文本。
 - **评测与消融系统**：`eval/` 下的 HumanEval、SWE-bench 单题与批量 driver。SWE-bench 路线是“Agent 只产 patch，官方 harness 判定 resolved/unresolved”。
 
 核心研究问题是：
@@ -55,6 +55,7 @@ HumanEval 与 SWE-bench Verified Mini 评测流水线。
 | Reviewer | `corecoder/review.py` | `--reviewer` / `CORECODER_REVIEWER=1` | 写临时 `.cc_verify/verify.sh`，做 patched / original before-after 自检，失败则让 Executor 修订 |
 | 多层压缩 | `corecoder/compress.py` | `--compress` / `CORECODER_COMPRESS=1` | 三层压缩：工具输出裁剪、LLM 摘要、结构化归档，并记录 token 回收 |
 | MCP 工具 | `corecoder/mcp_server.py` + `mcp_bridge.py` | `--mcp` / `CORECODER_MCP=1` | 将 `read_file/grep` 放到独立 MCP server，Agent 动态发现工具；失败自动回退内置工具 |
+| GitHub MCP 报告 | `eval/github_mcp_report.py` | 手动报告生成 | 将实验 aggregate / JSONL 转成 GitHub issue/comment 负载，便于记录 SWE-bench 消融结果 |
 
 这些增量默认全部关闭，baseline 路径保持干净。打开后会写入带后缀的独立结果命名空间，方便做消融对照。
 
@@ -146,8 +147,8 @@ docker run --rm hello-world
 安装项目：
 
 ```bash
-git clone <your-repo-url> CoreCoder
-cd CoreCoder
+git clone <your-repo-url> CodePilot
+cd CodePilot
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -U pip
@@ -178,8 +179,8 @@ docker system df
 建议在服务器上用 `tmux` 跑，先 smoke test，再跑子集消融，最后再全量。
 
 ```bash
-tmux new -s corecoder-ablation
-cd CoreCoder
+tmux new -s codepilot-ablation
+cd CodePilot
 source .venv/bin/activate
 mkdir -p logs
 export CORECODER_RUNS_DIR=eval/runs_aliyun
@@ -400,4 +401,4 @@ article/
 
 ## 致谢
 
-本项目基于 [CoreCoder](README_CN.md) 的教学级 Python 复现继续扩展。多 Agent 编排、SWE-bench 消融 driver、Reviewer / Planner / 压缩 / MCP 增量与实验归因，是本仓库在此基础上的主要工作。
+CodePilot 基于 [CoreCoder](README_CN.md) 的教学级 Python 复现继续扩展。多 Agent 编排、SWE-bench 消融 driver、Reviewer / Planner / 压缩 / MCP 增量、GitHub MCP 实验报告与实验归因，是本仓库在此基础上的主要工作。
