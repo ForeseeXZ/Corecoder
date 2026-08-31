@@ -2,7 +2,7 @@
 
 ## 结论
 
-P2 的离线开发和本地验收已经完成。一次 Repair Run 现在从固定 Workspace 出发，经 ToolRuntime 得到结构化 Tool Observation，并写入可重建的 Run Ledger。Windows 本地全量测试通过；Linux 专属行为已加入 Ubuntu CI，真实结果以本次提交触发的 GitHub Actions 为准。
+P2 的开发和跨平台验收已经完成。一次 Repair Run 现在从固定 Workspace 出发，经 ToolRuntime 得到结构化 Tool Observation，并写入可重建的 Run Ledger。Windows 本地全量测试通过；GitHub Actions 已在 Ubuntu、macOS、Windows 的 Python 3.10–3.13 全部通过。
 
 ## 完成内容
 
@@ -42,10 +42,12 @@ P2 的离线开发和本地验收已经完成。一次 Repair Run 现在从固�
 | Tool JSON | 分片重建、损坏 JSON、重复/缺失 ID、脱敏片段与哈希 | 通过 |
 | Ledger | started/finished 配对、取消归因、artifact 哈希、确定性 summary、旧 transcript | 通过 |
 | 能力边界 | 顶层和子 Agent 均无法调用未授予工具 | 通过 |
-| Linux 专属 | 执行位、非 UTF-8 文件名、外部软链接不跟随 | 已写入测试；Windows 跳过，Ubuntu CI 执行 |
+| Linux 专属 | 执行位、非 UTF-8 文件名、外部软链接不跟随 | Ubuntu 3.10–3.13 全部通过 |
 | P0/P1 回归 | Agent、Context、LLM、Session、工具与 LiteLLM 合约 | 通过 |
 
-本地门禁：`111 passed, 3 skipped`。3 个 skip 均为只能在 POSIX/Linux 验证的测试。Ruff、compileall 和 `git diff --check` 均通过。
+本地门禁：`114 passed, 3 skipped`。3 个 skip 均为只能在 POSIX/Linux 验证的测试。Ruff、compileall、`pip check` 和 `git diff --check` 均通过。
+
+远端门禁：[GitHub Actions CI 33402174020](https://github.com/ForeseeXZ/Corecoder/actions/runs/33402174020) 全部通过，包括 12 个操作系统/Python 组合、OpenAI 1.x 兼容通道和 package build。
 
 ## Linux 服务器验收步骤
 
