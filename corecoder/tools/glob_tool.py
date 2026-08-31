@@ -26,8 +26,8 @@ class GlobTool(Tool):
     }
 
     def execute(self, pattern: str, path: str = ".") -> str:
+        base = self.resolve_path(path)
         try:
-            base = Path(path).expanduser().resolve()
             if not base.is_dir():
                 return f"Error: {path} is not a directory"
 

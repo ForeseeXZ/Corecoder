@@ -8,6 +8,8 @@ import pytest
 from corecoder import Agent
 from corecoder.llm import LLMResponse, ToolCall
 from corecoder.tools.base import Tool
+from corecoder.tools.agent import AgentTool
+from corecoder.runtime import ToolStatus
 from tests.fakes import ScriptedLLM
 
 
@@ -94,6 +96,8 @@ def test_agent_returns_final_text_after_a_tool_observation():
         "tool_call_id": "call-1",
         "content": "contents:README.md",
     }
+    assert agent.last_tool_observations[0].status is ToolStatus.SUCCESS
+    assert agent.last_tool_observations[0].call_id == "call-1"
 
 
 def test_agent_cannot_execute_a_tool_outside_its_capability_set(tmp_path):
@@ -122,6 +126,48 @@ def test_agent_cannot_execute_a_tool_outside_its_capability_set(tmp_path):
     assert "must-not-be-read" not in observation["content"]
 
 
+def test_default_agents_do_not_share_mutable_tool_instances():
+    first = Agent(llm=ScriptedLLM([]))
+    second = Agent(llm=ScriptedLLM([]))
+
+    assert first.tools is not second.tools
+    assert all(left is not right for left, right in zip(first.tools, second.tools))
+
+
+def test_sub_agent_cannot_recover_a_capability_missing_from_its_parent():
+    llm = ScriptedLLM(
+        [
+            LLMResponse(
+                tool_calls=[
+                    ToolCall(
+                        id="delegate-1",
+                        name="agent",
+                        arguments={"task": "try to use bash"},
+                    )
+                ]
+            ),
+            LLMResponse(
+                tool_calls=[
+                    ToolCall(
+                        id="forbidden-1",
+                        name="bash",
+                        arguments={"command": "echo bypassed"},
+                    )
+                ]
+            ),
+            LLMResponse(content="sub-agent done"),
+            LLMResponse(content="parent done"),
+        ]
+    )
+    agent = Agent(llm=llm, tools=[AgentTool()])
+
+    agent.chat("delegate")
+
+    denied_observation = llm.requests[2]["messages"][-1]
+    assert denied_observation["tool_call_id"] == "forbidden-1"
+    assert denied_observation["content"] == "Error: unknown tool 'bash'"
+
+
 def test_agent_reports_an_internal_type_error_as_an_execution_error():
     llm = ScriptedLLM(
         [
@@ -143,6 +189,7 @@ def test_agent_reports_an_internal_type_error_as_an_execution_error():
 
     observation = llm.requests[1]["messages"][-1]
     assert observation["content"] == "Error executing explode: cannot process input"
+    assert agent.last_tool_observations[0].status is ToolStatus.EXCEPTION
 
 
 def test_agent_rejects_bad_arguments_before_executing_the_tool():
@@ -258,6 +305,7 @@ def test_agent_records_a_tool_observation_when_execution_is_interrupted():
         "tool_call_id": "call-interrupt",
         "content": "[interrupted]",
     }
+    assert agent.last_tool_observations[0].status is ToolStatus.CANCELLED
 
 
 def test_agent_records_every_pending_observation_when_parallel_execution_is_interrupted():

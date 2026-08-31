@@ -45,6 +45,7 @@ import re
 from .agent import Agent
 from .llm import LLM
 from .tools import ReadFileTool, GlobTool, GrepTool
+from .workspace import WorkspaceExecution
 
 DEFAULT_PLANNER_MODEL = "mimo-v2.5-pro"
 
@@ -275,6 +276,8 @@ def run_plan_phase(
     on_token=None,
     on_tool=None,
     log=print,
+    workspace: WorkspaceExecution | None = None,
+    ledger=None,
 ) -> tuple[str, dict]:
     """Run the bounded Planner pass and return (plan_block_for_executor, meta).
 
@@ -314,11 +317,19 @@ def run_plan_phase(
         if on_tool:
             on_tool(name, kwargs)
 
+    workspace = workspace or WorkspaceExecution.resolve(repo_dir)
     planner = Agent(
         llm=planner_llm,
         tools=_planner_tools(),
         max_context_tokens=max_context_tokens,
         max_rounds=max_rounds,
+        workspace=workspace,
+        ledger=ledger,
+        run_id=getattr(ledger, "run_id", None),
+        artifact_dir=(ledger.path.parent / "artifacts") if ledger is not None else None,
+        manage_run_lifecycle=False,
+        phase="planner",
+        agent_id="planner",
     )
 
     plan_text = ""

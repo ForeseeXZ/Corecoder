@@ -43,7 +43,7 @@ class GrepTool(Tool):
         except re.error as e:
             return f"Invalid regex: {e}"
 
-        base = Path(path).expanduser().resolve()
+        base = self.resolve_path(path)
         if not base.exists():
             return f"Error: {path} not found"
 

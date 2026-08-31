@@ -8,15 +8,20 @@ from .glob_tool import GlobTool
 from .grep import GrepTool
 from .agent import AgentTool
 
-ALL_TOOLS = [
-    BashTool(),
-    ReadFileTool(),
-    WriteFileTool(),
-    EditFileTool(),
-    GlobTool(),
-    GrepTool(),
-    AgentTool(),
-]
+def default_tools():
+    """Return a fresh capability set for one Agent/Repair Run."""
+    return [
+        BashTool(),
+        ReadFileTool(),
+        WriteFileTool(),
+        EditFileTool(),
+        GlobTool(),
+        GrepTool(),
+        AgentTool(),
+    ]
+
+
+ALL_TOOLS = default_tools()
 
 
 def get_tool(name: str):

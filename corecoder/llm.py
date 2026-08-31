@@ -10,7 +10,9 @@ single unified interface. Set CORECODER_PROVIDER=litellm.
 """
 
 import json
+import hashlib
 import os
+import re
 import time
 from dataclasses import dataclass, field
 
@@ -29,6 +31,9 @@ class ToolCall:
     id: str
     name: str
     arguments: dict
+    parse_error: str | None = None
+    raw_arguments_sha256: str | None = None
+    raw_arguments_preview: str | None = None
 
 
 @dataclass
@@ -55,6 +60,59 @@ class LLMResponse:
                 for tc in self.tool_calls
             ]
         return msg
+
+
+_SECRET_FRAGMENT_RE = re.compile(
+    r'(?i)("(?:api[_-]?key|token|password|secret)"\s*:\s*")[^"]*'
+)
+_SECRET_MARKER_RE = re.compile(r"(?i)api[_-]?key|token|password|secret")
+
+
+def normalize_tool_calls(tc_map: dict[int, dict]) -> list[ToolCall]:
+    """Normalize streamed tool fragments without inventing empty arguments."""
+    parsed: list[ToolCall] = []
+    seen_ids: set[str] = set()
+    for idx in sorted(tc_map):
+        raw = tc_map[idx]
+        raw_arguments = raw.get("args", "") or ""
+        raw_hash = hashlib.sha256(raw_arguments.encode("utf-8")).hexdigest()
+        errors: list[str] = []
+        try:
+            arguments = json.loads(raw_arguments)
+            if not isinstance(arguments, dict):
+                errors.append("tool arguments must be a JSON object")
+                arguments = {}
+        except (json.JSONDecodeError, TypeError):
+            arguments = {}
+            errors.append("malformed JSON arguments")
+
+        call_id = raw.get("id", "") or ""
+        if not call_id:
+            call_id = f"missing-{idx}-{raw_hash[:10]}"
+            errors.append("missing call id")
+        elif call_id in seen_ids:
+            original_id = call_id
+            call_id = f"{original_id}-duplicate-{idx}-{raw_hash[:8]}"
+            errors.append(f"duplicate call id: {original_id}")
+        seen_ids.add(call_id)
+
+        name = raw.get("name", "") or ""
+        if not name:
+            errors.append("missing tool name")
+        preview = _SECRET_FRAGMENT_RE.sub(r'\1<redacted>', raw_arguments)[:240]
+        if _SECRET_MARKER_RE.search(raw_arguments):
+            preview = "<redacted-sensitive-fragment>"
+        parsed.append(
+            ToolCall(
+                id=call_id,
+                name=name,
+                arguments=arguments,
+                parse_error="; ".join(errors) or None,
+                raw_arguments_sha256=raw_hash,
+                raw_arguments_preview=preview,
+            )
+        )
+    return parsed
 
 
 # Pricing per million tokens in RMB (CNY): (input, output).
@@ -164,14 +222,7 @@ class LLM:
                             tc_map[idx]["args"] += tc_delta.function.arguments
 
         # parse accumulated tool calls
-        parsed: list[ToolCall] = []
-        for idx in sorted(tc_map):
-            raw = tc_map[idx]
-            try:
-                args = json.loads(raw["args"])
-            except (json.JSONDecodeError, KeyError):
-                args = {}
-            parsed.append(ToolCall(id=raw["id"], name=raw["name"], arguments=args))
+        parsed = normalize_tool_calls(tc_map)
 
         self.total_prompt_tokens += prompt_tok
         self.total_completion_tokens += completion_tok
@@ -281,14 +332,7 @@ class LiteLLM(LLM):
                         if tc_delta.function.arguments:
                             tc_map[idx]["args"] += tc_delta.function.arguments
 
-        parsed: list[ToolCall] = []
-        for idx in sorted(tc_map):
-            raw = tc_map[idx]
-            try:
-                args = json.loads(raw["args"])
-            except (json.JSONDecodeError, KeyError):
-                args = {}
-            parsed.append(ToolCall(id=raw["id"], name=raw["name"], arguments=args))
+        parsed = normalize_tool_calls(tc_map)
 
         self.total_prompt_tokens += prompt_tok
         self.total_completion_tokens += completion_tok

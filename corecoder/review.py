@@ -46,6 +46,7 @@ from pathlib import Path
 
 from .agent import Agent
 from .tools import BashTool, ReadFileTool, WriteFileTool, GlobTool, GrepTool
+from .workspace import WorkspaceExecution
 
 SCRATCH = ".cc_verify"
 VERIFY_ENTRY = f"{SCRATCH}/verify.sh"
@@ -238,13 +239,9 @@ def _cleanup(repo: Path, reviewer_artifacts: set[str], meta: dict, log) -> None:
     source. Files the Executor created are NOT in `reviewer_artifacts` and are
     preserved."""
     removed: list[str] = []
-    scratch = repo / SCRATCH
-    if scratch.exists():
-        shutil.rmtree(scratch, ignore_errors=True)
-        removed.append(SCRATCH + "/")
     for rel in sorted(reviewer_artifacts):
         if rel.startswith(SCRATCH):
-            continue  # already gone with the scratch dir
+            continue  # owned WorkspaceScratch removes this directory
         p = repo / rel
         if p.is_dir():
             shutil.rmtree(p, ignore_errors=True)
@@ -277,12 +274,15 @@ def run_review_loop(
     on_token=None,
     on_tool=None,
     log=print,
+    workspace: WorkspaceExecution | None = None,
 ) -> dict:
     """Run the review->revise loop on top of an Executor `agent` that has already
     produced an initial patch in `repo_dir`. Mutates the working tree (via the
     Executor on revise) and returns review metadata. Always cleans up reviewer
     artifacts before returning, even on exception."""
-    repo_dir = Path(repo_dir)
+    workspace = workspace or WorkspaceExecution.resolve(repo_dir)
+    repo_dir = workspace.root
+    scratch_owner = workspace.scratch(SCRATCH)
     repo_top = repo.split("/")[-1].replace("-", "_")
 
     base_tokens = llm.total_prompt_tokens + llm.total_completion_tokens
@@ -292,6 +292,7 @@ def run_review_loop(
     reviewer_artifacts: set[str] = set()
     decision = "PASS"
 
+    scratch_owner.__enter__()
     try:
         for rnd in range(1, max_rounds + 1):
             spent = (llm.total_prompt_tokens + llm.total_completion_tokens) - base_tokens
@@ -326,6 +327,13 @@ def run_review_loop(
                 tools=_reviewer_tools(),
                 max_context_tokens=agent.context.max_tokens,
                 max_rounds=15,
+                workspace=workspace,
+                ledger=getattr(agent, "ledger", None),
+                run_id=getattr(agent, "run_id", None),
+                artifact_dir=getattr(getattr(agent, "runtime", None), "artifact_dir", None),
+                manage_run_lifecycle=False,
+                phase="reviewer",
+                agent_id=f"reviewer-{rnd}",
             )
             task = REVIEW_TASK.format(
                 repo=repo, repo_top=repo_top, problem_statement=problem_statement.strip(),
@@ -409,7 +417,11 @@ def run_review_loop(
 
         meta["final_decision"] = decision
     finally:
-        _cleanup(repo_dir, reviewer_artifacts, meta, log)
+        try:
+            _cleanup(repo_dir, reviewer_artifacts, meta, log)
+        finally:
+            scratch_owner.__exit__(None, None, None)
+            meta["artifacts_removed"].append(SCRATCH + "/")
         meta["tokens_spent"] = (llm.total_prompt_tokens + llm.total_completion_tokens) - base_tokens
 
     return meta

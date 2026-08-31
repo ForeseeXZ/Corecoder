@@ -8,7 +8,7 @@ its own context window.
 The sub-agent runs to completion and returns a text summary.
 """
 
-from .base import Tool
+from .base import Tool, ToolEffect
 
 
 class AgentTool(Tool):
@@ -29,6 +29,7 @@ class AgentTool(Tool):
         },
         "required": ["task"],
     }
+    effect = ToolEffect.PROCESS
 
     # set by Agent.__init__ after construction
     _parent_agent = None
@@ -41,11 +42,19 @@ class AgentTool(Tool):
         from ..agent import Agent
 
         parent = self._parent_agent
+        parent._child_agent_counter += 1
         sub = Agent(
             llm=parent.llm,
             tools=[t for t in parent.tools if t.name != "agent"],  # no recursive agents
             max_context_tokens=parent.context.max_tokens,
             max_rounds=20,
+            workspace=getattr(parent, "workspace", None),
+            ledger=getattr(parent, "ledger", None),
+            run_id=getattr(parent, "run_id", None),
+            artifact_dir=getattr(getattr(parent, "runtime", None), "artifact_dir", None),
+            manage_run_lifecycle=False,
+            phase="sub_agent",
+            agent_id=f"{parent.agent_id}.sub{parent._child_agent_counter}",
         )
 
         try:

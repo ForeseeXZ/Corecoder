@@ -30,8 +30,8 @@ class ReadFileTool(Tool):
     }
 
     def execute(self, file_path: str, offset: int = 1, limit: int = 2000) -> str:
+        p = self.resolve_path(file_path)
         try:
-            p = Path(file_path).expanduser().resolve()
             if not p.exists():
                 return f"Error: {file_path} not found"
             if not p.is_file():

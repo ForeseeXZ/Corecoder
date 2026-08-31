@@ -1,7 +1,7 @@
 """File creation / overwrite."""
 
 from pathlib import Path
-from .base import Tool
+from .base import Tool, ToolEffect
 from .edit import _changed_files
 
 
@@ -25,10 +25,11 @@ class WriteFileTool(Tool):
         },
         "required": ["file_path", "content"],
     }
+    effect = ToolEffect.WRITE
 
     def execute(self, file_path: str, content: str) -> str:
+        p = self.resolve_path(file_path)
         try:
-            p = Path(file_path).expanduser().resolve()
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_text(content)
             _changed_files.add(str(p))

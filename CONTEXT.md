@@ -20,6 +20,14 @@ _Avoid_: tool output（只表达文本，不表达完整结果）
 Repair Run 在某一时刻相对于固定基线的文件状态和 patch 标识。
 _Avoid_: current diff, working tree state
 
+**WorkspaceExecution**:
+一次 Repair Run 持有的绝对 Git 根目录、固定基线提交、Workspace Snapshot 与临时目录所有权边界。进程 cwd 的变化不得改变它。
+_Avoid_: repo_dir string, current cwd
+
+**ToolRuntime**:
+验证工具参数、依据 effect 调度调用，并产生结构化 Tool Observation 的唯一执行边界。
+_Avoid_: parallel executor, tool dispatcher
+
 **Run Ledger**:
 按发生顺序保存 Repair Run 请求、Tool Observation、Workspace Snapshot、验证和终止事实的不可变事件记录。
 _Avoid_: transcript（现有 transcript 只是非完整行为片段）
@@ -44,6 +52,7 @@ _Avoid_: mode, variant
 
 - 一个 **Repair Run** 包含一个或多个 **Model Turn**。
 - 一个 **Model Turn** 可以产生零个或多个 **Tool Observation**。
+- 一个 **Repair Run** 只绑定一个 **WorkspaceExecution** 和一个 **Run Ledger**。
 - 一个 **Repair Run** 产生零个或多个 **Workspace Snapshot**，每个 Snapshot 均绑定同一固定基线。
 - 一个 **Run Ledger** 记录且只记录一个 **Repair Run** 的事实。
 - 一个 **Verification Contract** 可以在两个 **Workspace Snapshot** 上执行，并产生一个 **Verification Result**。

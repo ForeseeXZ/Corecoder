@@ -1,0 +1,2 @@
+# Compatibility lane for the oldest supported OpenAI SDK major family.
+openai>=1.0,<2.0

@@ -9,10 +9,13 @@ It keeps looping until the LLM responds with plain text (no tool calls),
 which means it's done working and ready to report back.
 """
 
-import concurrent.futures
-import inspect
+import hashlib
+import json
+import uuid
+
 from .llm import LLM
-from .tools import ALL_TOOLS
+from .runtime import ToolRuntime, ToolStatus
+from .tools import default_tools
 from .tools.base import Tool
 from .tools.agent import AgentTool
 from .prompt import system_prompt
@@ -30,9 +33,17 @@ class Agent:
         compress_cfg: dict | None = None,
         mcp: bool = False,
         mcp_cfg: dict | None = None,
+        workspace=None,
+        runtime: ToolRuntime | None = None,
+        ledger=None,
+        run_id: str | None = None,
+        artifact_dir=None,
+        manage_run_lifecycle: bool = True,
+        phase: str = "executor",
+        agent_id: str | None = None,
     ):
         self.llm = llm
-        self.tools = tools if tools is not None else ALL_TOOLS
+        self.tools = tools if tools is not None else default_tools()
         self.messages: list[dict] = []
 
         # MCP: default OFF -> the in-process tools above are used unchanged
@@ -66,12 +77,38 @@ class Agent:
         else:
             self.context = ContextManager(max_tokens=max_context_tokens)
         self.max_rounds = max_rounds
-        self._system = system_prompt(self.tools)
+        prompt_cwd = str(workspace.root) if workspace is not None else None
+        self._system = system_prompt(self.tools, cwd=prompt_cwd)
 
         # fast name->tool dispatch (covers MCP tools, which are NOT in the global
         # ALL_TOOLS registry get_tool() searches). Identical objects to before
         # when mcp is off, so the baseline dispatch path is behavior-preserving.
         self._tool_by_name = {t.name: t for t in self.tools}
+        self.workspace = workspace
+        if workspace is not None:
+            for tool in self.tools:
+                bind_workspace = getattr(tool, "bind_workspace", None)
+                if bind_workspace is not None:
+                    bind_workspace(workspace.root)
+                fallback = getattr(tool, "_fallback", None)
+                bind_fallback = getattr(fallback, "bind_workspace", None)
+                if bind_fallback is not None:
+                    bind_fallback(workspace.root)
+        self.ledger = ledger
+        self.phase = phase
+        self.agent_id = agent_id or phase
+        self.run_id = run_id or getattr(ledger, "run_id", None) or uuid.uuid4().hex
+        self.runtime = runtime or ToolRuntime(
+            self.tools,
+            artifact_dir=artifact_dir,
+            ledger=ledger,
+            phase=phase,
+        )
+        self.last_tool_observations = []
+        self._active_turn_id: str | None = None
+        self._turn_counter = 0
+        self._child_agent_counter = 0
+        self._manage_run_lifecycle = manage_run_lifecycle
 
         # wire up sub-agent capability
         for t in self.tools:
@@ -86,91 +123,114 @@ class Agent:
 
     def chat(self, user_input: str, on_token=None, on_tool=None) -> str:
         """Process one user message. May involve multiple LLM/tool rounds."""
-        self.messages.append({"role": "user", "content": user_input})
-        self.context.maybe_compress(self.messages, self.llm)
+        self.last_tool_observations = []
+        baseline = getattr(self.workspace, "baseline_commit", None)
+        root = str(self.workspace.root) if self.workspace is not None else None
+        if self._manage_run_lifecycle:
+            self._record("run_started", baseline_commit=baseline, workspace_root=root)
+        try:
+            self.messages.append({"role": "user", "content": user_input})
+            self._maybe_compress(turn_id=None)
 
-        for _ in range(self.max_rounds):
-            resp = self.llm.chat(
-                messages=self._full_messages(),
-                tools=self._tool_schemas(),
-                on_token=on_token,
-            )
+            for _ in range(self.max_rounds):
+                self._turn_counter += 1
+                turn_number = self._turn_counter
+                self._active_turn_id = (
+                    f"{self.run_id}:{self.agent_id}:turn:{turn_number}"
+                )
+                self._record(
+                    "model_turn_started",
+                    turn_id=self._active_turn_id,
+                    turn_number=turn_number,
+                )
+                resp = self.llm.chat(
+                    messages=self._full_messages(),
+                    tools=self._tool_schemas(),
+                    on_token=on_token,
+                )
+                self._record(
+                    "model_turn_finished",
+                    turn_id=self._active_turn_id,
+                    turn_number=turn_number,
+                    tool_call_count=len(resp.tool_calls),
+                    prompt_tokens=resp.prompt_tokens,
+                    completion_tokens=resp.completion_tokens,
+                )
 
-            # no tool calls -> LLM is done, return text
-            if not resp.tool_calls:
+                # no tool calls -> LLM is done, return text
+                if not resp.tool_calls:
+                    self.messages.append(resp.message)
+                    if self._manage_run_lifecycle:
+                        self._record("run_finished", result="model_turn_complete")
+                    return resp.content
+
+                # tool calls -> execute through the effect-aware runtime
                 self.messages.append(resp.message)
-                return resp.content
+                tool_reply_start = len(self.messages)
 
-            # tool calls -> execute (parallel when multiple, like Claude Code's
-            # StreamingToolExecutor which runs independent tools concurrently)
-            self.messages.append(resp.message)
-            tool_reply_start = len(self.messages)
-
-            try:
-                if len(resp.tool_calls) == 1:
-                    tc = resp.tool_calls[0]
-                    if on_tool:
-                        on_tool(tc.name, tc.arguments)
-                    result = self._exec_tool(tc)
-                    self.messages.append({
-                        "role": "tool",
-                        "tool_call_id": tc.id,
-                        "content": result,
-                    })
-                else:
-                    # parallel execution for multiple tool calls
-                    results = self._exec_tools_parallel(resp.tool_calls, on_tool)
-                    for tc, result in zip(resp.tool_calls, results):
+                try:
+                    if len(resp.tool_calls) == 1:
+                        tc = resp.tool_calls[0]
+                        if on_tool:
+                            on_tool(tc.name, tc.arguments)
+                        result = self._exec_tool(tc)
                         self.messages.append({
                             "role": "tool",
                             "tool_call_id": tc.id,
                             "content": result,
                         })
-            except KeyboardInterrupt:
-                completed_ids = {
-                    message.get("tool_call_id")
-                    for message in self.messages[tool_reply_start:]
-                    if message.get("role") == "tool"
-                }
-                for tc in resp.tool_calls:
-                    if tc.id not in completed_ids:
-                        self.messages.append({
-                            "role": "tool",
-                            "tool_call_id": tc.id,
-                            "content": "[interrupted]",
-                        })
-                raise
+                    else:
+                        results = self._exec_tools_parallel(resp.tool_calls, on_tool)
+                        for tc, result in zip(resp.tool_calls, results):
+                            self.messages.append({
+                                "role": "tool",
+                                "tool_call_id": tc.id,
+                                "content": result,
+                            })
+                except KeyboardInterrupt:
+                    completed_ids = {
+                        message.get("tool_call_id")
+                        for message in self.messages[tool_reply_start:]
+                        if message.get("role") == "tool"
+                    }
+                    for tc in resp.tool_calls:
+                        if tc.id not in completed_ids:
+                            self.messages.append({
+                                "role": "tool",
+                                "tool_call_id": tc.id,
+                                "content": "[interrupted]",
+                            })
+                    raise
 
-            # compress if tool outputs are big
-            self.context.maybe_compress(self.messages, self.llm)
+                self._record_workspace_snapshot()
+                self._maybe_compress(turn_id=self._active_turn_id)
 
-        return "(reached maximum tool-call rounds)"
+            if self._manage_run_lifecycle:
+                self._record("run_finished", result="max_tool_rounds")
+            return "(reached maximum tool-call rounds)"
+        except KeyboardInterrupt:
+            if self._manage_run_lifecycle:
+                self._record("run_aborted", reason="cancelled", turn_id=self._active_turn_id)
+            raise
+        except BaseException as exc:
+            if self._manage_run_lifecycle:
+                self._record(
+                    "run_aborted",
+                    reason="exception",
+                    error=f"{type(exc).__name__}: {exc}",
+                    turn_id=self._active_turn_id,
+                )
+            raise
+        finally:
+            self._active_turn_id = None
 
     def _exec_tool(self, tc) -> str:
-        """Execute a single tool call, returning the result string."""
-        tool = self._tool_by_name.get(tc.name)
-        if tool is None:
-            return f"Error: unknown tool '{tc.name}'"
-        parameters = tool.parameters or {}
-        required = set(parameters.get("required", []))
-        provided = set(tc.arguments)
-        missing = sorted(required - provided)
-        unexpected = sorted(provided - set(parameters.get("properties", {})))
-        if missing:
-            return f"Error: bad arguments for {tc.name}: missing {', '.join(missing)}"
-        if unexpected:
-            return (
-                f"Error: bad arguments for {tc.name}: "
-                f"unexpected {', '.join(unexpected)}"
-            )
-        try:
-            inspect.signature(tool.execute).bind(**tc.arguments)
-        except TypeError as e:
-            return f"Error: bad arguments for {tc.name}: {e}"
-        try:
-            return tool.execute(**tc.arguments)
-        except Exception as e:
-            return f"Error executing {tc.name}: {e}"
+        """Execute one tool through the structured runtime."""
+        observation = self.runtime.execute(tc, turn_id=self._active_turn_id)
+        self.last_tool_observations.append(observation)
+        if observation.status is ToolStatus.CANCELLED:
+            raise KeyboardInterrupt
+        return observation.model_text
 
     def _exec_tools_parallel(self, tool_calls, on_tool=None) -> list[str]:
         """Run multiple tool calls concurrently using threads.
@@ -183,9 +243,47 @@ class Agent:
             if on_tool:
                 on_tool(tc.name, tc.arguments)
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
-            futures = [pool.submit(self._exec_tool, tc) for tc in tool_calls]
-            return [f.result() for f in futures]
+        observations = self.runtime.execute_many(
+            tool_calls, turn_id=self._active_turn_id
+        )
+        self.last_tool_observations.extend(observations)
+        if any(item.status is ToolStatus.CANCELLED for item in observations):
+            raise KeyboardInterrupt
+        return [item.model_text for item in observations]
+
+    def _record_workspace_snapshot(self) -> None:
+        if self.ledger is None or self.workspace is None:
+            return
+        snapshot = self.workspace.snapshot()
+        self._record(
+            "workspace_snapshot",
+            turn_id=self._active_turn_id,
+            baseline_commit=snapshot.baseline_commit,
+            snapshot_hash=snapshot.snapshot_hash,
+            tracked_patch_sha256=snapshot.tracked_patch_sha256,
+            tracked_patch_length=len(snapshot.tracked_patch),
+            untracked_file_count=len(snapshot.untracked_files),
+        )
+
+    def _maybe_compress(self, *, turn_id: str | None) -> None:
+        before = None
+        if self.ledger is not None:
+            before = json.dumps(self.messages, ensure_ascii=False, sort_keys=True)
+        self.context.maybe_compress(self.messages, self.llm)
+        if before is not None:
+            after = json.dumps(self.messages, ensure_ascii=False, sort_keys=True)
+            if after != before:
+                self._record(
+                    "compression",
+                    turn_id=turn_id,
+                    before_sha256=hashlib.sha256(before.encode("utf-8")).hexdigest(),
+                    after_sha256=hashlib.sha256(after.encode("utf-8")).hexdigest(),
+                )
+
+    def _record(self, event_type: str, **payload) -> None:
+        if self.ledger is not None:
+            payload.setdefault("phase", self.phase)
+            self.ledger.append(event_type, **payload)
 
     def reset(self):
         """Clear conversation history."""

@@ -11,9 +11,12 @@ import os
 import locale
 import re
 import subprocess
-from .base import Tool
+from pathlib import Path
 
-# track cwd across commands (Claude Code does this too)
+from .base import Tool, ToolEffect, ToolExecutionResult, ToolStatus
+
+# Backward-compatible module attribute used by older runners. New Agent paths
+# bind a workspace to each BashTool instance instead of mutating this value.
 _cwd: str | None = None
 
 # patterns that could wreck the filesystem or leak secrets
@@ -51,15 +54,43 @@ class BashTool(Tool):
         "required": ["command"],
     }
 
+    effect = ToolEffect.PROCESS
+
+    def __init__(self, cwd: str | Path | None = None):
+        self._workspace_cwd = Path(cwd).resolve() if cwd is not None else None
+
+    def bind_workspace(self, root: str | Path) -> None:
+        self._workspace_cwd = Path(root).resolve()
+
     def execute(self, command: str, timeout: int = 120) -> str:
-        global _cwd
+        result = self.execute_structured(command=command, timeout=timeout)
+        out = result.content
+        if len(out) > 15_000:
+            out = (
+                out[:6000]
+                + f"\n\n... truncated ({len(out)} chars total) ...\n\n"
+                + out[-3000:]
+            )
+        return out
+
+    def execute_structured(
+        self, command: str, timeout: int | float = 120
+    ) -> ToolExecutionResult:
         # safety check
         warning = _check_dangerous(command)
         if warning:
-            return f"⚠ Blocked: {warning}\nCommand: {command}\nIf intentional, modify the command to be more specific."
+            content = (
+                f"⚠ Blocked: {warning}\nCommand: {command}\n"
+                "If intentional, modify the command to be more specific."
+            )
+            return ToolExecutionResult(
+                status=ToolStatus.BLOCKED,
+                content=content,
+                error=warning,
+            )
 
         # use tracked working directory
-        cwd = _cwd or os.getcwd()
+        cwd = str(self._workspace_cwd) if self._workspace_cwd else (_cwd or os.getcwd())
 
         try:
             proc = subprocess.run(
@@ -72,24 +103,51 @@ class BashTool(Tool):
 
             # track cd commands so next command runs in the right place
             if proc.returncode == 0:
-                _update_cwd(command, cwd)
+                self._update_cwd(command, cwd)
             out = _decode_output(proc.stdout)
             if proc.stderr:
                 out += f"\n[stderr]\n{_decode_output(proc.stderr)}"
             if proc.returncode != 0:
                 out += f"\n[exit code: {proc.returncode}]"
-            # keep head + tail to preserve the most useful info
-            if len(out) > 15_000:
-                out = (
-                    out[:6000]
-                    + f"\n\n... truncated ({len(out)} chars total) ...\n\n"
-                    + out[-3000:]
-                )
-            return out.strip() or "(no output)"
+            status = (
+                ToolStatus.SUCCESS
+                if proc.returncode == 0
+                else ToolStatus.NON_ZERO
+            )
+            return ToolExecutionResult(
+                status=status,
+                content=out.strip() or "(no output)",
+                exit_code=proc.returncode,
+            )
         except subprocess.TimeoutExpired:
-            return f"Error: timed out after {timeout}s"
+            message = f"Error: timed out after {timeout}s"
+            return ToolExecutionResult(
+                status=ToolStatus.TIMEOUT,
+                content=message,
+                error=message,
+            )
         except Exception as e:
-            return f"Error running command: {e}"
+            message = f"Error running command: {e}"
+            return ToolExecutionResult(
+                status=ToolStatus.EXCEPTION,
+                content=message,
+                error=f"{type(e).__name__}: {e}",
+            )
+
+    def _update_cwd(self, command: str, current_cwd: str) -> None:
+        """Track successful cd operations without process-global state."""
+        active = current_cwd
+        for part in command.split("&&"):
+            part = part.strip()
+            if not part.startswith("cd "):
+                continue
+            target = part[3:].strip().strip("'\"")
+            if not target:
+                continue
+            new_dir = os.path.normpath(os.path.join(active, os.path.expanduser(target)))
+            if os.path.isdir(new_dir):
+                active = new_dir
+                self._workspace_cwd = Path(new_dir).resolve()
 
 
 def _check_dangerous(cmd: str) -> str | None:
@@ -122,7 +180,7 @@ def _decode_output(data: bytes | str | None) -> str:
 
 
 def _update_cwd(command: str, current_cwd: str):
-    """Track directory changes from cd commands."""
+    """Legacy process-global cwd tracking retained for external callers."""
     global _cwd
     # simple heuristic: look for cd at the end of a && chain or standalone
     parts = command.split("&&")

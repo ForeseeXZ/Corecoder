@@ -28,7 +28,7 @@ classifiers = [
     "Topic :: Terminals",
 ]
 dependencies = [
-    "openai>=1.0",
+    "openai>=1.0,<4.0",
     "rich>=13.0",
     "prompt_toolkit>=3.0",
     "python-dotenv>=1.0",

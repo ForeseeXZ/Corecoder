@@ -34,6 +34,10 @@ eval/runs*/*/repo/
 # only the small aggregate/report/results json directly under eval/runs*/ and
 # eval/runs*/_reports/ are kept as the project's experiment evidence)
 eval/runs*/*/transcript.jsonl
+eval/runs*/*/run-ledger.jsonl
+eval/runs*/*/ledger-summary.json
+eval/runs*/*/workspace-snapshots.json
+eval/runs*/*/artifacts/
 eval/runs*/*/summary.json
 eval/runs*/*/patch.diff
 eval/runs*/*/prediction.json

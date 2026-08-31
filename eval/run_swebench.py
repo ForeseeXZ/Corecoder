@@ -48,11 +48,14 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from corecoder.agent import Agent
 from corecoder.config import Config
+from corecoder.ledger import RunLedger
 from corecoder.llm import LLM
-from corecoder.tools import bash as bash_tool
+from corecoder.workspace import WorkspaceExecution
 
 EVAL_ROOT = REPO_ROOT / "eval"
-RUNS_DIR = Path(os.environ.get("CORECODER_RUNS_DIR", EVAL_ROOT / "runs_mimo"))
+RUNS_DIR = Path(
+    os.environ.get("CORECODER_RUNS_DIR", EVAL_ROOT / "runs_mimo")
+).expanduser().resolve()
 
 DATASET = "MariusHobbhahn/swe-bench-verified-mini"
 SPLIT = "test"
@@ -175,16 +178,20 @@ def prepare_repo(instance: dict, repo_dir: Path) -> dict:
     return info
 
 
-def extract_model_patch(repo_dir: Path, base_commit: str) -> str:
+def extract_model_patch(
+    repo_dir: Path, base_commit: str, workspace: WorkspaceExecution | None = None
+) -> str:
     """Return the agent's work as a git diff against base_commit.
 
     `git add -A` then `diff --cached` so new/deleted files are captured too.
-    Uses core.fileMode=false to ignore permission-bit noise.
+    Preserves binary patches and executable-bit changes for Linux evaluation.
     """
+    workspace = workspace or WorkspaceExecution.resolve(repo_dir, base_commit)
+    repo_dir = workspace.root
+    base_commit = workspace.baseline_commit
     _run(["git", "-C", str(repo_dir), "add", "-A"])
     diff = _run([
-        "git", "-C", str(repo_dir), "-c", "core.fileMode=false",
-        "diff", "--cached", base_commit,
+        "git", "-C", str(repo_dir), "diff", "--cached", "--binary", base_commit,
     ])
     return diff.stdout
 
@@ -195,11 +202,23 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
               problem_statement: str | None = None,
               planner: bool = False, plan_cfg: dict | None = None,
               compress: bool = False, compress_cfg: dict | None = None,
-              mcp: bool = False, mcp_cfg: dict | None = None) -> dict:
+              mcp: bool = False, mcp_cfg: dict | None = None,
+              workspace: WorkspaceExecution | None = None) -> dict:
     config = Config.from_env()
     if not config.api_key:
         raise RuntimeError("No API key. Check .env at repo root.")
     config.model = DEFAULT_EVAL_MODEL
+    workspace = workspace or WorkspaceExecution.resolve(repo_dir)
+    repo_dir = workspace.root
+    ledger = RunLedger(
+        transcript_path.with_name("run-ledger.jsonl"),
+        run_id=transcript_path.parent.name,
+    )
+    ledger.append(
+        "run_started",
+        baseline_commit=workspace.baseline_commit,
+        workspace_root=str(workspace.root),
+    )
 
     # max_tokens=16384 set HERE (not in .env) — SWE patches need long output.
     llm = LLM(
@@ -224,11 +243,8 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
         transcript.append({"kind": "log", "text": msg, "phase": phase["name"]})
         print(msg, flush=True)
 
-    bash_tool._cwd = None
-    cwd_before = os.getcwd()
-    os.chdir(repo_dir)
-    # Instantiate Agent AFTER chdir — system_prompt() bakes cwd into the system
-    # message at construction time (so the agent "sees" the repo as its workdir).
+    # WorkspaceExecution supplies the stable cwd to prompts and every bound tool;
+    # the process cwd is never mutated, so concurrent Repair Runs cannot collide.
     # compress=False -> baseline ContextManager path is byte-identical to before.
     # mcp=False -> in-process tools, baseline path unchanged. When on, the MCP
     # server subprocess inherits THIS cwd (the repo checkout) so its read/grep
@@ -237,7 +253,11 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
     _mcp_cfg.setdefault("cwd", str(repo_dir))
     agent = Agent(llm=llm, max_context_tokens=config.max_context_tokens,
                   compress=compress, compress_cfg=compress_cfg,
-                  mcp=mcp, mcp_cfg=_mcp_cfg)
+                  mcp=mcp, mcp_cfg=_mcp_cfg,
+                  workspace=workspace, ledger=ledger,
+                  run_id=ledger.run_id,
+                  artifact_dir=transcript_path.parent / "artifacts",
+                  manage_run_lifecycle=False, phase="executor", agent_id="executor")
 
     prev_handler = signal.signal(signal.SIGALRM, _alarm_handler)
     signal.alarm(int(agent_timeout_s))
@@ -266,6 +286,8 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
                 max_tokens=SWE_MAX_TOKENS,
                 max_context_tokens=config.max_context_tokens,
                 on_token=on_token, on_tool=on_tool, log=review_log,
+                workspace=workspace,
+                ledger=ledger,
             )
             phase["name"] = "executor"
             if plan_block:
@@ -284,35 +306,41 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
                 token_budget=cfg.get("token_budget", 400_000),
                 verify_timeout=cfg.get("verify_timeout", 120),
                 on_token=on_token, on_tool=on_tool, log=review_log,
+                workspace=workspace,
+            )
+            final_snapshot = workspace.snapshot()
+            ledger.append(
+                "workspace_snapshot",
+                phase="reviewer",
+                baseline_commit=final_snapshot.baseline_commit,
+                snapshot_hash=final_snapshot.snapshot_hash,
+                tracked_patch_sha256=final_snapshot.tracked_patch_sha256,
+                tracked_patch_length=len(final_snapshot.tracked_patch),
+                untracked_file_count=len(final_snapshot.untracked_files),
             )
     except AgentTimeoutError:
         timed_out = True
         error = f"agent timed out after {agent_timeout_s}s"
         final_text = final_text or "(timed out)"
+        ledger.append("run_aborted", reason="timeout", error=error)
+    except KeyboardInterrupt:
+        ledger.append("run_aborted", reason="cancelled")
+        raise
     except Exception as e:
         error = f"{type(e).__name__}: {e}"
         final_text = final_text or f"(agent error: {error})"
+        ledger.append("run_aborted", reason="exception", error=error)
+    else:
+        ledger.append("run_finished", result="model_turn_complete")
     finally:
         signal.alarm(0)
         signal.signal(signal.SIGALRM, prev_handler)
-        # belt-and-suspenders: never let a verification scratch dir leak into the
-        # extracted patch, even if the review loop was interrupted mid-flight.
-        try:
-            import shutil as _sh
-            from corecoder.review import SCRATCH as _SCRATCH
-            _scratch = Path(repo_dir) / _SCRATCH
-            if _scratch.exists():
-                _sh.rmtree(_scratch, ignore_errors=True)
-        except Exception:
-            pass
         # shut down the MCP server subprocess (if any) so no zombie is left —
         # no-op when mcp is off.
         try:
             agent.close()
         except Exception:
             pass
-        os.chdir(cwd_before)
-        bash_tool._cwd = None
 
     elapsed = time.monotonic() - t0
 
@@ -323,9 +351,18 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
     # calls went over MCP vs fell back to builtin). None when mcp is off.
     mcp_meta = getattr(agent, "mcp_stats", None) if mcp else None
 
-    with transcript_path.open("w") as f:
+    with transcript_path.open("w", encoding="utf-8", newline="\n") as f:
         for entry in transcript:
             f.write(json.dumps(entry, ensure_ascii=False, default=str) + "\n")
+    ledger_summary = ledger.write_summary(transcript_path.with_name("ledger-summary.json"))
+    snapshots = [
+        event for event in ledger.events if event["event_type"] == "workspace_snapshot"
+    ]
+    transcript_path.with_name("workspace-snapshots.json").write_text(
+        json.dumps(snapshots, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
 
     return {
         "final_text": final_text,
@@ -341,6 +378,7 @@ def run_agent(repo_dir: Path, agent_prompt: str, transcript_path: Path,
         "plan": plan_meta,
         "compress": compress_meta,
         "mcp": mcp_meta,
+        "ledger": ledger_summary,
     }
 
 
@@ -367,6 +405,7 @@ def run_one(instance: dict, agent_timeout_s: float, with_hints: bool,
     )
 
     prep = prepare_repo(instance, repo)
+    workspace = WorkspaceExecution.resolve(repo, base_commit)
 
     agent_result = run_agent(
         repo, agent_prompt, transcript_path, agent_timeout_s,
@@ -374,10 +413,10 @@ def run_one(instance: dict, agent_timeout_s: float, with_hints: bool,
         repo=instance["repo"], problem_statement=instance["problem_statement"],
         planner=planner, plan_cfg=plan_cfg,
         compress=compress, compress_cfg=compress_cfg,
-        mcp=mcp, mcp_cfg=mcp_cfg,
+        mcp=mcp, mcp_cfg=mcp_cfg, workspace=workspace,
     )
 
-    model_patch = extract_model_patch(repo, base_commit)
+    model_patch = extract_model_patch(repo, base_commit, workspace=workspace)
     (base / "patch.diff").write_text(model_patch)
 
     prediction = {
@@ -410,11 +449,14 @@ def run_one(instance: dict, agent_timeout_s: float, with_hints: bool,
         "agent": {
             "model": agent_result["model"],
             "elapsed_s": agent_result["elapsed_s"],
-            "prompt_tokens": agent_result["prompt_tokens"],
-            "completion_tokens": agent_result["completion_tokens"],
-            "total_tokens": agent_result["prompt_tokens"] + agent_result["completion_tokens"],
+            "prompt_tokens": agent_result["ledger"]["tokens"]["prompt"],
+            "completion_tokens": agent_result["ledger"]["tokens"]["completion"],
+            "total_tokens": (
+                agent_result["ledger"]["tokens"]["prompt"]
+                + agent_result["ledger"]["tokens"]["completion"]
+            ),
             "estimated_cost_cny": agent_result["estimated_cost"],
-            "tool_call_count": len(agent_result["tool_calls"]),
+            "tool_call_count": agent_result["ledger"]["tool_calls"]["started"],
             "timed_out": agent_result.get("timed_out", False),
             "error": agent_result.get("error"),
             "final_text": agent_result["final_text"],
@@ -423,6 +465,7 @@ def run_one(instance: dict, agent_timeout_s: float, with_hints: bool,
         "review": agent_result.get("review"),
         "compress": agent_result.get("compress"),
         "mcp": agent_result.get("mcp"),
+        "ledger": agent_result.get("ledger"),
     }
     # convenience: total cost across BOTH models (executor flash + planner pro),
     # since the "agent" block above is executor-only.
