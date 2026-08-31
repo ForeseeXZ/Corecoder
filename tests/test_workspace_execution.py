@@ -230,7 +230,7 @@ def test_linux_snapshot_captures_an_executable_bit_change(tmp_path):
     assert "new mode 100755" in snapshot.tracked_patch
 
 
-@pytest.mark.skipif(os.name == "nt", reason="POSIX byte filenames")
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux byte filenames")
 def test_linux_snapshot_preserves_a_non_utf8_git_filename(tmp_path):
     repo = _committed_repo(tmp_path)
     raw_name = b"non-utf8-\xff.txt"
