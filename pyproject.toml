@@ -39,7 +39,10 @@ packages = ["corecoder"]
 
 [project.optional-dependencies]
 litellm = ["litellm>=1.60.0,<2.0.0"]
-dev = ["pytest>=7.0"]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.9.0",
+]
 eval = [
     "datasets>=2.14",
     "swebench",
@@ -53,3 +56,19 @@ corecoder = "corecoder.cli:main"
 Homepage = "https://github.com/he-yufeng/CoreCoder"
 Repository = "https://github.com/he-yufeng/CoreCoder"
 Issues = "https://github.com/he-yufeng/CoreCoder/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--strict-markers"]
+markers = [
+    "integration: tests that require external services or processes",
+    "experiment: long-running evaluation and experiment tests",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 130
+
+[tool.ruff.lint]
+# P0 baseline: fail on syntax/name errors without forcing a broad style rewrite.
+select = ["E9", "F63", "F7", "F82"]

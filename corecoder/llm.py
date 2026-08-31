@@ -14,7 +14,14 @@ import os
 import time
 from dataclasses import dataclass, field
 
-from openai import OpenAI, APIError, RateLimitError, APITimeoutError, APIConnectionError
+from openai import (
+    APIConnectionError,
+    APIError,
+    APITimeoutError,
+    BadRequestError,
+    OpenAI,
+    RateLimitError,
+)
 
 
 @dataclass
@@ -117,7 +124,7 @@ class LLM:
         try:
             params["stream_options"] = {"include_usage": True}
             stream = self._call_with_retry(params)
-        except Exception:
+        except BadRequestError:
             params.pop("stream_options", None)
             stream = self._call_with_retry(params)
 
@@ -129,8 +136,8 @@ class LLM:
         for chunk in stream:
             # usage info comes in the final chunk
             if chunk.usage:
-                prompt_tok = chunk.usage.prompt_tokens
-                completion_tok = chunk.usage.completion_tokens
+                prompt_tok = getattr(chunk.usage, "prompt_tokens", 0) or 0
+                completion_tok = getattr(chunk.usage, "completion_tokens", 0) or 0
 
             if not chunk.choices:
                 continue
@@ -188,7 +195,8 @@ class LLM:
                 time.sleep(wait)
             except APIError as e:
                 # 5xx = server error, retry; 4xx = client error, don't
-                if e.status_code and e.status_code >= 500 and attempt < max_retries - 1:
+                status_code = getattr(e, "status_code", None)
+                if status_code and status_code >= 500 and attempt < max_retries - 1:
                     time.sleep(2 ** attempt)
                 else:
                     raise

@@ -50,7 +50,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .context import estimate_tokens, _approx_tokens  # reuse the same estimator
+from .context import _approx_tokens, _safe_tail_start, estimate_tokens
 
 if TYPE_CHECKING:
     from .llm import LLM
@@ -290,7 +290,7 @@ class CompressionManager:
     # Layer 2 — summarize early turns, keep recent verbatim
     # ------------------------------------------------------------------ #
     def _summarize_old(self, messages: list[dict], llm: "LLM | None") -> bool:
-        k = self._safe_tail_start(messages, self.keep_recent)
+        k = _safe_tail_start(messages, self.keep_recent)
         if k <= 1:                       # not enough early history to bother
             return False
         old = messages[:k]
@@ -314,7 +314,7 @@ class CompressionManager:
     # Layer 3 — structured archive, keep only the last few turns
     # ------------------------------------------------------------------ #
     def _archive(self, messages: list[dict], llm: "LLM | None"):
-        k = self._safe_tail_start(messages, self.collapse_keep)
+        k = _safe_tail_start(messages, self.collapse_keep)
         if k <= 0:
             k = max(1, len(messages) - self.collapse_keep)
         old = messages[:k]
@@ -335,24 +335,6 @@ class CompressionManager:
     # ------------------------------------------------------------------ #
     # helpers
     # ------------------------------------------------------------------ #
-    def _safe_tail_start(self, messages: list[dict], want_keep: int) -> int:
-        """Index where the kept tail should begin so we never split a tool-call
-        group. The OpenAI schema requires an assistant message that carries
-        `tool_calls` to be immediately followed by the matching `tool` results;
-        starting the tail on an orphan `tool` message (whose assistant turn we
-        just summarized away) is an API error. So we walk the cut point back to a
-        round boundary — an assistant message — which always sits behind its own
-        tool replies and behind the previous round's completed group.
-        """
-        n = len(messages)
-        target = n - want_keep
-        if target < 1:
-            return target
-        # never start the tail on a `tool` message — back up to its assistant turn
-        while target > 1 and messages[target].get("role") == "tool":
-            target -= 1
-        return target
-
     def _llm_summary(self, msgs: list[dict], llm: "LLM | None", system: str) -> str:
         """One compression call on the shared executor LLM. Its token cost is
         attributed to `overhead_tokens` so net savings stay honest. Degrades to a

@@ -34,6 +34,14 @@ def estimate_tokens(messages: list[dict]) -> int:
     return total
 
 
+def _safe_tail_start(messages: list[dict], want_keep: int) -> int:
+    """Return a tail boundary that never starts with an orphan tool reply."""
+    target = max(0, len(messages) - want_keep)
+    while target > 0 and messages[target].get("role") == "tool":
+        target -= 1
+    return target
+
+
 class ContextManager:
     def __init__(self, max_tokens: int = 128_000):
         self.max_tokens = max_tokens
@@ -99,8 +107,11 @@ class ContextManager:
         if len(messages) <= keep_recent:
             return False
 
-        old = messages[:-keep_recent]
-        tail = messages[-keep_recent:]
+        tail_start = _safe_tail_start(messages, keep_recent)
+        if tail_start <= 0:
+            return False
+        old = messages[:tail_start]
+        tail = messages[tail_start:]
 
         summary = self._get_summary(old, llm)
 
@@ -118,8 +129,10 @@ class ContextManager:
 
     def _hard_collapse(self, messages: list[dict], llm: LLM | None):
         """Layer 3: Emergency compression. Keep only last 4 messages + summary."""
-        tail = messages[-4:] if len(messages) > 4 else messages[-2:]
-        summary = self._get_summary(messages[:-len(tail)], llm)
+        want_keep = 4 if len(messages) > 4 else 2
+        tail_start = _safe_tail_start(messages, want_keep)
+        tail = messages[tail_start:]
+        summary = self._get_summary(messages[:tail_start], llm)
 
         messages.clear()
         messages.append({

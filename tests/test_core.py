@@ -1,9 +1,8 @@
 """Tests for core modules: config, context, session, imports."""
 
-import os
-import pathlib
-
 from corecoder import Agent, LLM, Config, ALL_TOOLS, __version__
+from corecoder import config as config_module
+from corecoder import session as session_module
 from corecoder.context import ContextManager, estimate_tokens
 from corecoder.session import save_session, load_session, list_sessions
 from corecoder.tools import get_tool
@@ -21,26 +20,26 @@ def test_public_api_exports():
     assert len(ALL_TOOLS) == 7
 
 
-def test_config_from_env():
-    os.environ["CORECODER_MODEL"] = "test-model"
+def test_config_from_env(monkeypatch):
+    monkeypatch.setenv("CORECODER_MODEL", "test-model")
     c = Config.from_env()
     assert c.model == "test-model"
-    del os.environ["CORECODER_MODEL"]
 
 
-def test_config_defaults():
-    # temporarily clear relevant env vars
-    saved = {}
-    for k in ["CORECODER_MODEL", "CORECODER_MAX_TOKENS"]:
-        if k in os.environ:
-            saved[k] = os.environ.pop(k)
+def test_config_defaults(monkeypatch):
+    # Defaults must not depend on a developer's local environment or .env file.
+    monkeypatch.setattr(config_module, "_load_dotenv", lambda: None)
+    for key in [
+        "CORECODER_MODEL",
+        "CORECODER_MAX_TOKENS",
+        "CORECODER_TEMPERATURE",
+    ]:
+        monkeypatch.delenv(key, raising=False)
 
     c = Config.from_env()
-    assert c.model == "gpt-4o"
+    assert c.model == "mimo-v2.5"
     assert c.max_tokens == 4096
     assert c.temperature == 0.0
-
-    os.environ.update(saved)
 
 
 # --- Context ---
@@ -78,33 +77,34 @@ def test_context_compress():
 
 # --- Session ---
 
-def test_session_save_load():
+def test_session_save_load(tmp_path, monkeypatch):
+    monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path)
     msgs = [{"role": "user", "content": "test message"}]
-    sid = save_session(msgs, "test-model", "pytest_test_session")
+    save_session(msgs, "test-model", "pytest_test_session")
     loaded = load_session("pytest_test_session")
     assert loaded is not None
     assert loaded[0] == msgs
     assert loaded[1] == "test-model"
-    # cleanup
-    pathlib.Path.home().joinpath(".corecoder/sessions/pytest_test_session.json").unlink()
 
 
-def test_session_name_is_sanitized():
+def test_session_name_is_sanitized(tmp_path, monkeypatch):
+    monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path)
     msgs = [{"role": "user", "content": "test message"}]
     sid = save_session(msgs, "test-model", "../Research Notes!")
 
     assert sid == "Research-Notes"
-    path = pathlib.Path.home().joinpath(".corecoder/sessions/Research-Notes.json")
+    path = tmp_path / "Research-Notes.json"
     assert path.exists()
     assert load_session("../Research Notes!") is not None
-    path.unlink()
 
 
-def test_session_not_found():
+def test_session_not_found(tmp_path, monkeypatch):
+    monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path)
     assert load_session("nonexistent_session_id") is None
 
 
-def test_list_sessions():
+def test_list_sessions(tmp_path, monkeypatch):
+    monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path)
     sessions = list_sessions()
     assert isinstance(sessions, list)
 

@@ -2,10 +2,9 @@
 
 import os
 import sys
-import tempfile
-from pathlib import Path
 
 from corecoder.tools import ALL_TOOLS, get_tool
+from corecoder.tools.grep import GrepTool
 
 
 def test_tool_count():
@@ -103,24 +102,20 @@ def test_read_file_offset_limit(tmp_path):
 
 # --- write_file ---
 
-def test_write_file():
+def test_write_file(tmp_path):
     write = get_tool("write_file")
-    path = tempfile.mktemp(suffix=".txt")
-    r = write.execute(file_path=path, content="hello world\n")
+    path = tmp_path / "sample.txt"
+    r = write.execute(file_path=str(path), content="hello world\n")
     assert "Wrote" in r
-    assert Path(path).read_text() == "hello world\n"
-    os.unlink(path)
+    assert path.read_text() == "hello world\n"
 
 
-def test_write_file_creates_dirs():
+def test_write_file_creates_dirs(tmp_path):
     write = get_tool("write_file")
-    path = tempfile.mktemp(suffix=".txt")
-    nested = os.path.join(os.path.dirname(path), "sub", "dir", "file.txt")
-    r = write.execute(file_path=nested, content="nested\n")
+    nested = tmp_path / "sub" / "dir" / "file.txt"
+    r = write.execute(file_path=str(nested), content="nested\n")
     assert "Wrote" in r
-    assert Path(nested).read_text() == "nested\n"
-    import shutil
-    shutil.rmtree(os.path.join(os.path.dirname(path), "sub"))
+    assert nested.read_text() == "nested\n"
 
 
 # --- edit_file ---
@@ -185,6 +180,30 @@ def test_grep_nonexistent_path():
     grep = get_tool("grep")
     r = grep.execute(pattern="test", path="/nonexistent_dir_abc")
     assert "not found" in r.lower() or "Error" in r
+
+
+def test_grep_reports_when_the_file_scan_is_incomplete(tmp_path):
+    for index in range(3):
+        (tmp_path / f"file-{index}.txt").write_text("nothing here")
+    grep = GrepTool(max_files=2)
+
+    result = grep.execute(pattern="missing", path=str(tmp_path))
+
+    assert "incomplete" in result.lower()
+    assert "2 file limit" in result.lower()
+
+
+def test_grep_does_not_skip_a_search_root_because_an_ancestor_is_named_build(
+    tmp_path,
+):
+    root = tmp_path / "build" / "project"
+    root.mkdir(parents=True)
+    target = root / "target.txt"
+    target.write_text("unique-needle")
+
+    result = GrepTool().execute(pattern="unique-needle", path=str(root))
+
+    assert str(target) in result
 
 
 # --- agent tool ---

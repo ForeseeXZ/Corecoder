@@ -33,6 +33,10 @@ class GrepTool(Tool):
         "required": ["pattern"],
     }
 
+    def __init__(self, max_files: int = 5000, max_matches: int = 200):
+        self.max_files = max_files
+        self.max_matches = max_matches
+
     def execute(self, pattern: str, path: str = ".", include: str | None = None) -> str:
         try:
             regex = re.compile(pattern)
@@ -45,34 +49,42 @@ class GrepTool(Tool):
 
         if base.is_file():
             files = [base]
+            scan_incomplete = False
         else:
-            files = self._walk(base, include)
+            files, scan_incomplete = self._walk(base, include)
 
         matches = []
         for fp in files:
             try:
-                text = fp.read_text(errors="ignore")
+                text = fp.read_text(encoding="utf-8", errors="replace")
             except OSError:
                 continue
             for lineno, line in enumerate(text.splitlines(), 1):
                 if regex.search(line):
                     matches.append(f"{fp}:{lineno}: {line.rstrip()}")
-                    if len(matches) >= 200:
-                        matches.append("... (200 match limit reached)")
+                    if len(matches) >= self.max_matches:
+                        matches.append(
+                            f"... ({self.max_matches} match limit reached)"
+                        )
                         return "\n".join(matches)
 
-        return "\n".join(matches) if matches else "No matches found."
+        result = "\n".join(matches) if matches else "No matches found."
+        if scan_incomplete:
+            result += (
+                f"\n... (file scan incomplete: {self.max_files} file limit reached)"
+            )
+        return result
 
-    @staticmethod
-    def _walk(root: Path, include: str | None) -> list[Path]:
+    def _walk(self, root: Path, include: str | None) -> tuple[list[Path], bool]:
         """Walk dir tree, skipping junk dirs."""
         results = []
         for item in root.rglob(include or "*"):
             # skip hidden/junk directories
-            if any(part in _SKIP_DIRS for part in item.parts):
+            relative_dirs = item.relative_to(root).parts[:-1]
+            if any(part in _SKIP_DIRS for part in relative_dirs):
                 continue
             if item.is_file():
                 results.append(item)
-            if len(results) >= 5000:
-                break
-        return results
+            if len(results) > self.max_files:
+                return results[: self.max_files], True
+        return results, False

@@ -10,8 +10,9 @@ which means it's done working and ready to report back.
 """
 
 import concurrent.futures
+import inspect
 from .llm import LLM
-from .tools import ALL_TOOLS, get_tool
+from .tools import ALL_TOOLS
 from .tools.base import Tool
 from .tools.agent import AgentTool
 from .prompt import system_prompt
@@ -103,26 +104,42 @@ class Agent:
             # tool calls -> execute (parallel when multiple, like Claude Code's
             # StreamingToolExecutor which runs independent tools concurrently)
             self.messages.append(resp.message)
+            tool_reply_start = len(self.messages)
 
-            if len(resp.tool_calls) == 1:
-                tc = resp.tool_calls[0]
-                if on_tool:
-                    on_tool(tc.name, tc.arguments)
-                result = self._exec_tool(tc)
-                self.messages.append({
-                    "role": "tool",
-                    "tool_call_id": tc.id,
-                    "content": result,
-                })
-            else:
-                # parallel execution for multiple tool calls
-                results = self._exec_tools_parallel(resp.tool_calls, on_tool)
-                for tc, result in zip(resp.tool_calls, results):
+            try:
+                if len(resp.tool_calls) == 1:
+                    tc = resp.tool_calls[0]
+                    if on_tool:
+                        on_tool(tc.name, tc.arguments)
+                    result = self._exec_tool(tc)
                     self.messages.append({
                         "role": "tool",
                         "tool_call_id": tc.id,
                         "content": result,
                     })
+                else:
+                    # parallel execution for multiple tool calls
+                    results = self._exec_tools_parallel(resp.tool_calls, on_tool)
+                    for tc, result in zip(resp.tool_calls, results):
+                        self.messages.append({
+                            "role": "tool",
+                            "tool_call_id": tc.id,
+                            "content": result,
+                        })
+            except KeyboardInterrupt:
+                completed_ids = {
+                    message.get("tool_call_id")
+                    for message in self.messages[tool_reply_start:]
+                    if message.get("role") == "tool"
+                }
+                for tc in resp.tool_calls:
+                    if tc.id not in completed_ids:
+                        self.messages.append({
+                            "role": "tool",
+                            "tool_call_id": tc.id,
+                            "content": "[interrupted]",
+                        })
+                raise
 
             # compress if tool outputs are big
             self.context.maybe_compress(self.messages, self.llm)
@@ -131,13 +148,27 @@ class Agent:
 
     def _exec_tool(self, tc) -> str:
         """Execute a single tool call, returning the result string."""
-        tool = self._tool_by_name.get(tc.name) or get_tool(tc.name)
+        tool = self._tool_by_name.get(tc.name)
         if tool is None:
             return f"Error: unknown tool '{tc.name}'"
+        parameters = tool.parameters or {}
+        required = set(parameters.get("required", []))
+        provided = set(tc.arguments)
+        missing = sorted(required - provided)
+        unexpected = sorted(provided - set(parameters.get("properties", {})))
+        if missing:
+            return f"Error: bad arguments for {tc.name}: missing {', '.join(missing)}"
+        if unexpected:
+            return (
+                f"Error: bad arguments for {tc.name}: "
+                f"unexpected {', '.join(unexpected)}"
+            )
         try:
-            return tool.execute(**tc.arguments)
+            inspect.signature(tool.execute).bind(**tc.arguments)
         except TypeError as e:
             return f"Error: bad arguments for {tc.name}: {e}"
+        try:
+            return tool.execute(**tc.arguments)
         except Exception as e:
             return f"Error executing {tc.name}: {e}"
 
