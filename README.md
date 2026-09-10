@@ -4,6 +4,10 @@ CodePilot 是一个教学级 AI 编码 Agent 项目，在原始单 Agent 循环�
 Planner / Executor / Reviewer 多 Agent 编排，并配套了一套可开关、可续跑、可归档的
 HumanEval 与 SWE-bench Verified Mini 评测流水线。
 
+> **项目来源**：本仓库是何宇峰（Yufeng He）开发的
+> [CoreCoder](https://github.com/he-yufeng/CoreCoder) 的二次开发版本，并非 CoreCoder
+> 官方发行版。上游项目采用 MIT License；本仓库保留了原作者的版权声明和完整许可文本。
+
 这份 README 的目标不是做宣传页，而是让你能快速理解项目、把它放到阿里云服务器上跑起来，并知道如何组织消融实验。
 
 ---
@@ -434,6 +438,20 @@ article/
 
 ---
 
-## 致谢
+## 上游来源、许可与致谢
 
-CodePilot 基于 [CoreCoder](README_CN.md) 的教学级 Python 复现继续扩展。多 Agent 编排、SWE-bench 消融 driver、Reviewer / Planner / 压缩 / MCP 增量、GitHub MCP 实验报告与实验归因，是本仓库在此基础上的主要工作。
+CodePilot 基于以下开源项目继续开发：
+
+- **上游项目**：[he-yufeng/CoreCoder](https://github.com/he-yufeng/CoreCoder)
+- **原作者**：[何宇峰（Yufeng He）](https://github.com/he-yufeng)
+- **上游许可证**：MIT License
+- **许可证文本**：[LICENSE](LICENSE)，其中保留了上游原作者的版权声明
+
+CoreCoder 提供了可运行、可阅读的 Python 编码 Agent 基础，包括 Agent loop、模型接口、上下文管理、CLI 和基础工具系统。本仓库在此基础上主要增加或扩展了：
+
+- Planner / Executor / Reviewer 多 Agent 编排；
+- HumanEval 与 SWE-bench 评测、消融实验和结果归因；
+- WorkspaceExecution、ToolRuntime、Run Ledger 与 no-progress 循环保护；
+- 项目级长期记忆、MCP 工具桥接和 GitHub 实验报告。
+
+仓库内的 [README_CN.md](README_CN.md) 保留了上游项目的中文介绍。除明确注明外，本仓库的修改和新增代码继续依照仓库根目录的 MIT License 发布。本项目与上游作者不存在官方隶属或背书关系。

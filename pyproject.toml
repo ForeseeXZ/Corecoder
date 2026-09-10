@@ -53,9 +53,10 @@ eval = [
 corecoder = "corecoder.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/he-yufeng/CoreCoder"
-Repository = "https://github.com/he-yufeng/CoreCoder"
-Issues = "https://github.com/he-yufeng/CoreCoder/issues"
+Homepage = "https://github.com/ForeseeXZ/Corecoder"
+Repository = "https://github.com/ForeseeXZ/Corecoder"
+Issues = "https://github.com/ForeseeXZ/Corecoder/issues"
+Upstream = "https://github.com/he-yufeng/CoreCoder"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
