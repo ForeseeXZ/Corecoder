@@ -109,6 +109,14 @@ def reduce_events(events) -> dict[str, Any]:
     aborted_runs = [
         event for event in event_list if event.get("event_type") == "run_aborted"
     ]
+    suppressed_events = [
+        event
+        for event in event_list
+        if event.get("event_type") == "tool_call_suppressed"
+    ]
+    suppression_actions = Counter(
+        event.get("action") for event in suppressed_events if event.get("action")
+    )
     return {
         "source": "run_ledger",
         "schema_version": SCHEMA_VERSION,
@@ -128,6 +136,10 @@ def reduce_events(events) -> dict[str, Any]:
             "open": len(started - finished),
         },
         "tool_status_counts": dict(sorted(status_counts.items())),
+        "loop_guard": {
+            "suppressed": len(suppressed_events),
+            "actions": dict(sorted(suppression_actions.items())),
+        },
         "workspace_snapshots": event_counts.get("workspace_snapshot", 0),
         "compressions": event_counts.get("compression", 0),
         "aborted": event_counts.get("run_aborted", 0) > 0,

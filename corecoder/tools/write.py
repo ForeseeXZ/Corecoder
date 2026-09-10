@@ -31,7 +31,7 @@ class WriteFileTool(Tool):
         p = self.resolve_path(file_path)
         try:
             p.parent.mkdir(parents=True, exist_ok=True)
-            p.write_text(content)
+            p.write_text(content, encoding="utf-8", newline="\n")
             _changed_files.add(str(p))
             n_lines = content.count("\n") + (1 if content and not content.endswith("\n") else 0)
             return f"Wrote {n_lines} lines to {file_path}"

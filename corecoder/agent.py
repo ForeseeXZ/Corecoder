@@ -41,6 +41,7 @@ class Agent:
         manage_run_lifecycle: bool = True,
         phase: str = "executor",
         agent_id: str | None = None,
+        project_memory: str | None = None,
     ):
         self.llm = llm
         self.tools = tools if tools is not None else default_tools()
@@ -78,7 +79,13 @@ class Agent:
             self.context = ContextManager(max_tokens=max_context_tokens)
         self.max_rounds = max_rounds
         prompt_cwd = str(workspace.root) if workspace is not None else None
-        self._system = system_prompt(self.tools, cwd=prompt_cwd)
+        self._prompt_cwd = prompt_cwd
+        self._project_memory = project_memory or ""
+        self._system = system_prompt(
+            self.tools,
+            cwd=self._prompt_cwd,
+            project_memory=self._project_memory,
+        )
 
         # fast name->tool dispatch (covers MCP tools, which are NOT in the global
         # ALL_TOOLS registry get_tool() searches). Identical objects to before
@@ -103,8 +110,14 @@ class Agent:
             artifact_dir=artifact_dir,
             ledger=ledger,
             phase=phase,
+            state_provider=(
+                (lambda: workspace.snapshot().snapshot_hash)
+                if workspace is not None
+                else None
+            ),
         )
         self.last_tool_observations = []
+        self.last_finish_reason: str | None = None
         self._active_turn_id: str | None = None
         self._turn_counter = 0
         self._child_agent_counter = 0
@@ -115,6 +128,15 @@ class Agent:
             if isinstance(t, AgentTool):
                 t._parent_agent = self
 
+    def refresh_project_memory(self, project_memory: str | None) -> None:
+        """Replace startup memory after an interactive /memory add command."""
+        self._project_memory = project_memory or ""
+        self._system = system_prompt(
+            self.tools,
+            cwd=self._prompt_cwd,
+            project_memory=self._project_memory,
+        )
+
     def _full_messages(self) -> list[dict]:
         return [{"role": "system", "content": self._system}] + self.messages
 
@@ -124,6 +146,11 @@ class Agent:
     def chat(self, user_input: str, on_token=None, on_tool=None) -> str:
         """Process one user message. May involve multiple LLM/tool rounds."""
         self.last_tool_observations = []
+        self.last_finish_reason = None
+        self.runtime.reset_loop_guard()
+        tool_round_pending = False
+        failed_tool_round = False
+        empty_tool_recoveries = 0
         baseline = getattr(self.workspace, "baseline_commit", None)
         root = str(self.workspace.root) if self.workspace is not None else None
         if self._manage_run_lifecycle:
@@ -160,6 +187,31 @@ class Agent:
                 # no tool calls -> LLM is done, return text
                 if not resp.tool_calls:
                     self.messages.append(resp.message)
+                    if not resp.content.strip() and tool_round_pending:
+                        if empty_tool_recoveries < 2:
+                            outcome = "failed" if failed_tool_round else "completed"
+                            self.messages.append({
+                                "role": "user",
+                                "content": (
+                                    f"[Runtime recovery] The previous tool round {outcome}, "
+                                    "but your response was empty. Re-read the user's "
+                                    "request and the Tool Observations. If work or "
+                                    "verification remains, continue with the appropriate "
+                                    "tools; otherwise provide a concise final result. "
+                                    "Do not silently stop or claim success without "
+                                    "verification."
+                                ),
+                            })
+                            empty_tool_recoveries += 1
+                            continue
+                        self.last_finish_reason = "model_failure"
+                        if self._manage_run_lifecycle:
+                            self._record(
+                                "run_finished",
+                                result="model_failure",
+                                reason="empty_response_after_tool",
+                            )
+                        return "(model repeatedly returned an empty response after tool calls)"
                     if self._manage_run_lifecycle:
                         self._record("run_finished", result="model_turn_complete")
                     return resp.content
@@ -167,6 +219,7 @@ class Agent:
                 # tool calls -> execute through the effect-aware runtime
                 self.messages.append(resp.message)
                 tool_reply_start = len(self.messages)
+                observation_start = len(self.last_tool_observations)
 
                 try:
                     if len(resp.tool_calls) == 1:
@@ -203,10 +256,25 @@ class Agent:
                     raise
 
                 self._record_workspace_snapshot()
+                recent_observations = self.last_tool_observations[observation_start:]
+                tool_round_pending = bool(recent_observations)
+                failed_tool_round = any(
+                    (item.original_status or item.status) is not ToolStatus.SUCCESS
+                    for item in recent_observations
+                )
+                if any(
+                    item.block_reason == "no_progress_stalled"
+                    for item in recent_observations
+                ):
+                    self.last_finish_reason = "no_progress"
+                    if self._manage_run_lifecycle:
+                        self._record("run_finished", result="no_progress")
+                    return "(stalled: repeated tool calls made no progress)"
                 self._maybe_compress(turn_id=self._active_turn_id)
 
             if self._manage_run_lifecycle:
                 self._record("run_finished", result="max_tool_rounds")
+            self.last_finish_reason = "budget"
             return "(reached maximum tool-call rounds)"
         except KeyboardInterrupt:
             if self._manage_run_lifecycle:

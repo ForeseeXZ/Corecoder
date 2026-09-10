@@ -10,8 +10,9 @@ import threading
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
+from .loop_guard import LoopAction, LoopDecision, ToolLoopGuard
 from .tools.base import Tool, ToolEffect, ToolExecutionResult, ToolStatus
 
 
@@ -43,6 +44,9 @@ class ToolObservation:
     original_status: ToolStatus | None = None
     raw_arguments_sha256: str | None = None
     raw_arguments_preview: str | None = None
+    execution_mode: str = "executed"
+    related_call_id: str | None = None
+    block_reason: str | None = None
 
     def as_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -65,6 +69,8 @@ class ToolRuntime:
         max_workers: int = 8,
         ledger=None,
         phase: str = "executor",
+        state_provider: Callable[[], str] | None = None,
+        loop_guard: ToolLoopGuard | None = None,
     ):
         self._tools = {tool.name: tool for tool in tools}
         self.artifact_dir = Path(artifact_dir).resolve() if artifact_dir else None
@@ -72,6 +78,8 @@ class ToolRuntime:
         self.max_workers = max_workers
         self.ledger = ledger
         self.phase = phase
+        self.state_provider = state_provider
+        self.loop_guard = loop_guard or (ToolLoopGuard() if state_provider else None)
         self._counter_lock = threading.Lock()
         self._started_counter = 0
         self._finished_counter = 0
@@ -88,6 +96,18 @@ class ToolRuntime:
         tool = self._tools.get(call.name)
         effect = tool.effect if tool is not None else ToolEffect.READ
         arguments_hash = _json_hash(getattr(call, "arguments", {}))
+        state_before = self._state_hash(turn_id=turn_id, call_id=call.id)
+        decision = (
+            self.loop_guard.decide(
+                arguments_sha256=_json_hash(
+                    {"name": call.name, "arguments": getattr(call, "arguments", {})}
+                ),
+                state_sha256=state_before,
+                effect=effect,
+            )
+            if self.loop_guard is not None
+            else LoopDecision(LoopAction.ALLOW, None)
+        )
         self._record(
             "tool_started",
             turn_id=turn_id,
@@ -98,39 +118,78 @@ class ToolRuntime:
             started_order=started_order,
         )
 
-        invalid = self._validate(call, tool)
-        if invalid is not None:
-            result = ToolExecutionResult(ToolStatus.BAD_ARGUMENTS, invalid, error=invalid)
+        execution_mode = "executed"
+        related_call_id = None
+        block_reason = None
+        if decision.action is LoopAction.REPLAY:
+            execution_mode = "cached"
+            related_call_id = decision.previous.call_id
+            result = ToolExecutionResult(
+                decision.previous.status,
+                "[cached duplicate: the workspace is unchanged; "
+                f"result from {related_call_id}]\n{decision.previous.model_text}",
+                exit_code=decision.previous.exit_code,
+                error=decision.previous.error,
+            )
+        elif decision.action in {LoopAction.BLOCK, LoopAction.STALL}:
+            execution_mode = "suppressed"
+            related_call_id = (
+                decision.previous.call_id if decision.previous is not None else None
+            )
+            block_reason = (
+                "no_progress_stalled"
+                if decision.action is LoopAction.STALL
+                else "duplicate_no_progress"
+            )
+            guidance = (
+                "Stop: repeated tool calls continued after recovery guidance."
+                if decision.action is LoopAction.STALL
+                else (
+                    "Blocked: this call would repeat work without new information. "
+                    "Do not repeat it. Summarize the current failure, form a new "
+                    "hypothesis, and choose a different inspection, edit, or "
+                    "verification action."
+                )
+            )
+            result = ToolExecutionResult(
+                ToolStatus.BLOCKED,
+                f"{guidance}\nReason: {decision.reason}",
+                error=decision.reason,
+            )
         else:
-            try:
-                structured = getattr(tool, "execute_structured", None)
-                if structured is not None:
-                    result = structured(**call.arguments)
-                else:
+            invalid = self._validate(call, tool)
+            if invalid is not None:
+                result = ToolExecutionResult(ToolStatus.BAD_ARGUMENTS, invalid, error=invalid)
+            else:
+                try:
+                    structured = getattr(tool, "execute_structured", None)
+                    if structured is not None:
+                        result = structured(**call.arguments)
+                    else:
+                        result = ToolExecutionResult(
+                            ToolStatus.SUCCESS,
+                            tool.execute(**call.arguments),
+                        )
+                except KeyboardInterrupt:
                     result = ToolExecutionResult(
-                        ToolStatus.SUCCESS,
-                        tool.execute(**call.arguments),
+                        ToolStatus.CANCELLED,
+                        "[interrupted]",
+                        error="tool execution interrupted",
                     )
-            except KeyboardInterrupt:
-                result = ToolExecutionResult(
-                    ToolStatus.CANCELLED,
-                    "[interrupted]",
-                    error="tool execution interrupted",
-                )
-            except PermissionError as exc:
-                message = f"Blocked: {exc}"
-                result = ToolExecutionResult(
-                    ToolStatus.BLOCKED,
-                    message,
-                    error=str(exc),
-                )
-            except Exception as exc:  # noqa: BLE001 - adapter boundary
-                message = f"Error executing {call.name}: {exc}"
-                result = ToolExecutionResult(
-                    ToolStatus.EXCEPTION,
-                    message,
-                    error=f"{type(exc).__name__}: {exc}",
-                )
+                except PermissionError as exc:
+                    message = f"Blocked: {exc}"
+                    result = ToolExecutionResult(
+                        ToolStatus.BLOCKED,
+                        message,
+                        error=str(exc),
+                    )
+                except Exception as exc:  # noqa: BLE001 - adapter boundary
+                    message = f"Error executing {call.name}: {exc}"
+                    result = ToolExecutionResult(
+                        ToolStatus.EXCEPTION,
+                        message,
+                        error=f"{type(exc).__name__}: {exc}",
+                    )
 
         observation = self._observation(
             call=call,
@@ -139,9 +198,28 @@ class ToolRuntime:
             arguments_hash=arguments_hash,
             started_order=started_order,
             started_at=started_at,
+            execution_mode=execution_mode,
+            related_call_id=related_call_id,
+            block_reason=block_reason,
         )
+        if self.loop_guard is not None:
+            self.loop_guard.remember(decision, observation)
+        if execution_mode != "executed":
+            self._record(
+                "tool_call_suppressed",
+                turn_id=turn_id,
+                call_id=call.id,
+                action=decision.action.value,
+                reason=decision.reason,
+                related_call_id=related_call_id,
+                state_sha256=state_before,
+            )
         self._record("tool_finished", turn_id=turn_id, **observation.as_dict())
         return observation
+
+    def reset_loop_guard(self) -> None:
+        if self.loop_guard is not None:
+            self.loop_guard.reset()
 
     def execute_many(self, calls, *, turn_id: str | None = None) -> list[ToolObservation]:
         """Run contiguous read groups concurrently and all mutations serially."""
@@ -211,6 +289,9 @@ class ToolRuntime:
         arguments_hash: str,
         started_order: int,
         started_at: float,
+        execution_mode: str = "executed",
+        related_call_id: str | None = None,
+        block_reason: str | None = None,
     ) -> ToolObservation:
         full_text = result.content or "(no output)"
         output_hash = hashlib.sha256(full_text.encode("utf-8")).hexdigest()
@@ -247,6 +328,9 @@ class ToolRuntime:
             original_status=original_status,
             raw_arguments_sha256=getattr(call, "raw_arguments_sha256", None),
             raw_arguments_preview=getattr(call, "raw_arguments_preview", None),
+            execution_mode=execution_mode,
+            related_call_id=related_call_id,
+            block_reason=block_reason,
         )
 
     def _write_artifact(
@@ -290,6 +374,20 @@ class ToolRuntime:
         if self.ledger is not None:
             payload.setdefault("phase", self.phase)
             self.ledger.append(event_type, **payload)
+
+    def _state_hash(self, *, turn_id: str | None, call_id: str) -> str | None:
+        if self.state_provider is None:
+            return None
+        try:
+            return str(self.state_provider())
+        except Exception as exc:  # noqa: BLE001 - optional guard must fail open
+            self._record(
+                "loop_guard_state_error",
+                turn_id=turn_id,
+                call_id=call_id,
+                error=f"{type(exc).__name__}: {exc}",
+            )
+            return None
 
 
 def _json_hash(value: Any) -> str:

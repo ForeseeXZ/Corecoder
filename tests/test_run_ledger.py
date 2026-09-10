@@ -102,6 +102,28 @@ def test_legacy_transcript_is_read_only_compatible_and_marks_unknown_observation
     assert summary["observation_unknown"] is True
 
 
+def test_run_ledger_summarizes_loop_guard_interventions(tmp_path):
+    ledger = RunLedger(tmp_path / "guard-ledger.jsonl", run_id="guard-run")
+    ledger.append(
+        "tool_call_suppressed",
+        call_id="call-2",
+        action="block",
+        reason="duplicate",
+    )
+    ledger.append(
+        "tool_call_suppressed",
+        call_id="call-3",
+        action="stall",
+        reason="no progress",
+    )
+    ledger.append("run_finished", result="no_progress")
+
+    assert ledger.summary()["loop_guard"] == {
+        "suppressed": 2,
+        "actions": {"block": 1, "stall": 1},
+    }
+
+
 def test_agent_records_a_complete_offline_repair_run_from_ledger_events(tmp_path):
     workspace = _workspace(tmp_path)
     ledger = RunLedger(tmp_path / "run-ledger.jsonl", run_id="repair-1")

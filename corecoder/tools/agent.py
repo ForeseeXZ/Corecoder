@@ -55,6 +55,7 @@ class AgentTool(Tool):
             manage_run_lifecycle=False,
             phase="sub_agent",
             agent_id=f"{parent.agent_id}.sub{parent._child_agent_counter}",
+            project_memory=getattr(parent, "_project_memory", ""),
         )
 
         try:

@@ -45,6 +45,19 @@ HumanEval 与 SWE-bench Verified Mini 评测流水线。
 | `corecoder/tools/` | `bash` / `read_file` / `write_file` / `edit_file` / `glob` / `grep` / `agent` |
 | `corecoder/context.py` | baseline always-on 上下文管理 |
 
+### Repair Run 可靠性边界
+
+当前 Agent 不再只依赖进程 cwd 和文本 transcript 推断执行状态，而是把一次代码修复明确建模为固定工作区中的 **Repair Run**：
+
+| 组件 | 文件 | 作用 |
+|---|---|---|
+| WorkspaceExecution | `corecoder/workspace.py` | 在 Repair Run 启动时固定 Git 根目录和 baseline，并生成可比较的 Workspace Snapshot |
+| ToolRuntime | `corecoder/runtime.py` | 校验参数，按 `read` / `write` / `process` effect 调度工具，产出结构化 Tool Observation |
+| Run Ledger | `corecoder/ledger.py` | 追加记录运行、工具、快照、压缩与终止事件，作为新运行的事实源 |
+| ToolLoopGuard | `corecoder/loop_guard.py` | 基于工具参数和工作区状态识别重复读取、无进展重复调用与短循环 |
+
+相同工作区状态下的首次重复只读调用可以复用已有 Observation；重复写入或短循环会被阻止并给模型一次恢复提示。恢复后仍无进展时，Repair Run 以 `no_progress` 结束，而不是静默耗尽工具轮次。工具调用后的空模型响应也会触发有限恢复，无法恢复时记录为 `model_failure`。
+
 默认工具集在 `corecoder/tools/__init__.py` 中注册。`bash` 工具带基础危险命令拦截和输出截断；读写类工具也会避开 `.env`、私钥、证书等敏感路径。
 
 ### 多 Agent 增量
@@ -119,6 +132,23 @@ corecoder
 corecoder -p "read this project and summarize the main modules"
 corecoder -m mimo-v2.5-pro -p "fix the failing test"
 ```
+
+项目长期记忆（按 Git 仓库隔离，所有 worktree 共享）：
+
+```bash
+# 使用当前模型把手工 memory skill 总结后写入 MEMORY.md
+corecoder --memory-skill "Windows 下运行测试必须使用 .venv/Scripts/python.exe"
+corecoder --memory-skill "SWE-bench 最终结果只认官方 harness" --memory-date 2026-09-03
+
+# 查看路径、内容，或生成 2026-04 至 2026-09 的演示数据
+corecoder --memory-path
+corecoder --memory-show
+corecoder --memory-seed-demo
+```
+
+交互模式还支持 `/memory add <skill>`、`/memory show`、`/memory path` 和
+`/memory demo`。真实记忆写入 `~/.corecoder/projects/<project>/memory/MEMORY.md`
+并在新会话启动时限量加载；演示数据单独保存在 `DEMO_MEMORY.md`，不会注入模型上下文。
 
 常用测试：
 
@@ -338,6 +368,11 @@ corecoder/
   config.py         # .env / 环境变量配置
   prompt.py         # system prompt 生成
   context.py        # baseline 上下文管理
+  memory.py         # 项目级 MEMORY.md、模型摘要、启动注入与演示数据
+  workspace.py      # 固定 Git 根目录、baseline 与 Workspace Snapshot
+  runtime.py        # effect-aware 工具调度与结构化 Tool Observation
+  ledger.py         # append-only Run Ledger 与摘要归约
+  loop_guard.py     # 重复调用、短循环和 no-progress 检测
   compress.py       # 可开关的三层上下文压缩
   plan.py           # Planner：只读探索 + JSON 修复计划
   review.py         # Reviewer：自写 verify.sh + before/after 自检

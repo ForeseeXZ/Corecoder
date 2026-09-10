@@ -2,6 +2,7 @@
 
 import os
 import sys
+from pathlib import Path
 
 from corecoder.tools import ALL_TOOLS, get_tool
 from corecoder.tools.grep import GrepTool
@@ -118,6 +119,31 @@ def test_write_file_creates_dirs(tmp_path):
     assert nested.read_text() == "nested\n"
 
 
+def test_write_file_uses_explicit_utf8_for_non_ascii_content(tmp_path, monkeypatch):
+    observed_encodings = []
+    original_write_text = Path.write_text
+
+    def tracked_write_text(path, data, encoding=None, errors=None, newline=None):
+        observed_encodings.append(encoding)
+        return original_write_text(
+            path,
+            data,
+            encoding=encoding,
+            errors=errors,
+            newline=newline,
+        )
+
+    monkeypatch.setattr(Path, "write_text", tracked_write_text)
+    path = tmp_path / "two_sum.py"
+    content = "# 中文注释\ndef two_sum(nums, target):\n    return []\n"
+
+    result = get_tool("write_file").execute(file_path=str(path), content=content)
+
+    assert "Wrote" in result
+    assert observed_encodings == ["utf-8"]
+    assert path.read_bytes() == content.encode("utf-8")
+
+
 # --- edit_file ---
 
 def test_edit_file_basic(tmp_path):
@@ -146,6 +172,41 @@ def test_edit_file_duplicate_string(tmp_path):
     path.write_text("dup\ndup\n")
     r = edit.execute(file_path=str(path), old_string="dup", new_string="x")
     assert "2 times" in r
+
+
+def test_edit_file_reads_and_writes_utf8_content(tmp_path, monkeypatch):
+    path = tmp_path / "sample.py"
+    path.write_bytes("# 中文注释\nvalue = 1\n".encode("utf-8"))
+    observed_reads = []
+    observed_writes = []
+    original_read_text = Path.read_text
+    original_write_text = Path.write_text
+
+    def tracked_read_text(path, encoding=None, errors=None):
+        observed_reads.append(encoding)
+        return original_read_text(path, encoding=encoding, errors=errors)
+
+    def tracked_write_text(path, data, encoding=None, errors=None, newline=None):
+        observed_writes.append(encoding)
+        return original_write_text(
+            path,
+            data,
+            encoding=encoding,
+            errors=errors,
+            newline=newline,
+        )
+
+    monkeypatch.setattr(Path, "read_text", tracked_read_text)
+    monkeypatch.setattr(Path, "write_text", tracked_write_text)
+
+    result = get_tool("edit_file").execute(
+        file_path=str(path), old_string="value = 1", new_string="value = 2"
+    )
+
+    assert "Edited" in result
+    assert observed_reads == ["utf-8"]
+    assert observed_writes == ["utf-8"]
+    assert path.read_bytes().decode("utf-8") == "# 中文注释\nvalue = 2\n"
 
 
 # --- glob ---

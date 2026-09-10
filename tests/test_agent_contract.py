@@ -7,7 +7,7 @@ import pytest
 
 from corecoder import Agent
 from corecoder.llm import LLMResponse, ToolCall
-from corecoder.tools.base import Tool
+from corecoder.tools.base import Tool, ToolEffect, ToolExecutionResult
 from corecoder.tools.agent import AgentTool
 from corecoder.runtime import ToolStatus
 from tests.fakes import ScriptedLLM
@@ -69,6 +69,23 @@ class InterruptingTool(Tool):
         raise KeyboardInterrupt
 
 
+class FailingProcessTool(Tool):
+    name = "run_check"
+    description = "Return a deterministic non-zero process result."
+    parameters = {"type": "object", "properties": {}, "required": []}
+    effect = ToolEffect.PROCESS
+
+    def execute(self) -> str:
+        return "legacy"
+
+    def execute_structured(self) -> ToolExecutionResult:
+        return ToolExecutionResult(
+            status=ToolStatus.NON_ZERO,
+            content="SyntaxError: invalid source encoding\n[exit code: 1]",
+            exit_code=1,
+        )
+
+
 def test_agent_returns_final_text_after_a_tool_observation():
     llm = ScriptedLLM(
         [
@@ -98,6 +115,82 @@ def test_agent_returns_final_text_after_a_tool_observation():
     }
     assert agent.last_tool_observations[0].status is ToolStatus.SUCCESS
     assert agent.last_tool_observations[0].call_id == "call-1"
+
+
+def test_agent_retries_once_when_model_goes_empty_after_a_failed_tool():
+    llm = ScriptedLLM(
+        [
+            LLMResponse(
+                tool_calls=[
+                    ToolCall(id="call-failed", name="run_check", arguments={})
+                ]
+            ),
+            LLMResponse(),
+            LLMResponse(content="I inspected the failure and recovered."),
+        ]
+    )
+    agent = Agent(llm=llm, tools=[FailingProcessTool()])
+
+    result = agent.chat("Run the check and fix failures")
+
+    assert result == "I inspected the failure and recovered."
+    assert len(llm.requests) == 3
+    assert llm.requests[2]["messages"][-1]["role"] == "user"
+    assert "previous tool round failed" in llm.requests[2]["messages"][-1]["content"]
+
+
+def test_agent_retries_when_model_goes_empty_after_a_successful_tool():
+    llm = ScriptedLLM(
+        [
+            LLMResponse(
+                tool_calls=[
+                    ToolCall(
+                        id="call-success",
+                        name="inspect",
+                        arguments={"path": "two_sum.py"},
+                    )
+                ]
+            ),
+            LLMResponse(),
+            LLMResponse(content="The requested work is complete and verified."),
+        ]
+    )
+    agent = Agent(llm=llm, tools=[InspectTool()])
+
+    result = agent.chat("Create the file and verify it")
+
+    assert result == "The requested work is complete and verified."
+    assert len(llm.requests) == 3
+    recovery = llm.requests[2]["messages"][-1]
+    assert recovery["role"] == "user"
+    assert "previous tool round completed" in recovery["content"]
+    assert "work or verification remains" in recovery["content"]
+
+
+def test_agent_stops_after_bounded_empty_tool_recoveries():
+    llm = ScriptedLLM(
+        [
+            LLMResponse(
+                tool_calls=[
+                    ToolCall(
+                        id="call-success",
+                        name="inspect",
+                        arguments={"path": "two_sum.py"},
+                    )
+                ]
+            ),
+            LLMResponse(),
+            LLMResponse(),
+            LLMResponse(),
+        ]
+    )
+    agent = Agent(llm=llm, tools=[InspectTool()])
+
+    result = agent.chat("Create the file and verify it")
+
+    assert result == "(model repeatedly returned an empty response after tool calls)"
+    assert agent.last_finish_reason == "model_failure"
+    assert len(llm.requests) == 4
 
 
 def test_agent_cannot_execute_a_tool_outside_its_capability_set(tmp_path):
